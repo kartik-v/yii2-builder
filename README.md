@@ -3,7 +3,9 @@ yii2-builder
 
 A form builder extension that allows you to build both single view and multi-view/tabular forms for Yii Framework 2.0. The extension contains these widgets:
 
-## Form `\kartik\builder\Form`
+## Form
+
+`\kartik\builder\Form`
 
 The Form Builder widget allows you to build a form through a configuration array. Key features available:
 
@@ -32,7 +34,9 @@ The Form Builder widget allows you to build a form through a configuration array
 
 Refer the [documentation](http://demos.krajee.com/builder/form) for more details.
 
-## Tabular Form `kartik\builder\TabularForm`
+## Tabular Form 
+
+`kartik\builder\TabularForm`
 
 The tabular form allows you to update information from multiple models (typically used in master-detail forms). Key features
 
