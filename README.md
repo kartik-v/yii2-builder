@@ -93,6 +93,7 @@ ActiveForm::end();
 ```php
 use kartik\builder\TabularForm;
 $form = ActiveForm::begin();
+$form = ActiveForm::begin();
 echo TabularForm::widget([
     'form' => $form,
     'dataProvider' => $dataProvider,
