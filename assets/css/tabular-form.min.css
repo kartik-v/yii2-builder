@@ -1,0 +1,12 @@
+/*!
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
+ * @package yii2-builder
+ * @version 1.0.0
+ *
+ * Tabular Form Styling for Twitter Bootstrap 3.0
+ * Built for Yii Framework 2.0
+ * Author: Kartik Visweswaran
+ * Year: 2013
+ * For more Yii related demos visit http://demos.krajee.com
+ */
+.kv-tabform-row .form-group {margin-bottom: -10px;}
