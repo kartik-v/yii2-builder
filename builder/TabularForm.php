@@ -48,7 +48,7 @@ use kartik\widgets\ActiveForm;
 class TabularForm extends BaseForm
 {
     /**
-     * @var \yii\data\DataProviderInterface the data provider for the tabular form. This property is required.
+     * @var \yii\data\ActiveDataProvider the data provider for the tabular form. This property is required.
      * It must return an instance of ActiveDataProvider and return a list of models.
      */
     public $dataProvider;
@@ -65,13 +65,13 @@ class TabularForm extends BaseForm
 
     /**
      * @var array|boolean the settings for the serial column.
-     * If set to empty or false will not be displayed.
+     * If set to false will not be displayed.
      */
     public $serialColumn = [];
 
     /**
      * @var array|boolean the settings for the checkbox column.
-     * If set to empty or false will not be displayed.
+     * If set to false will not be displayed.
      */
     public $checkboxColumn = [];
 
@@ -158,22 +158,8 @@ class TabularForm extends BaseForm
                 'attribute' => $attribute,
                 'value' => $value,
                 'format' => 'raw',
-                'vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP,
-            ] + $label + ArrayHelper::getValue($settings, 'columnOptions', []);
-        }
-    }
-
-    /**
-     * Initializes the action column
-     */
-    protected function initActionColumn()
-    {
-        if (!isset($this->actionColumn['class']) || !is_subclass_of($this->actionColumn['class'], '\kartik\grid\ActionColumn')) {
-            $this->actionColumn['class'] = '\kartik\grid\ActionColumn';
-        }
-        $this->actionColumn['updateOptions'] = ['style' => 'display:none;'];
-        if (empty($this->actionColumn['width'])) {
-            $this->actionColumn['width'] = '60px';
+            ] + $label + ArrayHelper::getValue($settings, 'columnOptions', [])
+            + ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP];
         }
     }
 
@@ -204,6 +190,18 @@ class TabularForm extends BaseForm
     }
 
     /**
+     * Initializes the action column
+     */
+    protected function initActionColumn()
+    {
+        if (!isset($this->actionColumn['class']) || !is_subclass_of($this->actionColumn['class'], '\kartik\grid\ActionColumn')) {
+            $this->actionColumn['class'] = '\kartik\grid\ActionColumn';
+        }
+        $this->actionColumn['updateOptions'] = ['style' => 'display:none;'];
+        $this->actionColumn +=  ['width' => '60px'];
+    }
+
+    /**
      * @return string the rendered gridview
      */
     protected function renderGrid()
@@ -218,13 +216,9 @@ class TabularForm extends BaseForm
             'dataColumnClass' => 'kartik\grid\DataColumn',
             'columns' => $this->_columns,
             'export' => false,
-            'rowOptions' => $rowOptions,
-            'striped' => ArrayHelper::getValue($this->gridSettings, 'striped', false),
-            'bordered' => ArrayHelper::getValue($this->gridSettings, 'bordered', false),
-            'hover' => ArrayHelper::getValue($this->gridSettings, 'hover', true)
+            'rowOptions' => $rowOptions
         ];
-        $settings += $this->gridSettings;
-        //return '<pre>' . print_r($this->_columns, true) . '</pre>';
+        $settings += $this->gridSettings + ['striped' => false, 'bordered' => false, 'hover' => true];
         return GridView::widget($settings);
     }
 
