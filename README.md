@@ -7,7 +7,7 @@ A form builder extension that allows you to build both single view and multi-vie
 
 `\kartik\builder\Form`
 
-The Form Builder widget allows you to build a form through a configuration array. The widget provides these features:
+The Form Builder widget allows you to build a form through a configuration array. Key features available:
 
 - Configure your form fields from a model extending `yii\base\model` or `yii\db\ActiveRecord`.
 - Ability to support various Bootstrap 3.x form layouts. Uses the advanced [`kartik\widgets\ActiveForm`](http://demos.krajee.com/widget-details/active-form).
@@ -38,14 +38,13 @@ Refer the [documentation](http://demos.krajee.com/builder/form) for more details
 
 `kartik\builder\TabularForm`
 
-The tabular form allows you to update information from multiple models (typically used in master-detail forms). The widget provides these features:
+The tabular form allows you to update information from multiple models (typically used in master-detail forms). Key features
 
 - Supports all input types as mentioned in the `Form` builder widget
-- The widget works exactly like a Yii GridView with an ActiveDataProvider, but allows you to batch update fields and submit the form.
-- Supports features of the GridView like pagination and sorting.
+- The widget works like a Yii GridView and uses an ActiveDataProvider to read the models information. 
+- Supports features of the builderview like pagination and sorting.
 - Allows you to highlight and select table rows
 - Allows you to add and configure action buttons for each row.
-- Allows you to add batch action buttons for the grid.
 - Various Bootstrap 3.x styling features are available by default. However, one can easily customize and theme it to one's liking using any CSS framework.
 - Advanced table styling, columns, and layout configuration by using the features available in the [`kartik\builder\GridView`]([`kartik\widgets\ActiveForm`](http://demos.krajee.com/builder) widget.
 - One can easily read and manage the tabular input data using the `loadMultiple` and `validateMultiple` functions in `yii\base\Model`.
@@ -93,7 +92,6 @@ ActiveForm::end();
 ### TabularForm
 ```php
 use kartik\builder\TabularForm;
-use kartik\grid\GridView;
 $form = ActiveForm::begin();
 $form = ActiveForm::begin();
 echo TabularForm::widget([

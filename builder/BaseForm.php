@@ -55,17 +55,17 @@ class BaseForm extends \yii\bootstrap\Widget
      *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW`. This will display
      *       the raw text from value field if it is a string. If this is a Closure, your anonymous function call should
      *       be of the type: `function ($model, $index, $widget) { }, where $model is the current model, $index is the
-     *       zero based index of the dataProvider, and $widget is the current widget instance.` The Closure option is only
-     *       applicable for the Tabular Form widget.
+     *       zero based index of the dataProvider, and $widget is the current widget instance.`
      *    - 'fieldConfig': array, the configuration for the active field.
-     *    - 'widgetClass': string, the classname if input type is `INPUT_WIDGET`.
      *    - 'items': array, the list of items if input type is one of the following:
      *      `INPUT_DROPDOWN_LIST`, `INPUT_LIST_BOX`, `INPUT_CHECKBOX_LIST`, `INPUT_RADIO_LIST`, `INPUT_MULTISELECT`
      *    - `enclosedByLabel`: bool, if the `INPUT_CHECKBOX` or `INPUT_RADIO` is to be enclosed by label. Defaults
      *      to `true`.
      *    - html5type: string, the type of HTML5 input, if input type is set to `INPUT_HTML5`.
+     *    - 'widgetClass': string, the classname if input type is `INPUT_WIDGET`.
      *    - 'options': array, the HTML attributes or widget settings to be applied to the input.
-     *    - 'columnOptions': array, additional options for the grid data column (applicable only for TabularForm)
+     *    - 'columnOptions': array, for a `Form`, it will override columnOptions setup at `Form` level. For
+     *      a `TabularForm` it will allow you to append additional column options for the grid data column.
      */
     public $attributes = [];
 
@@ -106,7 +106,8 @@ class BaseForm extends \yii\bootstrap\Widget
         }
 
         $options = ArrayHelper::getValue($settings, 'options', []);
-        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_FILE || $type === self::INPUT_STATIC) {
+        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA ||
+            $type === self::INPUT_FILE || $type === self::INPUT_STATIC) {
             return $form->field($model, $attribute, $fieldConfig)->$type($options);
         }
         if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||

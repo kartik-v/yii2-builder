@@ -160,7 +160,7 @@ class Form extends BaseForm
                 }
                 $attribute = $names[$index];
                 $settings = $values[$index];
-                $colOptions = $this->columnOptions;
+                $colOptions = ArrayHelper::getValue($settings, 'columnOptions', $this->columnOptions);
                 Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $width);
                 $content .= "\t" . Html::beginTag('div', $colOptions) . "\n";
                 $content .= "\t\t" . $this->parseInput($this->form, $this->model, $attribute, $settings, $index) . "\n";
