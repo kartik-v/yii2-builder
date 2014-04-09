@@ -16,7 +16,7 @@
         "yiisoft/yii2": "dev-master",
         "yiisoft/yii2-bootstrap": "dev-master",
         "kartik-v/yii2-widgets": "dev-master",
-        "kartik-v/yii2-grid": "dev-master",
+        "kartik-v/yii2-grid": "dev-master"
     },
     "autoload": {
         "psr-4": {
