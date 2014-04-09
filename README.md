@@ -32,7 +32,7 @@ The Form Builder widget allows you to build a form through a configuration array
     - `INPUT_WIDGET` or `widget`
     - `INPUT_RAW` or `raw` (any free text or html markup)
 
-Refer the [documentation](http://demos.krajee.com/builder/form) for more details.
+Refer the [documentation](http://demos.krajee.com/builder-details/form) for more details.
 
 ## Tabular Form 
 
