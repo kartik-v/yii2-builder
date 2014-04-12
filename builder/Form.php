@@ -99,7 +99,7 @@ class Form extends BaseForm
             throw new InvalidConfigException("The 'model' property must be set and must extend from '\\yii\\base\\Model'.");
         }
         $this->initOptions();
-        $content = Html::beginTag($this->_tag, $this->options) . "\n";
+        echo Html::beginTag($this->_tag, $this->options) . "\n";
     }
 
     /**
@@ -110,7 +110,7 @@ class Form extends BaseForm
     public function run()
     {
         echo $this->renderFieldSet();
-        Html::endTag($this->_tag);
+        echo Html::endTag($this->_tag);
         parent::run();
     }
 
