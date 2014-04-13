@@ -118,23 +118,22 @@ class TabularForm extends BaseForm
     {
         $this->initDataColumns();
         $this->form->type = ActiveForm::TYPE_VERTICAL;
-        if ($this->actionColumn === false) {
-            $this->actionColumn = [];
-        } else {
-            $this->initActionColumn();
-        }
-        if ($this->serialColumn === false) {
-            $this->serialColumn = [];
-        } else {
+
+        if ($this->serialColumn !== false) {
             $this->initSerialColumn();
-        }
-        if ($this->checkboxColumn === false) {
-            $this->checkboxColumn = [];
-        } else {
-            $this->initCheckboxColumn();
+            $this->_columns = array_merge([$this->serialColumn], $this->_columns);
         }
 
-        $this->_columns = array_merge([$this->serialColumn], $this->_columns, [$this->actionColumn], [$this->checkboxColumn]);
+        if ($this->actionColumn !== false) {
+            $this->initActionColumn();
+            $this->_columns = array_merge($this->_columns, [$this->actionColumn]);
+        }
+
+        if ($this->checkboxColumn !== false) {
+            $this->initCheckboxColumn();
+            $this->_columns = array_merge($this->_columns, [$this->checkboxColumn]);
+        }
+
     }
 
     /**
