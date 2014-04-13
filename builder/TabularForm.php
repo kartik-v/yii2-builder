@@ -117,24 +117,23 @@ class TabularForm extends BaseForm
     protected function initOptions()
     {
         $this->initDataColumns();
+
         $this->form->type = ActiveForm::TYPE_VERTICAL;
-        if ($this->actionColumn === false) {
-            $this->actionColumn = [];
-        } else {
-            $this->initActionColumn();
-        }
-        if ($this->serialColumn === false) {
-            $this->serialColumn = [];
-        } else {
+
+        if ($this->serialColumn !== false) {
             $this->initSerialColumn();
-        }
-        if ($this->checkboxColumn === false) {
-            $this->checkboxColumn = [];
-        } else {
-            $this->initCheckboxColumn();
+            $this->_columns = array_merge([$this->serialColumn], $this->_columns);
         }
 
-        $this->_columns = array_merge([$this->serialColumn], $this->_columns, [$this->actionColumn], [$this->checkboxColumn]);
+        if ($this->actionColumn !== false) {
+            $this->initActionColumn();
+            $this->_columns = array_merge($this->_columns, [$this->actionColumn]);
+        }
+
+        if ($this->checkboxColumn !== false) {
+            $this->initCheckboxColumn();
+            $this->_columns = array_merge($this->_columns, [$this->checkboxColumn]);
+        }
     }
 
     /**
@@ -148,18 +147,18 @@ class TabularForm extends BaseForm
             if ($settings['type'] === self::INPUT_RAW && $settings['value'] instanceof \Closure) {
                 $value = static::renderInput($this->form, $model, '[' . $index . ']' . $attribute, $settings);
             } else {
-                $value = function ($model, $index, $widget) use($attribute, $settings) {
+                $value = function ($model, $index, $widget) use ($attribute, $settings) {
                     return static::renderInput($this->form, $model, '[' . $index . ']' . $attribute, $settings);
                 };
             }
             $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||
-                            $settings['type'] == self::INPUT_CHECKBOX || $settings['type'] == self::INPUT_RADIO);
+                $settings['type'] == self::INPUT_CHECKBOX || $settings['type'] == self::INPUT_RADIO);
             $this->_columns[] = [
-                'attribute' => $attribute,
-                'value' => $value,
-                'format' => 'raw',
-            ] + $label + ArrayHelper::getValue($settings, 'columnOptions', [])
-            + ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP];
+                    'attribute' => $attribute,
+                    'value' => $value,
+                    'format' => 'raw',
+                ] + $label + ArrayHelper::getValue($settings, 'columnOptions', [])
+                + ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP];
         }
     }
 
@@ -198,7 +197,7 @@ class TabularForm extends BaseForm
             $this->actionColumn['class'] = '\kartik\grid\ActionColumn';
         }
         $this->actionColumn['updateOptions'] = ['style' => 'display:none;'];
-        $this->actionColumn +=  ['width' => '60px'];
+        $this->actionColumn += ['width' => '60px'];
     }
 
     /**
@@ -222,7 +221,8 @@ class TabularForm extends BaseForm
         return GridView::widget($settings);
     }
 
-    protected function registerAssets() {
+    protected function registerAssets()
+    {
         $view = $this->getView();
         TabularFormAsset::register($view);
         $view->registerJs('selectRow($("#' . $this->options['id'] . '"), "' . $this->rowSelectedClass . '");');
