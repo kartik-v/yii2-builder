@@ -78,7 +78,7 @@ class Form extends BaseForm
 
     /**
      * @var array the HTML attributes for the field/attributes container. The following options are additionally recognized:
-     * - `tag`: the HTML tag for the container. Defaults to `fieldset`.
+     * - `tag`: the HTML tag for the container.
      */
     public $options = [];
 
@@ -99,6 +99,7 @@ class Form extends BaseForm
             throw new InvalidConfigException("The 'model' property must be set and must extend from '\\yii\\base\\Model'.");
         }
         $this->initOptions();
+        $this->registerAssets();
         echo Html::beginTag($this->_tag, $this->options) . "\n";
     }
 
@@ -183,5 +184,14 @@ class Form extends BaseForm
         } else {
             return static::renderInput($form, $model, $attribute, $settings);
         }
+    }
+
+    /**
+     * Registers widget assets
+     */
+    protected function registerAssets()
+    {
+        $view = $this->getView();
+        FormAsset::register($view);
     }
 }

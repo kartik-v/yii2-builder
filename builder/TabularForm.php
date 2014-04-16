@@ -221,6 +221,9 @@ class TabularForm extends BaseForm
         return GridView::widget($settings);
     }
 
+    /**
+     * Registers widget assets
+     */
     protected function registerAssets()
     {
         $view = $this->getView();
