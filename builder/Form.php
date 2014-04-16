@@ -78,7 +78,7 @@ class Form extends BaseForm
 
     /**
      * @var array the HTML attributes for the field/attributes container. The following options are additionally recognized:
-     * - `tag`: the HTML tag for the container.
+     * - `tag`: the HTML tag for the container. Defaults to `fieldset`.
      */
     public $options = [];
 
