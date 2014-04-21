@@ -59,8 +59,6 @@ The tabular form allows you to update information from multiple models (typicall
 ];
 ```
 
-```
-```
 ### Demo
 You can see detailed [documentation](http://demos.krajee.com/builder) on usage of the extension.
 
