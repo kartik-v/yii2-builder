@@ -49,6 +49,18 @@ The tabular form allows you to update information from multiple models (typicall
 - Advanced table styling, columns, and layout configuration by using the features available in the [`kartik\builder\GridView`]([`kartik\widgets\ActiveForm`](http://demos.krajee.com/builder) widget.
 - One can easily read and manage the tabular input data using the `loadMultiple` and `validateMultiple` functions in `yii\base\Model`.
 
+> NOTE: The TabularForm is dependent on the [yii2-grid](http://demos.krajee.com/grid) extension and requires `gridview` module to be configured. 
+
+```php
+'modules' => [
+   'gridview' =>  [
+        'class' => '\kartik\grid\Module'
+    ]
+];
+```
+
+```
+```
 ### Demo
 You can see detailed [documentation](http://demos.krajee.com/builder) on usage of the extension.
 
