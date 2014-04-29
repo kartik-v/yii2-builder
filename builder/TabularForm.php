@@ -53,6 +53,11 @@ class TabularForm extends BaseForm
      */
     public $dataProvider;
 
+   /**
+     * @var boolean highlight current row if checkbox is checked
+     */
+    public $rowHighlight = GridView::TYPE_INFO;
+
     /**
      * @var string the class when a row is selected
      */
@@ -179,12 +184,8 @@ class TabularForm extends BaseForm
     {
         if (!isset($this->checkboxColumn['class']) || !is_subclass_of($this->checkboxColumn['class'], '\kartik\grid\CheckboxColumn')) {
             $this->checkboxColumn['class'] = '\kartik\grid\CheckboxColumn';
-            $contentOptions = ArrayHelper::getValue($this->checkboxColumn, 'contentOptions', []);
-            $headerOptions = ArrayHelper::getValue($this->checkboxColumn, 'headerOptions', []);
-            Html::addCssClass($contentOptions, 'kv-row-select');
-            Html::addCssClass($headerOptions, 'kv-all-select');
-            $this->checkboxColumn['contentOptions'] = $contentOptions;
-            $this->checkboxColumn['headerOptions'] = $headerOptions;
+            $this->checkboxColumn['rowHighlight'] = $this->rowHighlight;
+            $this->checkboxColumn['rowSelectedClass'] = $this->rowSelectedClass;
         }
     }
 
