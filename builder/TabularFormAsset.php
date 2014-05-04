@@ -9,7 +9,7 @@
 namespace kartik\builder;
 
 /**
- * Asset bundle for \kartik\widgets\Alert
+ * Asset bundle for \kartik\widgets\TabularForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
