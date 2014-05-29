@@ -53,7 +53,7 @@ class TabularForm extends BaseForm
      */
     public $dataProvider;
 
-   /**
+    /**
      * @var boolean highlight current row if checkbox is checked
      */
     public $rowHighlight = GridView::TYPE_INFO;
@@ -150,9 +150,9 @@ class TabularForm extends BaseForm
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = '';
             if ($settings['type'] === self::INPUT_RAW) {
-                $value = $settings['value'] ;
+                $value = $settings['value'];
             } else {
-                $value = function ($model, $index, $widget) use ($attribute, $settings) {
+                $value = function ($model, $key, $index, $widget) use ($attribute, $settings) {
                     return static::renderInput($this->form, $model, '[' . $index . ']' . $attribute, $settings);
                 };
             }

@@ -75,8 +75,9 @@ class BaseForm extends \yii\bootstrap\Widget
      *      will be automatically used. If you set it to an empty string or null, it will not be displayed.
      *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW`. This will display
      *       the raw text from value field if it is a string. If this is a Closure, your anonymous function call should
-     *       be of the type: `function ($model, $index, $widget) { }, where $model is the current model, $index is the
-     *       zero based index of the dataProvider, and $widget is the current widget instance.`
+     *       be of the type: `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is 
+     *       the key associated with the data model $index is the zero based index of the dataProvider, and $widget
+     *       is the current widget instance.`
      *    - 'fieldConfig': array, the configuration for the active field.
      *    - 'items': array, the list of items if input type is one of the following:
      *      `INPUT_DROPDOWN_LIST`, `INPUT_LIST_BOX`, `INPUT_CHECKBOX_LIST`, `INPUT_RADIO_LIST`, `INPUT_MULTISELECT`
