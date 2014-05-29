@@ -2,14 +2,14 @@
 
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2013
- * @package yii2-widgets
+ * @package yii2-builder
  * @version 1.0.0
  */
 
 namespace kartik\builder;
 
 /**
- * Asset bundle for \kartik\widgets\Alert
+ * Asset bundle for \kartik\widgets\TabularForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
