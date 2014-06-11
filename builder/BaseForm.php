@@ -37,7 +37,7 @@ class BaseForm extends \yii\bootstrap\Widget
     const INPUT_HTML5 = 'input';
     const INPUT_WIDGET = 'widget';
     const INPUT_RAW = 'raw'; // any free text or html markup
-
+    
     /**
      * @var array the allowed valid list of input types
      */

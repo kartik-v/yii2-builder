@@ -148,7 +148,7 @@ class TabularForm extends BaseForm
     {
         foreach ($this->attributes as $attribute => $settings) {
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
-            $settings['label'] = '';
+            $settings['label']='';
             if ($settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
@@ -158,12 +158,12 @@ class TabularForm extends BaseForm
             }
             $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||
                 $settings['type'] == self::INPUT_CHECKBOX || $settings['type'] == self::INPUT_RADIO);
-            $this->_columns[] = [
-                    'attribute' => $attribute,
-                    'value' => $value,
-                    'format' => 'raw',
-                ] + $label + ArrayHelper::getValue($settings, 'columnOptions', [])
-                + ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP];
+            $this->_columns[] = ArrayHelper::merge(
+                ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP],
+                ArrayHelper::getValue($settings, 'columnOptions', []),
+                $label,
+                ['attribute' => $attribute, 'value' => $value, 'format' => 'raw'])
+            ;
         }
     }
 
@@ -198,7 +198,7 @@ class TabularForm extends BaseForm
             $this->actionColumn['class'] = '\kartik\grid\ActionColumn';
         }
         $this->actionColumn['updateOptions'] = ['style' => 'display:none;'];
-        $this->actionColumn += ['width' => '60px'];
+        $this->actionColumn = ArrayHelper::merge(['width' => '60px'], $this->actionColumn);
     }
 
     /**
@@ -218,7 +218,7 @@ class TabularForm extends BaseForm
             'export' => false,
             'rowOptions' => $rowOptions
         ];
-        $settings += $this->gridSettings + ['striped' => false, 'bordered' => false, 'hover' => true];
+        $settings = ArrayHelper::merge(['striped' => false, 'bordered' => false, 'hover' => true], $this->gridSettings, $settings);
         return GridView::widget($settings);
     }
 
