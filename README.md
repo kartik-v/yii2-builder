@@ -21,6 +21,7 @@ The Form Builder widget allows you to build a form through a configuration array
 - Use Bootstrap column/builder layout styling by just supplying `columns` property.
 - Build complex layouts (for example single, double, or multi columns in the same layout) - by reusing the widget for building your attributes.
 - Tweak ActiveForm defaults to control field options, styles, templates, and layouts.
+- Configure your own hints to display below each active field attribute.
 - Various Bootstrap 3.x styling features are available by default. However, one can easily customize and theme it to one's liking using any CSS framework.
 - Supports and renders HTML input types (uses [`kartik\widgets\ActiveField`](http://demos.krajee.com/widget-details/active-field)) including input widgets and more:
     - `INPUT_TEXT` or `textInput`
@@ -52,6 +53,7 @@ The tabular form allows you to update information from multiple models (typicall
 - Supports features of the builderview like pagination and sorting.
 - Allows you to highlight and select table rows
 - Allows you to add and configure action buttons for each row.
+- Configure your own hints to display below each active field attribute.
 - Various Bootstrap 3.x styling features are available by default. However, one can easily customize and theme it to one's liking using any CSS framework.
 - Advanced table styling, columns, and layout configuration by using the features available in the [`kartik\builder\GridView`]([`kartik\widgets\ActiveForm`](http://demos.krajee.com/builder) widget.
 - One can easily read and manage the tabular input data using the `loadMultiple` and `validateMultiple` functions in `yii\base\Model`.
