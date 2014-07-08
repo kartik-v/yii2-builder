@@ -146,8 +146,7 @@ class BaseForm extends \yii\bootstrap\Widget
             if (!isset($settings['items'])) {
                 throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
             }
-            $items = ArrayHelper::getValue($settings, 'items', []);
-            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($items, $options), $hint);
+            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($settings['items'], $options), $hint);
         }
         if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
             $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
