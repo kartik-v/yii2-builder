@@ -167,6 +167,7 @@ class Form extends BaseForm
                     $colWidth = $colWidth * (int)($colOptions['colspan']);
                     unset($colOptions['colspan']);
                 }
+                $colWidth = (int)$colWidth;
                 Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $colWidth);
                 $content .= "\t" . Html::beginTag('div', $colOptions) . "\n";
                 $content .= "\t\t" . $this->parseInput($this->form, $this->model, $attribute, $settings, $index) . "\n";
