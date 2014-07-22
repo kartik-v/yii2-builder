@@ -162,7 +162,13 @@ class Form extends BaseForm
                 $attribute = $names[$index];
                 $settings = $values[$index];
                 $colOptions = ArrayHelper::getValue($settings, 'columnOptions', $this->columnOptions);
-                Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $width);
+                $colWidth = $width;
+                if (isset($colOptions['colspan'])) {
+                    $colWidth = $colWidth * (int)($colOptions['colspan']);
+                    unset($colOptions['colspan']);
+                }
+                $colWidth = (int)$colWidth;
+                Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $colWidth);
                 $content .= "\t" . Html::beginTag('div', $colOptions) . "\n";
                 $content .= "\t\t" . $this->parseInput($this->form, $this->model, $attribute, $settings, $index) . "\n";
                 $content .= "\t" . Html::endTag('div') . "\n";
