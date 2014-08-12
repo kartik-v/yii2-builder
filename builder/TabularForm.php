@@ -229,6 +229,6 @@ class TabularForm extends BaseForm
     {
         $view = $this->getView();
         TabularFormAsset::register($view);
-        $view->registerJs('selectRow($("#' . $this->options['id'] . '"), "' . $this->rowSelectedClass . '");');
+        $view->registerJs('selectRow(jQuery("#' . $this->options['id'] . '"), "' . $this->rowSelectedClass . '");');
     }
 }
