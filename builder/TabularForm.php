@@ -206,9 +206,14 @@ class TabularForm extends BaseForm
      */
     protected function renderGrid()
     {
-        $rowOptions = ArrayHelper::getValue($this->gridSettings, 'rowOptions', []);
+        $rowOptions = [];
+        if (isset($this->gridSettings['rowOptions'])) {
+            $rowOptions = $this->gridSettings['rowOptions'];
+        }
+        if (is_array($rowOptions)) {
+            Html::addCssClass($rowOptions, 'kv-tabform-row');
+        }
         $this->options['id'] = ArrayHelper::getValue($this->gridSettings, 'id', $this->getId());
-        Html::addCssClass($rowOptions, 'kv-tabform-row');
         $settings = [
             'id' => $this->options['id'],
             'dataProvider' => $this->dataProvider,
