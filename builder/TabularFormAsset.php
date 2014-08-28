@@ -21,7 +21,6 @@ class TabularFormAsset extends \kartik\widgets\AssetBundle
     {
         $this->setSourcePath(__DIR__ . '/../assets');
         $this->setupAssets('css', ['css/tabular-form']);
-        $this->setupAssets('js', ['js/tabular-form']);
         parent::init();
     }
 
