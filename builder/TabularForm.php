@@ -149,7 +149,7 @@ class TabularForm extends BaseForm
         foreach ($this->attributes as $attribute => $settings) {
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label']='';
-            if ($settings['type'] === self::INPUT_RAW) {
+            if (isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings) {
