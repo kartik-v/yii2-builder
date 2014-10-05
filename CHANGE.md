@@ -6,6 +6,7 @@ version 1.1.0
 - enh #13: Added ability to configure and display hints below each active field attribute.
 - allow empty items for dropdown lists
 - fixes #1 through #12.
+- PSR 4 alias change
 
 Initial release
 

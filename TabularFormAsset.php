@@ -9,18 +9,18 @@
 namespace kartik\builder;
 
 /**
- * Asset bundle for \kartik\widgets\Form
+ * Asset bundle for \kartik\widgets\TabularForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class FormAsset extends \kartik\widgets\AssetBundle
+class TabularFormAsset extends \kartik\widgets\AssetBundle
 {
 
     public function init()
     {
-        $this->setSourcePath(__DIR__ . '/../assets');
-        $this->setupAssets('css', ['css/form']);
+        $this->setSourcePath(__DIR__ . '/assets');
+        $this->setupAssets('css', ['css/tabular-form']);
         parent::init();
     }
 
