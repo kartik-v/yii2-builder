@@ -10,8 +10,8 @@ namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * A form builder widget for rendering the form attributes using kartik\widgets\ActiveForm.
@@ -138,8 +138,7 @@ class Form extends BaseForm
         if ($cols == 1) {
             $index = 0;
             foreach ($this->attributes as $attribute => $settings) {
-                $content .= $this->parseInput($this->form, $this->model, $attribute, $settings, $index) . "\n";
-                $index++;
+                $content .= $this->parseInput($this->form, $this->model, $attribute, $settings, $index++) . "\n";
             }
             return $content;
         }
@@ -181,6 +180,14 @@ class Form extends BaseForm
 
     /**
      * Parses input for `INPUT_RAW` type
+     *
+     * @param $form
+     * @param $model
+     * @param $attribute
+     * @param $settings
+     * @param $index
+     * @return \kartik\widgets\ActiveField|mixed
+     * @throws InvalidConfigException
      */
     protected function parseInput($form, $model, $attribute, $settings, $index)
     {
