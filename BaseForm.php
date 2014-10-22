@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
@@ -8,18 +7,20 @@
 
 namespace kartik\builder;
 
-use yii\base\InvalidConfigException;
+use yii\bootstrap\Widget;
 use yii\helpers\ArrayHelper;
+use yii\widgets\InputWidget;
+use yii\base\InvalidConfigException;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\ActiveField;
 
 /**
  * Base form widget
  *
- * @property $form kartik\widgets\ActiveForm
- *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class BaseForm extends \yii\bootstrap\Widget
+class BaseForm extends Widget
 {
     // form inputs
     const INPUT_TEXT = 'textInput';
@@ -37,27 +38,6 @@ class BaseForm extends \yii\bootstrap\Widget
     const INPUT_HTML5 = 'input';
     const INPUT_WIDGET = 'widget';
     const INPUT_RAW = 'raw'; // any free text or html markup
-
-    /**
-     * @var array the allowed valid list of input types
-     */
-    protected static $_validInputs = [
-        self::INPUT_TEXT,
-        self::INPUT_TEXTAREA,
-        self::INPUT_PASSWORD,
-        self::INPUT_DROPDOWN_LIST,
-        self::INPUT_LIST_BOX,
-        self::INPUT_CHECKBOX,
-        self::INPUT_RADIO,
-        self::INPUT_CHECKBOX_LIST,
-        self::INPUT_RADIO_LIST,
-        self::INPUT_MULTISELECT,
-        self::INPUT_STATIC,
-        self::INPUT_FILE,
-        self::INPUT_HTML5,
-        self::INPUT_WIDGET,
-        self::INPUT_RAW
-    ];
 
     /**
      * @var ActiveForm the form instance
@@ -95,12 +75,12 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Initializes the widget
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function init()
     {
         parent::init();
-        if (empty($this->form) || !$this->form instanceof \kartik\widgets\ActiveForm) {
+        if (empty($this->form) || !$this->form instanceof ActiveForm) {
             throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\widgets\\ActiveForm'.");
         }
         if (empty($this->attributes)) {
@@ -111,65 +91,82 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Renders each input based on the attribute settings
      *
-     * @param $form \kartik\widgets\ActiveForm the form instance
+     * @param $form ActiveForm the form instance
      * @param $model \yii\db\ActiveRecord|\yii\base\Model
      * @param $attribute string the name of the attribute
      * @param $settings array the attribute settings
-     * @return \kartik\widgets\ActiveField
-     * @throws \yii\base\InvalidConfigException
-     *
+     * @return ActiveField
+     * @throws InvalidConfigException
      */
     protected static function renderInput($form, $model, $attribute, $settings)
     {
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
-        $i = strpos($attribute, ']');
-        $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
-        if (!in_array($type, static::$_validInputs)) {
-            throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attribName}'.'");
-        }
+        $options = ArrayHelper::getValue($settings, 'options', []);
+        $hint = ArrayHelper::getValue($settings, 'hint', '');
         $fieldConfig = ArrayHelper::getValue($settings, 'fieldConfig', []);
+        $attributeName = static::parseAttributeName($attribute);
+
         if (isset($settings['label'])) {
             $template = ArrayHelper::getValue($fieldConfig, 'template', "{label}\n{input}\n{hint}\n{error}");
             $fieldConfig['template'] = strtr($template, ["{label}\n" => $settings['label'], "{label}" => $settings['label']]);
         }
 
-        $options = ArrayHelper::getValue($settings, 'options', []);
-        $hint = ArrayHelper::getValue($settings, 'hint', '');
         if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA ||
             $type === self::INPUT_FILE || $type === self::INPUT_STATIC
         ) {
             return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($options), $hint);
         }
+
         if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||
             $type === self::INPUT_RADIO_LIST || $type === self::INPUT_MULTISELECT
         ) {
             if (!isset($settings['items'])) {
-                throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
+                throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attributeName}' since it is a '{$type}'.");
             }
             return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($settings['items'], $options), $hint);
         }
+
         if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
             $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
             return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($options, $enclosedByLabel), $hint);
         }
+
         if ($type === self::INPUT_HTML5) {
             $html5type = ArrayHelper::getValue($settings, 'html5type', 'text');
             return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($html5type, $options), $hint);
         }
+
         if ($type === self::INPUT_WIDGET) {
             $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
-            if (empty($widgetClass) && !$widgetClass instanceof yii\widgets\InputWidget) {
-                throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
+            if (empty($widgetClass) && !$widgetClass instanceof InputWidget) {
+                throw new InvalidConfigException("A valid 'widgetClass' for '{$attributeName}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
             }
             return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($widgetClass, $options), $hint);
         }
+
         if ($type === self::INPUT_RAW) {
             return ArrayHelper::getValue($settings, 'value', '');
         }
+
+        throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attributeName}'.'");
     }
 
-    /*
+    /**
+     * @param $attribute string
+     * @return string
+     */
+    protected static function parseAttributeName($attribute)
+    {
+        $i = strpos($attribute, ']');
+        return $i > 0 ? substr($attribute, $i + 1) : $attribute;
+    }
+
+    /**
      * Renders the field by parsing the hint
+     *
+     * @param $field ActiveField
+     * @param $hint null|string
+     * @return string
      */
     protected static function parseHint($field, $hint = null)
     {
