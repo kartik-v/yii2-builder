@@ -42,6 +42,16 @@ The Form Builder widget allows you to build a form through a configuration array
 
 Refer the [documentation](http://demos.krajee.com/builder-details/form) for more details.
 
+
+## FormGrid
+
+`\kartik\builder\FormGrid`
+
+Create bootstrap grid layouts in a snap. The Form Grid Builder widget offers an easy way to configure your form inputs as a bootstrap grid layout and a single array configuration. It basically uses 
+multiple instances of the `\kartik\builder\Form` widget above to generate this grid. One needs to just setup the rows for the grid,
+where each row will be an array configuration as needed by the `Form` widget. However, most of the common settings like `model`, `form`,
+`columns` etc. can be defaulted at `FormGrid` widget level.
+
 ## Tabular Form 
 
 `kartik\builder\TabularForm`
@@ -105,6 +115,33 @@ echo Form::widget([
         'username' => ['type'=>Form::INPUT_TEXT, 'options'=>['placeholder'=>'Enter username...']],
         'password' => ['type'=>Form::INPUT_PASSWORD, 'options'=>['placeholder'=>'Enter password...']],
         'rememberMe' => ['type'=>Form::INPUT_CHECKBOX],
+    ]
+]);
+ActiveForm::end();
+```
+
+### FormGrid
+```php
+use kartik\builder\FormGrid;
+$form = ActiveForm::begin();
+echo Form::widget([
+    'model' => $model,
+    'form' => $form,
+    'autoGenerateColumns' => true,
+    'rows' => [
+        [
+            'attributes' => [
+                'username' => ['type'=>Form::INPUT_TEXT, 'options'=>['placeholder'=>'Enter username...']],
+                'password' => ['type'=>Form::INPUT_PASSWORD, 'options'=>['placeholder'=>'Enter password...']],
+                'rememberMe' => ['type'=>Form::INPUT_CHECKBOX],
+            ],
+        ],
+        [
+            'attributes' => [
+                'first_name' => ['type'=>Form::INPUT_TEXT, 'options'=>['placeholder'=>'Enter first name...']],
+                'last_name' => ['type'=>Form::INPUT_TEXT, 'options'=>['placeholder'=>'Enter last name...']],
+            ]
+        ]
     ]
 ]);
 ActiveForm::end();

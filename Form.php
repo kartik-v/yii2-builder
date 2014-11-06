@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
- * @version 1.0.0
+ * @version 1.2.0
  */
 
 namespace kartik\builder;
@@ -60,7 +60,13 @@ class Form extends BaseForm
      * @var integer, the number of columns in which to split the fields horizontally. If not set, defaults to 1 column.
      */
     public $columns = 1;
-
+    
+    /**
+     * @var boolean, calculate the number of columns automatically based on count of attributes 
+     * configured in the Form widget. Columns will be created max upto the Form::GRID_WIDTH.
+     */
+    public $autoGenerateColumns = false;
+    
     /**
      * @var string, the bootstrap device size for rendering each grid column. Defaults to `SIZE_SMALL`.
      */
@@ -100,6 +106,10 @@ class Form extends BaseForm
         }
         $this->initOptions();
         $this->registerAssets();
+        if ($this->autoGenerateColumns) {
+            $cols = count($this->attributes);
+            $this->columns = $cols >= self::GRID_WIDTH ? self::GRID_WIDTH : $cols;
+        }
         echo Html::beginTag($this->_tag, $this->options) . "\n";
     }
 

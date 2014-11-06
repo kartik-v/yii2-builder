@@ -1,0 +1,156 @@
+<?php
+
+/**
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
+ * @package yii2-builder
+ * @version 1.2.0
+ */
+
+namespace kartik\builder;
+
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+
+/**
+ * Use an easy configuration option to render your form grid rows and columns
+ * using \kartik\builder\Form widget. 
+ *
+ * Usage:
+ * ```
+ *   use kartik\widgets\ActiveForm;
+ *   use kartik\builder\FormGrid;
+ *   $form = ActiveForm::begin($options); // $options is array for your form config
+ *   echo FormGrid::widget([
+ *       'model' => $model, // your model
+ *       'form' => $form,
+ *       'autoGenerateColumns' => true, 
+ *       'rows' => [
+ *          [
+ *              'attributes' => [
+ *                  'username' => ['type' => Form::INPUT_TEXT, 'options'=> ['placeholder'=>'Enter username...']],
+ *                  'password' => ['type' => Form::INPUT_PASSWORD],
+ *               ]
+ *          ],
+ *          [
+ *              'attributes' => [
+ *                  'first_name' => ['type' => Form::INPUT_TEXT],
+ *                  'last_name' => ['type' => Form::INPUT_PASSWORD],
+ *               ]
+ *          ]
+  
+ *       ]
+ *   ]);
+ *   ActiveForm::end();
+ * ```
+ *
+ * @property $model yii\db\ActiveRecord|yii\base\Model
+ * @property $form yii\widgets\ActiveForm
+ *
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
+ * @since 1.0
+ */
+class FormGrid extends \yii\bootstrap\Widget
+{
+    /**
+     * @var Model|ActiveRecord the model used for the form
+     */
+    public $model;
+
+    /**
+     * @var ActiveForm the form instance
+     */
+    public $form;
+    
+    /**
+     * @var array, the grid rows containing form configuration elements
+     */
+    public $rows = [];
+        
+    /**
+     * @var boolean, the number of columns for each row.
+     * This property can be overridden at the `rows` level.
+     */
+    public $columns = 1;
+        
+    /**
+     * @var boolean, calculate the number of columns automatically based on count of attributes 
+     * configured in the Form widget. Columns will be created max upto the Form::GRID_WIDTH. 
+     * This can be overridden at the rows level.
+     */
+    public $autoGenerateColumns = true;
+    
+    /**
+     * @var string, the bootstrap device size for rendering each grid column. Defaults to `SIZE_SMALL`.
+     * This property can be overridden at the `rows` level.
+     */
+    public $columnSize = Form::SIZE_SMALL;
+
+    /**
+     * @var array the HTML attributes for the grid columns. Applicable only if `$columns` is greater than 1.
+     */
+    public $columnOptions = [];
+
+    /**
+     * @var array the HTML attributes for the rows. Applicable only if `$columns` is greater than 1.
+     * This property can be overridden at the `rows` level.
+     */
+    public $rowOptions = [];
+
+    /**
+     * @var array the HTML attributes for the field/attributes container. The following options are additionally recognized:
+     * - `tag`: the HTML tag for the container. Defaults to `fieldset`.
+     * This property can be overridden by `options` setting at the `rows` level.
+     */
+    public $fieldSetOptions = [];
+
+    /**
+     * @inherit doc
+     */
+    public function init()
+    {
+        parent::init();
+        if (empty($this->model) || !$this->model instanceof \yii\base\Model) {
+            throw new InvalidConfigException("The 'model' property must be set and must extend from '\\yii\\base\\Model'.");
+        }
+        if (empty($this->form) || !$this->form instanceof \kartik\widgets\ActiveForm) {
+            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\widgets\\ActiveForm'.");
+        }
+        if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) { 
+            throw new InvalidConfigException("The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'.");
+        }
+    }
+
+    /**
+     * @inherit doc
+     */
+    public function run()
+    {
+        parent::run();
+        echo $this->getGridOutput();
+    }
+    
+    /**
+     * Generates the form grid layout
+     * return string
+     */
+    protected function getGridOutput() {
+        $output = '';
+        foreach ($this->rows as $row) {
+            $defaults = [
+                'model' => $this->model, 
+                'form' => $this->form,
+                'columns' => $this->columns,
+                'autoGenerateColumns' => $this->autoGenerateColumns,
+                'columnSize' => $this->columnSize,
+                'columnOptions' => $this->columnOptions,
+                'rowOptions' => $this->rowOptions,
+                'options' => $this->fieldSetOptions,
+            ];
+            $config = ArrayHelper::merge($defaults, $row);
+            $output .= Form::widget($config) . "\n";
+        }
+        return $output;
+    }
+}

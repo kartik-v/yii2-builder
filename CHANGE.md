@@ -1,3 +1,11 @@
+version 1.2.0
+=============
+
+*Date:* 07-Nov-2014
+
+- enh #23: Create `autoGenerateColumns` property for Form Builder
+- enh #24: Create new `FormGrid` widget. Create bootstrap grid layouts in a snap.
+
 version 1.1.0
 =============
 
@@ -8,7 +16,6 @@ version 1.1.0
 - fixes #1 through #12.
 - PSR 4 alias change
 
-Initial release
 
 version 1.0.0
 =============
