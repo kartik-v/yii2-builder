@@ -6,9 +6,9 @@ A form builder extension that allows you to build both single view and multi-vie
 > NOTE: This extension depends on the [kartik-v/yii2-widgets](https://github.com/kartik-v/yii2-widgets) extension, which in turn depends on the
 [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2/tree/master/extensions/bootstrap) extension. Check the 
 [composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
-Note: Yii 2 framework is still in active development, and until a fully stable Yii2 release, your core yii2-bootstrap packages (and its dependencies) 
-may be updated when you install or update this extension. You may need to lock your composer package versions for your specific app, and test 
-for extension break if you do not wish to auto update dependencies.
+
+## Latest Release
+The latest version of the module is v1.2.0 released on 07-Nov-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
 
 ## Form
 
@@ -41,7 +41,6 @@ The Form Builder widget allows you to build a form through a configuration array
     - `INPUT_RAW` or `raw` (any free text or html markup)
 
 Refer the [documentation](http://demos.krajee.com/builder-details/form) for more details.
-
 
 ## FormGrid
 
