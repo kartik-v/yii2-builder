@@ -14,7 +14,7 @@ namespace kartik\builder;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class FormAsset extends \kartik\widgets\AssetBundle
+class FormAsset extends \kartik\base\AssetBundle
 {
 
     public function init()

@@ -14,7 +14,7 @@ namespace kartik\builder;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class TabularFormAsset extends \kartik\widgets\AssetBundle
+class TabularFormAsset extends \kartik\base\AssetBundle
 {
 
     public function init()

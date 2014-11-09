@@ -14,7 +14,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Base form widget
  *
- * @property $form kartik\widgets\ActiveForm
+ * @property $form kartik\form\ActiveForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
@@ -100,8 +100,8 @@ class BaseForm extends \yii\bootstrap\Widget
     public function init()
     {
         parent::init();
-        if (empty($this->form) || !$this->form instanceof \kartik\widgets\ActiveForm) {
-            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\widgets\\ActiveForm'.");
+        if (empty($this->form) || !$this->form instanceof \kartik\form\ActiveForm) {
+            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\widgets\\ActiveForm' or '\\kartik\\form\\ActiveForm'.");
         }
         if (empty($this->attributes)) {
             throw new InvalidConfigException("The 'attributes' array must be set.");
@@ -111,11 +111,11 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Renders each input based on the attribute settings
      *
-     * @param $form \kartik\widgets\ActiveForm the form instance
+     * @param $form \kartik\form\ActiveForm the form instance
      * @param $model \yii\db\ActiveRecord|\yii\base\Model
      * @param $attribute string the name of the attribute
      * @param $settings array the attribute settings
-     * @return \kartik\widgets\ActiveField
+     * @return \kartik\form\ActiveField
      * @throws \yii\base\InvalidConfigException
      *
      */

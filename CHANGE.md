@@ -5,6 +5,8 @@ version 1.2.0
 
 - enh #23: Create `autoGenerateColumns` property for Form Builder
 - enh #24: Create new `FormGrid` widget. Create bootstrap grid layouts in a snap.
+- Set dependency on Krajee base component.
+- Set release to stable.
 
 version 1.1.0
 =============

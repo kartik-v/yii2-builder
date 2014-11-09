@@ -121,9 +121,10 @@ ActiveForm::end();
 
 ### FormGrid
 ```php
+use kartik\builder\Form;
 use kartik\builder\FormGrid;
 $form = ActiveForm::begin();
-echo Form::widget([
+echo FormGrid::widget([
     'model' => $model,
     'form' => $form,
     'autoGenerateColumns' => true,
