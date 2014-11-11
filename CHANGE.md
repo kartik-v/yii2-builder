@@ -1,7 +1,7 @@
 version 1.2.0
 =============
 
-**Date:** 07-Nov-2014
+**Date:** 11-Nov-2014
 
 - enh #23: Create `autoGenerateColumns` property for Form Builder
 - enh #24: Create new `FormGrid` widget. Create bootstrap grid layouts in a snap.
