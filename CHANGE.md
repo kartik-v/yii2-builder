@@ -1,7 +1,7 @@
 version 1.2.0
 =============
 
-*Date:* 07-Nov-2014
+**Date:** 07-Nov-2014
 
 - enh #23: Create `autoGenerateColumns` property for Form Builder
 - enh #24: Create new `FormGrid` widget. Create bootstrap grid layouts in a snap.
@@ -12,7 +12,7 @@ version 1.2.0
 version 1.1.0
 =============
 
-*Date:* 07-Jul-2014
+**Date:** 07-Jul-2014
 
 - enh #13: Added ability to configure and display hints below each active field attribute.
 - allow empty items for dropdown lists
@@ -23,6 +23,6 @@ version 1.1.0
 version 1.0.0
 =============
 
-*Date:* 01-May-2014
+**Date:** 01-May-2014
 
 Initial release
