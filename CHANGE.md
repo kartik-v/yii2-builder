@@ -8,6 +8,7 @@ version 1.2.0
 - Set dependency on Krajee base component.
 - Set release to stable.
 - bug #25: Correct package dependencies.
+- bug #26: Correct instance of ActiveForm validation for FormGrid.
 
 version 1.1.0
 =============

@@ -114,8 +114,8 @@ class FormGrid extends \yii\bootstrap\Widget
         if (empty($this->model) || !$this->model instanceof \yii\base\Model) {
             throw new InvalidConfigException("The 'model' property must be set and must extend from '\\yii\\base\\Model'.");
         }
-        if (empty($this->form) || !$this->form instanceof \kartik\widgets\ActiveForm) {
-            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\widgets\\ActiveForm'.");
+        if (empty($this->form) || !$this->form instanceof \kartik\form\ActiveForm) {
+            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\form\\ActiveForm'.");
         }
         if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) { 
             throw new InvalidConfigException("The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'.");
