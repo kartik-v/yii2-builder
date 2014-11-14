@@ -39,7 +39,6 @@ use yii\helpers\ArrayHelper;
  *                  'last_name' => ['type' => Form::INPUT_PASSWORD],
  *               ]
  *          ]
-  
  *       ]
  *   ]);
  *   ActiveForm::end();
