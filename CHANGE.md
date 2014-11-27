@@ -1,3 +1,11 @@
+version 1.3.0
+=============
+
+**Date:** 27-Nov-2014
+
+- (enh #28): Set `gridSettings['toggleData']` to false to prevent form nesting.
+
+
 version 1.2.0
 =============
 

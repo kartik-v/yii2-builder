@@ -221,6 +221,7 @@ class TabularForm extends BaseForm
             'dataColumnClass' => 'kartik\grid\DataColumn',
             'columns' => $this->_columns,
             'export' => false,
+            'toggleData' => false,
             'rowOptions' => $rowOptions
         ];
         $settings = ArrayHelper::merge(['striped' => false, 'bordered' => false, 'hover' => true], $this->gridSettings, $settings);
