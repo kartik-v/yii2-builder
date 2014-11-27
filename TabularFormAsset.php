@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2013
  * @package yii2-builder
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 namespace kartik\builder;
