@@ -56,12 +56,12 @@ class TabularForm extends BaseForm
     /**
      * @var boolean highlight current row if checkbox is checked
      */
-    public $rowHighlight = GridView::TYPE_INFO;
+    public $rowHighlight = true;
 
     /**
      * @var string the class when a row is selected
      */
-    public $rowSelectedClass = GridView::TYPE_INFO;
+    public $rowSelectedClass = GridView::TYPE_DANGER;
 
     /**
      * @var array the settings for `\kartik\widgets\GridView` widget which will display the tabular form content.
