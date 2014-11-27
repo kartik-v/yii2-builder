@@ -114,9 +114,7 @@ class Form extends BaseForm
     }
 
     /**
-     * Runs the widget
-     *
-     * @return string|void
+     * @inherit doc
      */
     public function run()
     {
@@ -191,6 +189,15 @@ class Form extends BaseForm
 
     /**
      * Parses input for `INPUT_RAW` type
+     *
+     * @param \kartik\widgets\ActiveForm $form the form instance
+     * @param \yii\base\Model $model the model instance
+     * @param string $attribute the model attribute
+     * @param string $settings the column settings
+     * @param int $index the row index
+     *
+     * @return \kartik\widgets\ActiveField|mixed
+     * @throws InvalidConfigException     
      */
     protected function parseInput($form, $model, $attribute, $settings, $index)
     {

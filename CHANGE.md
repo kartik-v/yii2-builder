@@ -5,6 +5,7 @@ version 1.3.0
 
 - (enh #28): Set `gridSettings['toggleData']` to false to prevent form nesting.
 - (enh #29): Set default `rowHighlight` to true and `rowSelected` to TYPE_DANGER.
+- Fix code style and PHP documentation.
 
 
 version 1.2.0
