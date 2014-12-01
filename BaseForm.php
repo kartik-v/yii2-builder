@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
- * @version 1.3.0
+ * @version 1.4.0
  */
 
 namespace kartik\builder;
@@ -111,10 +111,10 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Renders each input based on the attribute settings
      *
-     * @param $form \kartik\form\ActiveForm the form instance
-     * @param $model \yii\db\ActiveRecord|\yii\base\Model
-     * @param $attribute string the name of the attribute
-     * @param $settings array the attribute settings
+     * @param \kartik\form\ActiveForm $form the form instance
+     * @param \yii\db\ActiveRecord|\yii\base\Model $model 
+     * @param string $attribute the name of the attribute
+     * @param array $settings the attribute settings
      * @return \kartik\form\ActiveField
      * @throws \yii\base\InvalidConfigException
      *
@@ -128,17 +128,14 @@ class BaseForm extends \yii\bootstrap\Widget
             throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attribName}'.'");
         }
         $fieldConfig = ArrayHelper::getValue($settings, 'fieldConfig', []);
-        if (isset($settings['label'])) {
-            $template = ArrayHelper::getValue($fieldConfig, 'template', "{label}\n{input}\n{hint}\n{error}");
-            $fieldConfig['template'] = strtr($template, ["{label}\n" => $settings['label'], "{label}" => $settings['label']]);
-        }
-
         $options = ArrayHelper::getValue($settings, 'options', []);
+        $label = ArrayHelper::getValue($settings, 'label', '');
         $hint = ArrayHelper::getValue($settings, 'hint', '');
+        $field = $form->field($model, $attribute, $fieldConfig);
         if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA ||
             $type === self::INPUT_FILE || $type === self::INPUT_STATIC
         ) {
-            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($options), $hint);
+            return static::getInput($field->$type($options), $label, $hint);
         }
         if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||
             $type === self::INPUT_RADIO_LIST || $type === self::INPUT_MULTISELECT
@@ -146,22 +143,25 @@ class BaseForm extends \yii\bootstrap\Widget
             if (!isset($settings['items'])) {
                 throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
             }
-            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($settings['items'], $options), $hint);
+            return static::getInput($field->$type($settings['items'], $options), $label, $hint);
         }
         if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
             $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
-            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($options, $enclosedByLabel), $hint);
+            if (!empty($label)) {
+                $options['label'] = $label;
+            }
+            return static::getInput($field->$type($options, $enclosedByLabel), null, $hint);
         }
         if ($type === self::INPUT_HTML5) {
             $html5type = ArrayHelper::getValue($settings, 'html5type', 'text');
-            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($html5type, $options), $hint);
+            return static::getInput($field->$type($html5type, $options), $label, $hint);
         }
         if ($type === self::INPUT_WIDGET) {
             $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
             if (empty($widgetClass) && !$widgetClass instanceof yii\widgets\InputWidget) {
                 throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
             }
-            return static::parseHint($form->field($model, $attribute, $fieldConfig)->$type($widgetClass, $options), $hint);
+            return static::getInput($field->$type($widgetClass, $options), $label, $hint);
         }
         if ($type === self::INPUT_RAW) {
             return ArrayHelper::getValue($settings, 'value', '');
@@ -169,12 +169,18 @@ class BaseForm extends \yii\bootstrap\Widget
     }
 
     /*
-     * Renders the field by parsing the hint
+     * Generates the active field input by parsing the label and hint
+     * @param \kartik\widgets\ActiveField $field
+     * @param string $label the label for the field
+     * @param string $hint the hint for the field
      */
-    protected static function parseHint($field, $hint = null)
+    protected static function getInput($field, $label = null, $hint = null)
     {
+        if (!empty($label)) {
+            $field = $field->label($label);
+        }
         if (!empty($hint)) {
-            return $field->hint($hint);
+            $field = $field->hint($hint);
         }
         return $field;
     }

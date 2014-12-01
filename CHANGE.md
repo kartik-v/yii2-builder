@@ -1,3 +1,10 @@
+version 1.4.0
+=============
+
+**Date:** 01-Dec-2014
+
+- (enh #30): Enhance Form Builder for horizontal forms and to customize labels.
+
 version 1.3.0
 =============
 
