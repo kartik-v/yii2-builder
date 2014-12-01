@@ -72,7 +72,7 @@ class BaseForm extends \yii\bootstrap\Widget
      *    - 'type': string, the input type for the attribute. Should be one of the INPUT_ constants.
      *       Defaults to `INPUT_TEXT`.
      *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
-     *      will be automatically used. If you set it to an empty string or null, it will not be displayed.
+     *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
      *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW`. This will display
      *       the raw text from value field if it is a string. If this is a Closure, your anonymous function call should
      *       be of the type: `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is
@@ -129,8 +129,8 @@ class BaseForm extends \yii\bootstrap\Widget
         }
         $fieldConfig = ArrayHelper::getValue($settings, 'fieldConfig', []);
         $options = ArrayHelper::getValue($settings, 'options', []);
-        $label = ArrayHelper::getValue($settings, 'label', '');
-        $hint = ArrayHelper::getValue($settings, 'hint', '');
+        $label = ArrayHelper::getValue($settings, 'label', null);
+        $hint = ArrayHelper::getValue($settings, 'hint', null);
         $field = $form->field($model, $attribute, $fieldConfig);
         if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA ||
             $type === self::INPUT_FILE || $type === self::INPUT_STATIC
@@ -147,7 +147,7 @@ class BaseForm extends \yii\bootstrap\Widget
         }
         if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
             $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
-            if (!empty($label)) {
+            if ($label !== null) {
                 $options['label'] = $label;
             }
             return static::getInput($field->$type($options, $enclosedByLabel), null, $hint);
@@ -176,10 +176,10 @@ class BaseForm extends \yii\bootstrap\Widget
      */
     protected static function getInput($field, $label = null, $hint = null)
     {
-        if (!empty($label)) {
+        if ($label !== null) {
             $field = $field->label($label);
         }
-        if (!empty($hint)) {
+        if ($hint !== null) {
             $field = $field->hint($hint);
         }
         return $field;

@@ -1,13 +1,11 @@
 version 1.4.0
 =============
-
 **Date:** 01-Dec-2014
 
-- (enh #30): Enhance Form Builder for horizontal forms and to customize labels.
+- (enh #30): Enhance Form Builder for horizontal forms and ability to customize labels.
 
 version 1.3.0
 =============
-
 **Date:** 27-Nov-2014
 
 - (enh #20): Fix code style and PHP documentation.
@@ -18,7 +16,6 @@ version 1.3.0
 
 version 1.2.0
 =============
-
 **Date:** 11-Nov-2014
 
 - enh #23: Create `autoGenerateColumns` property for Form Builder
@@ -30,7 +27,6 @@ version 1.2.0
 
 version 1.1.0
 =============
-
 **Date:** 07-Jul-2014
 
 - enh #13: Added ability to configure and display hints below each active field attribute.
@@ -41,7 +37,6 @@ version 1.1.0
 
 version 1.0.0
 =============
-
 **Date:** 01-May-2014
 
 Initial release
