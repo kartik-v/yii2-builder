@@ -99,8 +99,8 @@ class TabularForm extends BaseForm
     public function init()
     {
         parent::init();
-        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\ActiveDataProvider) {
-            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\ActiveDataProvider'.");
+        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\BaseDataProvider) {
+            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance or subclass of '\\yii\\data\\BaseDataProvider'.");
         }
         $this->initOptions();
         $this->registerAssets();
