@@ -89,14 +89,16 @@ class BaseForm extends \yii\bootstrap\Widget
      *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
      *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using 
      *      with active form and only if label is set.
-     *    - 'prepend': string, (optional) any markup to prepend before the input
-     *    - 'append': string, (optional) any markup to append before the input
-     *    - 'container': array, (optional) HTML attributes for the `div` container to wrap the 
-     *      field group (including input and label for all forms. This also includes error 
-     *      & hint blocks for active forms).  If not set or empty, no container will be wrapped.
+     *    - 'prepend': string, (optional) any markup to prepend before the input. For ActiveForm fields, this content 
+     *      will be prepended before the field group (including label, input, error, hint blocks).
+     *    - 'append': string, (optional) any markup to append before the input. For ActiveForm fields, this content 
+     *      will be appended after the field group (including label, input, error, hint blocks).
+     *    - 'container': array, (optional) HTML attributes for the `div` container to wrap the input. For ActiveForm, 
+     *      this will envelop the field group (including label, input, error, hint blocks). If not set or empty, no 
+     *      container will be wrapped.
      *    - 'inputContainer': array, (optional) HTML attributes for the `div` container to wrap the 
      *      input control only. If not set or empty, no container will be wrapped. Will be applied 
-     *      only when NOT using with active form.
+     *      only when NOT using with ActiveForm.
      *    - 'fieldConfig': array, the configuration for the active field.
      *    - `hint`: string, the hint text to be shown below the active field.
      *    - 'items': array, the list of items if input type is one of the following:
@@ -113,9 +115,9 @@ class BaseForm extends \yii\bootstrap\Widget
     
     /**
      * @var array the default settings that will be applied for all attributes. The array will be 
-     * configured similar to the `$attributes` array, except that one will only set options related
-     * to default markup and styling like `type`, `container`, `prepend`, `append` etc. The settings
-     * at the `$attributes` level will override these settings.
+     * configured similar to a single attribute setting value in the `$attributes` array. One will typically
+     * default markup and styling like `type`, `container`, `prepend`, `append` etc. The settings
+     * at the `$attributes` level will override these default settings.
      */
     public $attributeDefaults = [];
 
