@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\builder;
@@ -99,8 +99,8 @@ class TabularForm extends BaseForm
     public function init()
     {
         parent::init();
-        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\ActiveDataProvider) {
-            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\ActiveDataProvider'.");
+        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\BaseDataProvider) {
+            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\BaseDataProvider'.");
         }
         $this->initOptions();
         $this->registerAssets();
@@ -123,7 +123,9 @@ class TabularForm extends BaseForm
     {
         $this->initDataColumns();
 
-        $this->form->type = ActiveForm::TYPE_VERTICAL;
+        if (!empty($this->form)) {
+            $this->form->type = ActiveForm::TYPE_VERTICAL;
+        }
 
         if ($this->serialColumn !== false) {
             $this->initSerialColumn();
@@ -147,13 +149,16 @@ class TabularForm extends BaseForm
     protected function initDataColumns()
     {
         foreach ($this->attributes as $attribute => $settings) {
+            $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = false;
             if (isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings) {
-                    return static::renderInput($this->form, $model, '[' . $index . ']' . $attribute, $settings);
+                    return ($model instanceof \yii\base\Model) ? 
+                        static::renderActiveInput($this->form, $model, '[' . $index . ']' . $attribute, $settings) :
+                        static::renderInput("{$this->formName}[{$index}][{$attribute}]", $settings);
                 };
             }
             $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||

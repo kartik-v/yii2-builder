@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\builder;
@@ -63,6 +63,12 @@ class FormGrid extends \yii\bootstrap\Widget
     public $form;
     
     /**
+     * @var string the form name to be provided if not using with model 
+     * and ActiveForm
+     */
+    public $formName = null;
+    
+    /**
      * @var array, the grid rows containing form configuration elements
      */
     public $rows = [];
@@ -72,6 +78,14 @@ class FormGrid extends \yii\bootstrap\Widget
      * This property can be overridden at the `rows` level.
      */
     public $columns = 1;
+    
+    /**
+     * @var array the default settings that will be applied for all attributes. The array will be 
+     * configured similar to the `$attributes` array for Form, except that one will only set options related
+     * to default markup and styling like `type`, `container`, `prepend`, `append` etc. The settings
+     * at the `$attributes` level will override these settings.
+     */
+    public $attributeDefaults = [];    
         
     /**
      * @var boolean, calculate the number of columns automatically based on count of attributes 
@@ -110,12 +124,7 @@ class FormGrid extends \yii\bootstrap\Widget
     public function init()
     {
         parent::init();
-        if (empty($this->model) || !$this->model instanceof \yii\base\Model) {
-            throw new InvalidConfigException("The 'model' property must be set and must extend from '\\yii\\base\\Model'.");
-        }
-        if (empty($this->form) || !$this->form instanceof \kartik\form\ActiveForm) {
-            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\form\\ActiveForm'.");
-        }
+        $this->checkFormConfig();
         if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) { 
             throw new InvalidConfigException("The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'.");
         }
@@ -140,14 +149,16 @@ class FormGrid extends \yii\bootstrap\Widget
             $defaults = [
                 'model' => $this->model, 
                 'form' => $this->form,
+                'formName' => $this->formName,
                 'columns' => $this->columns,
+                'attributeDefaults' => $this->attributeDefaults,
                 'autoGenerateColumns' => $this->autoGenerateColumns,
                 'columnSize' => $this->columnSize,
                 'columnOptions' => $this->columnOptions,
                 'rowOptions' => $this->rowOptions,
                 'options' => $this->fieldSetOptions,
             ];
-            $config = ArrayHelper::merge($defaults, $row);
+            $config = array_replace_recursive($defaults, $row);
             $output .= Form::widget($config) . "\n";
         }
         return $output;

@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\builder;
@@ -101,9 +101,7 @@ class Form extends BaseForm
     public function init()
     {
         parent::init();
-        if (empty($this->model) || !$this->model instanceof \yii\base\Model) {
-            throw new InvalidConfigException("The 'model' property must be set and must extend from '\\yii\\base\\Model'.");
-        }
+        $this->checkFormConfig();
         $this->initOptions();
         $this->registerAssets();
         if ($this->autoGenerateColumns) {
@@ -146,7 +144,7 @@ class Form extends BaseForm
         if ($cols == 1) {
             $index = 0;
             foreach ($this->attributes as $attribute => $settings) {
-                $content .= $this->parseInput($this->form, $this->model, $attribute, $settings, $index) . "\n";
+                $content .= $this->parseInput($attribute, $settings, $index) . "\n";
                 $index++;
             }
             return $content;
@@ -169,6 +167,7 @@ class Form extends BaseForm
                 }
                 $attribute = $names[$index];
                 $settings = $values[$index];
+                $settings = array_replace_recursive($this->attributeDefaults, $settings);
                 $colOptions = ArrayHelper::getValue($settings, 'columnOptions', $this->columnOptions);
                 $colWidth = $width;
                 if (isset($colOptions['colspan'])) {
@@ -178,7 +177,7 @@ class Form extends BaseForm
                 $colWidth = (int)$colWidth;
                 Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $colWidth);
                 $content .= "\t" . Html::beginTag('div', $colOptions) . "\n";
-                $content .= "\t\t" . $this->parseInput($this->form, $this->model, $attribute, $settings, $index) . "\n";
+                $content .= "\t\t" . $this->parseInput($attribute, $settings, $index) . "\n";
                 $content .= "\t" . Html::endTag('div') . "\n";
                 $index++;
             }
@@ -190,8 +189,6 @@ class Form extends BaseForm
     /**
      * Parses input for `INPUT_RAW` type
      *
-     * @param \kartik\widgets\ActiveForm $form the form instance
-     * @param \yii\base\Model $model the model instance
      * @param string $attribute the model attribute
      * @param string $settings the column settings
      * @param int $index the row index
@@ -199,16 +196,26 @@ class Form extends BaseForm
      * @return \kartik\widgets\ActiveField|mixed
      * @throws InvalidConfigException     
      */
-    protected function parseInput($form, $model, $attribute, $settings, $index)
+    protected function parseInput($attribute, $settings, $index)
     {
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         if ($type === self::INPUT_RAW) {
-            return ($settings['value'] instanceof \Closure) ? call_user_func($settings['value'], $model, $index, $this) : $settings['value'];
+            if ($this->hasModel()) {
+                return ($settings['value'] instanceof \Closure) ? 
+                    call_user_func($settings['value'], $this->model, $index, $this) : 
+                    $settings['value'];
+            } else {
+                return ($settings['value'] instanceof \Closure) ? 
+                    call_user_func($settings['value'], $this->formName, $index, $this) : 
+                    $settings['value'];
+            }
         } else {
-            return static::renderInput($form, $model, $attribute, $settings);
+            return $this->hasModel() ?
+                static::renderActiveInput($this->form, $this->model, $attribute, $settings) :
+                static::renderInput("{$this->formName}[{$attribute}]", $settings);
         }
     }
-
+    
     /**
      * Registers widget assets
      */

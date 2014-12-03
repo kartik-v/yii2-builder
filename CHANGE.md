@@ -1,3 +1,22 @@
+version 1.5.0
+=============
+**Date:** 03-Dec-2014
+
+- (enh #33): Support all data providers extending from `yii\data\BaseDataProvider` for TabularForm widget.
+- (enh #34): Enhance to support normal forms without model in addition to ActiveForm.
+- (enh #35): Accelerate form building with new global attribute defaults.
+- (enh #36): New additional options for attribute settings to control markup and styles.
+    - `prepend`: string, (optional) any markup to prepend before the input
+    - `append`: string, (optional) any markup to append before the input
+    - `container`: array, (optional) HTML attributes for the `div` container to wrap the 
+      field group (including input and label for all forms. This also includes error 
+      & hint blocks for active forms).  If not set or empty, no container will be wrapped.
+    - `inputContainer`: array, (optional) HTML attributes for the `div` container to wrap the 
+      input control only. If not set or empty, no container will be wrapped. Will be applied 
+      only when NOT using with active form.
+    - `labelOptions`: array, (optional) the HTML attributes for the label. Will be applied only when NOT using with active form and only if label is set.
+- New `FormTrait` added for better code reuse.
+
 version 1.4.0
 =============
 **Date:** 01-Dec-2014

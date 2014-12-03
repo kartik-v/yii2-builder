@@ -3,12 +3,13 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-builder
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\builder;
 
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -21,6 +22,8 @@ use yii\helpers\ArrayHelper;
  */
 class BaseForm extends \yii\bootstrap\Widget
 {
+    use FormTrait;
+    
     // form inputs
     const INPUT_TEXT = 'textInput';
     const INPUT_TEXTAREA = 'textarea';
@@ -63,6 +66,12 @@ class BaseForm extends \yii\bootstrap\Widget
      * @var ActiveForm the form instance
      */
     public $form;
+    
+    /**
+     * @var string the form name to be provided if not using with model 
+     * and ActiveForm
+     */
+    public $formName;
 
     /**
      * @var array the attribute settings. This is an associative array, which needs to be setup as
@@ -73,11 +82,21 @@ class BaseForm extends \yii\bootstrap\Widget
      *       Defaults to `INPUT_TEXT`.
      *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
      *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
+     *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using 
+     *      with active form and only if label is set.
      *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW`. This will display
      *       the raw text from value field if it is a string. If this is a Closure, your anonymous function call should
      *       be of the type: `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is
      *       the key associated with the data model $index is the zero based index of the dataProvider, and $widget
      *       is the current widget instance.`
+     *    - 'prepend': string, (optional) any markup to prepend before the input
+     *    - 'append': string, (optional) any markup to append before the input
+     *    - 'container': array, (optional) HTML attributes for the `div` container to wrap the 
+     *      field group (including input and label for all forms. This also includes error 
+     *      & hint blocks for active forms).  If not set or empty, no container will be wrapped.
+     *    - 'inputContainer': array, (optional) HTML attributes for the `div` container to wrap the 
+     *      input control only. If not set or empty, no container will be wrapped. Will be applied 
+     *      only when NOT using with active form.
      *    - 'fieldConfig': array, the configuration for the active field.
      *    - `hint`: string, the hint text to be shown below the active field.
      *    - 'items': array, the list of items if input type is one of the following:
@@ -91,6 +110,14 @@ class BaseForm extends \yii\bootstrap\Widget
      *      a `TabularForm` it will allow you to append additional column options for the grid data column.
      */
     public $attributes = [];
+    
+    /**
+     * @var array the default settings that will be applied for all attributes. The array will be 
+     * configured similar to the `$attributes` array, except that one will only set options related
+     * to default markup and styling like `type`, `container`, `prepend`, `append` etc. The settings
+     * at the `$attributes` level will override these settings.
+     */
+    public $attributeDefaults = [];
 
     /**
      * Initializes the widget
@@ -100,16 +127,13 @@ class BaseForm extends \yii\bootstrap\Widget
     public function init()
     {
         parent::init();
-        if (empty($this->form) || !$this->form instanceof \kartik\form\ActiveForm) {
-            throw new InvalidConfigException("The 'form' property must be set and must be an instance of '\\kartik\\widgets\\ActiveForm' or '\\kartik\\form\\ActiveForm'.");
-        }
-        if (empty($this->attributes)) {
-            throw new InvalidConfigException("The 'attributes' array must be set.");
-        }
+        $this->checkBaseConfig();
     }
 
     /**
-     * Renders each input based on the attribute settings
+     * Renders active input based on the attribute settings.
+     * This includes additional markup like rendering content before
+     * and after input, and wrapping input in a container if set.
      *
      * @param \kartik\form\ActiveForm $form the form instance
      * @param \yii\db\ActiveRecord|\yii\base\Model $model 
@@ -119,7 +143,58 @@ class BaseForm extends \yii\bootstrap\Widget
      * @throws \yii\base\InvalidConfigException
      *
      */
-    protected static function renderInput($form, $model, $attribute, $settings)
+    protected static function renderActiveInput($form, $model, $attribute, $settings)
+    {
+        $container = ArrayHelper::getValue($settings, 'container', []);
+        $prepend = ArrayHelper::getValue($settings, 'prepend', ''); 
+        $append = ArrayHelper::getValue($settings, 'append', ''); 
+        $input = static::renderRawActiveInput($form, $model, $attribute, $settings);
+        $out = $prepend . "\n" . $input . "\n" . $append;
+        return empty($container) ? $out : Html::tag('div', $out, $container);
+    }
+
+    /**
+     * Renders normal form input based on the attribute settings.
+     * This includes additional markup like rendering content before
+     * and after input, and wrapping input in a container if set.
+     * @param string $attribute the name of the attribute
+     * @param array $settings the attribute settings
+     * @return string the form input markup 
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected static function renderInput($attribute, $settings = [])
+    { 
+        $for = '';
+        $input = static::renderRawInput($attribute, $settings, $for);
+        $label = ArrayHelper::getValue($settings, 'label', false); 
+        $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []); 
+        Html::addCssClass($labelOptions, 'control-label');
+        $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
+        $options = ArrayHelper::getValue($settings, 'options', []);
+        $label = $label !== false && !empty($for) ? Html::label($label, $for, $labelOptions) . "\n" : '';
+        $container = ArrayHelper::getValue($settings, 'container', []);
+        $prepend = ArrayHelper::getValue($settings, 'prepend', ''); 
+        $append = ArrayHelper::getValue($settings, 'append', '');
+        $inputContainer = ArrayHelper::getValue($settings, 'inputContainer', []);
+        if (!empty($inputContainer)) {
+            $input = Html::tag('div', $input, $inputContainer);
+        }
+        $out = $prepend . "\n" . $label . $input . "\n" . $append;
+        return empty($container) ? $out : Html::tag('div', $out, $container);
+    }
+
+    /**
+     * Renders raw active input based on the attribute settings
+     *
+     * @param \kartik\form\ActiveForm $form the form instance
+     * @param \yii\db\ActiveRecord|\yii\base\Model $model 
+     * @param string $attribute the name of the attribute
+     * @param array $settings the attribute settings
+     * @return \kartik\form\ActiveField
+     * @throws \yii\base\InvalidConfigException
+     *
+     */
+    protected static function renderRawActiveInput($form, $model, $attribute, $settings)
     {
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $i = strpos($attribute, ']');
@@ -167,7 +242,74 @@ class BaseForm extends \yii\bootstrap\Widget
             return ArrayHelper::getValue($settings, 'value', '');
         }
     }
-
+    
+    /**
+     * Renders raw form input based on the attribute settings
+     * @param string $attribute the name of the attribute
+     * @param array $settings the attribute settings
+     * @return string the form input markup 
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected static function renderRawInput($attribute, $settings = [], &$id)
+    {
+        $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
+        $i = strpos($attribute, ']');
+        $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
+        if (!in_array($type, static::$_validInputs)) {
+            throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attribName}'.'");
+        }
+        $value = ArrayHelper::getValue($settings, 'value', null); 
+        $options = ArrayHelper::getValue($settings, 'options', []);
+        $id = str_replace(['[]', '][', '[', ']', ' '], ['', '-', '-', '', '-'], $attribute);
+        $id = strtolower($id);
+        if ($type === self::INPUT_WIDGET) {
+            $id = empty($options['options']['id']) ? $id : $options['options']['id'];
+            $options['options']['id'] = $id;
+        } else {
+            $id = empty($options['id']) ? $id : $options['id'];
+            $options['id'] = $id;
+        }
+        if ($type === self::INPUT_STATIC) {
+            Html::addCssClass($options, 'form-control-static');
+            return Html::tag('p', $value, $options);
+        }
+        Html::addCssClass($options, 'form-control');
+        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA || $type === self::INPUT_FILE) {
+            return Html::$type($attribute, $value, $options);
+        }
+        if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||
+            $type === self::INPUT_RADIO_LIST || $type === self::INPUT_MULTISELECT
+        ) {
+            if (!isset($settings['items'])) {
+                throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
+            }
+            $items = ArrayHelper::getValue($settings, 'items', []);
+            return Html::$type($attribute, $value, $items, $options);
+        }
+        if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
+            $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
+            $checked = !empty($value) && ($value !== false) ? true : false;
+            $out = Html::$type($attribute, $checked, $options);
+            return $enclosedByLabel ? "<div class='{$type}'>{$out}</div>" : $out;
+        }
+        if ($type === self::INPUT_HTML5) {
+            $html5type = ArrayHelper::getValue($settings, 'html5type', 'text');
+            return Html::input($type, $attribute, $value, $options);
+        }
+        if ($type === self::INPUT_WIDGET) {
+            $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
+            if (empty($widgetClass) && !$widgetClass instanceof yii\widgets\InputWidget) {
+                throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
+            }
+            $options['name'] = $attribute;
+            $options['value'] = $value;
+            return $widgetClass::widget($options);
+        }
+        if ($type === self::INPUT_RAW) {
+            return ArrayHelper::getValue($settings, 'value', '');
+        }
+    }
+    
     /*
      * Generates the active field input by parsing the label and hint
      * @param \kartik\widgets\ActiveField $field
