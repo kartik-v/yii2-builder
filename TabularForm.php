@@ -99,8 +99,8 @@ class TabularForm extends BaseForm
     public function init()
     {
         parent::init();
-        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\DataProvider) {
-            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\DataProvider'.");
+        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\BaseDataProvider) {
+            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\BaseDataProvider'.");
         }
         $this->initOptions();
         $this->registerAssets();
@@ -156,9 +156,14 @@ class TabularForm extends BaseForm
                 $value = $settings['value'];
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings) {
-                    return ($model instanceof \yii\base\Model) ? 
-                        static::renderActiveInput($this->form, $model, '[' . $index . ']' . $attribute, $settings) :
-                        static::renderInput("{$this->formName}[{$index}][{$attribute}]", $settings);
+                    if ($model instanceof \yii\base\Model) {
+                        $input = static::renderActiveInput($this->form, $model, '[' . $index . ']' . $attribute, $settings);
+                    } else {
+                        $models = $this->dataProvider->getModels();
+                        $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
+                        $input = static::renderInput("{$this->formName}[{$index}][{$attribute}]", $settings);
+                    }
+                    return $input;
                 };
             }
             $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||
