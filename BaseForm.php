@@ -80,15 +80,15 @@ class BaseForm extends \yii\bootstrap\Widget
      * - `attribute_settings`: array, the settings for the attribute, where you can set the following:
      *    - 'type': string, the input type for the attribute. Should be one of the INPUT_ constants.
      *       Defaults to `INPUT_TEXT`.
-     *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
-     *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
-     *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using 
-     *      with active form and only if label is set.
      *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW`. This will display
      *       the raw text from value field if it is a string. If this is a Closure, your anonymous function call should
      *       be of the type: `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is
      *       the key associated with the data model $index is the zero based index of the dataProvider, and $widget
      *       is the current widget instance.`
+     *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
+     *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
+     *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using 
+     *      with active form and only if label is set.
      *    - 'prepend': string, (optional) any markup to prepend before the input
      *    - 'append': string, (optional) any markup to append before the input
      *    - 'container': array, (optional) HTML attributes for the `div` container to wrap the 
