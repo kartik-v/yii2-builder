@@ -69,6 +69,14 @@ class FormGrid extends \yii\bootstrap\Widget
     public $formName = null;
     
     /**
+     * @var array the default settings that will be applied for all attributes. The array will be 
+     * configured similar to a single attribute setting value in the `Form::$attributes` array. One 
+     * will typically default markup and styling like `type`, `container`, `prepend`, `append` etc. The 
+     * settings at the `Form::$attributes` level will override these default settings.
+     */
+    public $attributeDefaults = [];
+    
+    /**
      * @var array, the grid rows containing form configuration elements
      */
     public $rows = [];
@@ -78,14 +86,6 @@ class FormGrid extends \yii\bootstrap\Widget
      * This property can be overridden at the `rows` level.
      */
     public $columns = 1;
-    
-    /**
-     * @var array the default settings that will be applied for all attributes. The array will be 
-     * configured similar to the `$attributes` array for Form, except that one will only set options related
-     * to default markup and styling like `type`, `container`, `prepend`, `append` etc. The settings
-     * at the `$attributes` level will override these settings.
-     */
-    public $attributeDefaults = [];    
         
     /**
      * @var boolean, calculate the number of columns automatically based on count of attributes 
