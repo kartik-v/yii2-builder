@@ -124,7 +124,6 @@ class FormGrid extends \yii\bootstrap\Widget
     public function init()
     {
         parent::init();
-        $this->checkFormConfig();
         if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) { 
             throw new InvalidConfigException("The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'.");
         }
