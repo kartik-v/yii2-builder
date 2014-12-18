@@ -1,3 +1,9 @@
+version 1.6.0
+=============
+**Date:** 18-Dec-2014
+
+- (enh #38): Set dependencies to kartik\form\ActiveForm.
+
 version 1.5.0
 =============
 **Date:** 03-Dec-2014
