@@ -314,7 +314,7 @@ class BaseForm extends \yii\bootstrap\Widget
     
     /*
      * Generates the active field input by parsing the label and hint
-     * @param \kartik\widgets\ActiveField $field
+     * @param \kartik\form\ActiveField $field
      * @param string $label the label for the field
      * @param string $hint the hint for the field
      */

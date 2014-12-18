@@ -13,14 +13,14 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
-use kartik\widgets\ActiveForm;
+use kartik\form\ActiveForm;
 
 /**
- * A tabular form builder widget using kartik\widgets\ActiveForm.
+ * A tabular form builder widget using kartik\form\ActiveForm.
  *
  * Usage:
  * ```
- *   use kartik\widgets\ActiveForm;
+ *   use kartik\form\ActiveForm;
  *   use kartik\builder\TabularForm;
  *   $form = ActiveForm::begin($options); // $options is array for your form config
  *   echo TabularForm::widget([
@@ -40,7 +40,7 @@ use kartik\widgets\ActiveForm;
  * ```
  *
  * @property $model yii\db\ActiveRecord|yii\base\Model
- * @property $form kartik\widgets\ActiveForm
+ * @property $form kartik\form\ActiveForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0

@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
  *
  * Usage:
  * ```
- *   use kartik\widgets\ActiveForm;
+ *   use kartik\form\ActiveForm;
  *   use kartik\builder\FormGrid;
  *   $form = ActiveForm::begin($options); // $options is array for your form config
  *   echo FormGrid::widget([

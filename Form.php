@@ -14,12 +14,12 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
 /**
- * A form builder widget for rendering the form attributes using kartik\widgets\ActiveForm.
+ * A form builder widget for rendering the form attributes using kartik\form\ActiveForm.
  * The widget uses Bootstrap 3.x styling for generating form styles and multiple field columns.
  *
  * Usage:
  * ```
- *   use kartik\widgets\ActiveForm;
+ *   use kartik\form\ActiveForm;
  *   use kartik\builder\Form;
  *   $form = ActiveForm::begin($options); // $options is array for your form config
  *   echo Form::widget([
@@ -193,7 +193,7 @@ class Form extends BaseForm
      * @param string $settings the column settings
      * @param int $index the row index
      *
-     * @return \kartik\widgets\ActiveField|mixed
+     * @return \kartik\form\ActiveField|mixed
      * @throws InvalidConfigException     
      */
     protected function parseInput($attribute, $settings, $index)
