@@ -1,8 +1,9 @@
 version 1.6.0
 =============
-**Date:** 18-Dec-2014
+**Date:** 10-Jan-2015
 
 - (enh #38): Set dependencies to kartik\form\ActiveForm.
+- Code format updates as per Yii2 coding style.
 
 version 1.5.0
 =============

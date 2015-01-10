@@ -1,17 +1,17 @@
 <?php
-
 /**
+ * @package   yii2-builder
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-builder
- * @version 1.5.0
+ * @version   1.6.0
  */
 
 namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * A form builder widget for rendering the form attributes using kartik\form\ActiveForm.
@@ -35,7 +35,6 @@ use yii\helpers\ArrayHelper;
  *   ActiveForm::end();
  * ```
  *
- * @property $model yii\db\ActiveRecord|yii\base\Model
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
@@ -52,7 +51,7 @@ class Form extends BaseForm
     const GRID_WIDTH = 12;
 
     /**
-     * @var Model|ActiveRecord the model used for the form
+     * @var yii\db\ActiveRecord | yii\base\Model the model used for the form
      */
     public $model;
 
@@ -60,13 +59,13 @@ class Form extends BaseForm
      * @var integer, the number of columns in which to split the fields horizontally. If not set, defaults to 1 column.
      */
     public $columns = 1;
-    
+
     /**
-     * @var boolean, calculate the number of columns automatically based on count of attributes 
+     * @var boolean, calculate the number of columns automatically based on count of attributes
      * configured in the Form widget. Columns will be created max upto the Form::GRID_WIDTH.
      */
     public $autoGenerateColumns = false;
-    
+
     /**
      * @var string, the bootstrap device size for rendering each grid column. Defaults to `SIZE_SMALL`.
      */
@@ -83,7 +82,8 @@ class Form extends BaseForm
     public $rowOptions = [];
 
     /**
-     * @var array the HTML attributes for the field/attributes container. The following options are additionally recognized:
+     * @var array the HTML attributes for the field/attributes container. The following options are additionally
+     *     recognized:
      * - `tag`: the HTML tag for the container. Defaults to `fieldset`.
      */
     public $options = [];
@@ -112,7 +112,7 @@ class Form extends BaseForm
     }
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public function run()
     {
@@ -191,22 +191,22 @@ class Form extends BaseForm
      *
      * @param string $attribute the model attribute
      * @param string $settings the column settings
-     * @param int $index the row index
+     * @param int    $index the row index
      *
      * @return \kartik\form\ActiveField|mixed
-     * @throws InvalidConfigException     
+     * @throws InvalidConfigException
      */
     protected function parseInput($attribute, $settings, $index)
     {
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         if ($type === self::INPUT_RAW) {
             if ($this->hasModel()) {
-                return ($settings['value'] instanceof \Closure) ? 
-                    call_user_func($settings['value'], $this->model, $index, $this) : 
+                return ($settings['value'] instanceof \Closure) ?
+                    call_user_func($settings['value'], $this->model, $index, $this) :
                     $settings['value'];
             } else {
-                return ($settings['value'] instanceof \Closure) ? 
-                    call_user_func($settings['value'], $this->formName, $index, $this) : 
+                return ($settings['value'] instanceof \Closure) ?
+                    call_user_func($settings['value'], $this->formName, $index, $this) :
                     $settings['value'];
             }
         } else {
@@ -215,7 +215,7 @@ class Form extends BaseForm
                 static::renderInput("{$this->formName}[{$attribute}]", $settings);
         }
     }
-    
+
     /**
      * Registers widget assets
      */

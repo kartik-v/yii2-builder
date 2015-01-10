@@ -1,19 +1,19 @@
 <?php
 
 /**
+ * @package   yii2-builder
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-builder
- * @version 1.5.0
+ * @version   1.6.0
  */
-
 namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use kartik\grid\GridView;
 use kartik\form\ActiveForm;
+use kartik\grid\GridView;
 
 /**
  * A tabular form builder widget using kartik\form\ActiveForm.
@@ -38,9 +38,6 @@ use kartik\form\ActiveForm;
  *   ]);
  *   ActiveForm::end();
  * ```
- *
- * @property $model yii\db\ActiveRecord|yii\base\Model
- * @property $form kartik\form\ActiveForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
@@ -100,7 +97,9 @@ class TabularForm extends BaseForm
     {
         parent::init();
         if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\BaseDataProvider) {
-            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\BaseDataProvider'.");
+            throw new InvalidConfigException(
+                "The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\BaseDataProvider'."
+            );
         }
         $this->initOptions();
         $this->registerAssets();
@@ -118,6 +117,8 @@ class TabularForm extends BaseForm
 
     /**
      * Initializes the widget options
+     *
+     * @return void
      */
     protected function initOptions()
     {
@@ -145,6 +146,8 @@ class TabularForm extends BaseForm
 
     /**
      * Initializes the data columns
+     *
+     * @return void
      */
     protected function initDataColumns()
     {
@@ -157,7 +160,12 @@ class TabularForm extends BaseForm
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings) {
                     if ($model instanceof \yii\base\Model) {
-                        $input = static::renderActiveInput($this->form, $model, '[' . $index . ']' . $attribute, $settings);
+                        $input = static::renderActiveInput(
+                            $this->form,
+                            $model,
+                            '[' . $index . ']' . $attribute,
+                            $settings
+                        );
                     } else {
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
@@ -172,27 +180,35 @@ class TabularForm extends BaseForm
                 ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP],
                 ArrayHelper::getValue($settings, 'columnOptions', []),
                 $label,
-                ['attribute' => $attribute, 'value' => $value, 'format' => 'raw'])
-            ;
+                ['attribute' => $attribute, 'value' => $value, 'format' => 'raw']
+            );
         }
     }
 
     /**
      * Initializes the serial column
+     *
+     * @return void
      */
     protected function initSerialColumn()
     {
-        if (!isset($this->serialColumn['class']) || !is_subclass_of($this->serialColumn['class'], '\kartik\grid\SerialColumn')) {
+        if (!isset($this->serialColumn['class']) ||
+            !is_subclass_of($this->serialColumn['class'], '\kartik\grid\SerialColumn')
+        ) {
             $this->serialColumn['class'] = '\kartik\grid\SerialColumn';
         }
     }
 
     /**
      * Initializes the checkbox column
+     *
+     * @return void
      */
     protected function initCheckboxColumn()
     {
-        if (!isset($this->checkboxColumn['class']) || !is_subclass_of($this->checkboxColumn['class'], '\kartik\grid\CheckboxColumn')) {
+        if (!isset($this->checkboxColumn['class']) ||
+            !is_subclass_of($this->checkboxColumn['class'], '\kartik\grid\CheckboxColumn')
+        ) {
             $this->checkboxColumn['class'] = '\kartik\grid\CheckboxColumn';
             $this->checkboxColumn['rowHighlight'] = $this->rowHighlight;
             $this->checkboxColumn['rowSelectedClass'] = $this->rowSelectedClass;
@@ -201,10 +217,14 @@ class TabularForm extends BaseForm
 
     /**
      * Initializes the action column
+     *
+     * @return void
      */
     protected function initActionColumn()
     {
-        if (!isset($this->actionColumn['class']) || !is_subclass_of($this->actionColumn['class'], '\kartik\grid\ActionColumn')) {
+        if (!isset($this->actionColumn['class']) ||
+            !is_subclass_of($this->actionColumn['class'], '\kartik\grid\ActionColumn')
+        ) {
             $this->actionColumn['class'] = '\kartik\grid\ActionColumn';
         }
         $this->actionColumn['updateOptions'] = ['style' => 'display:none;'];
@@ -212,6 +232,8 @@ class TabularForm extends BaseForm
     }
 
     /**
+     * Render the grid content
+     *
      * @return string the rendered gridview
      */
     protected function renderGrid()
@@ -234,12 +256,18 @@ class TabularForm extends BaseForm
             'toggleData' => false,
             'rowOptions' => $rowOptions
         ];
-        $settings = ArrayHelper::merge(['striped' => false, 'bordered' => false, 'hover' => true], $this->gridSettings, $settings);
+        $settings = ArrayHelper::merge(
+            ['striped' => false, 'bordered' => false, 'hover' => true],
+            $this->gridSettings,
+            $settings
+        );
         return GridView::widget($settings);
     }
 
     /**
      * Registers widget assets
+     *
+     * @return void
      */
     protected function registerAssets()
     {

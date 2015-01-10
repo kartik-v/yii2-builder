@@ -12,7 +12,7 @@ A form builder extension that allows you to build both single view and multi-vie
 [composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
 
 ## Latest Release
-The latest version of the module is v1.5.0 released on 03-Dec-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
+The latest version of the module is v1.6.0 released on 10-Jan-2015. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
 
 ## Form
 

@@ -1,21 +1,21 @@
 <?php
 
 /**
+ * @package   yii2-builder
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-builder
- * @version 1.5.0
+ * @version   1.6.0
  */
-
 namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * Use an easy configuration option to render your form grid rows and columns
- * using \kartik\builder\Form widget. 
+ * using \kartik\builder\Form widget.
  *
  * Usage:
  * ```
@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
  *   echo FormGrid::widget([
  *       'model' => $model, // your model
  *       'form' => $form,
- *       'autoGenerateColumns' => true, 
+ *       'autoGenerateColumns' => true,
  *       'rows' => [
  *          [
  *              'attributes' => [
@@ -44,56 +44,54 @@ use yii\helpers\ArrayHelper;
  *   ActiveForm::end();
  * ```
  *
- * @property $model yii\db\ActiveRecord|yii\base\Model
- * @property $form yii\widgets\ActiveForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 class FormGrid extends \yii\bootstrap\Widget
 {
     /**
-     * @var Model|ActiveRecord the model used for the form
+     * @var \yii\db\ActiveRecord|\yii\base\Model the model used for the form
      */
     public $model;
 
     /**
-     * @var ActiveForm the form instance
+     * @var \yii\widgets\ActiveForm the form instance
      */
     public $form;
-    
+
     /**
-     * @var string the form name to be provided if not using with model 
+     * @var string the form name to be provided if not using with model
      * and ActiveForm
      */
     public $formName = null;
-    
+
     /**
-     * @var array the default settings that will be applied for all attributes. The array will be 
-     * configured similar to a single attribute setting value in the `Form::$attributes` array. One 
-     * will typically default markup and styling like `type`, `container`, `prepend`, `append` etc. The 
+     * @var array the default settings that will be applied for all attributes. The array will be
+     * configured similar to a single attribute setting value in the `Form::$attributes` array. One
+     * will typically default markup and styling like `type`, `container`, `prepend`, `append` etc. The
      * settings at the `Form::$attributes` level will override these default settings.
      */
     public $attributeDefaults = [];
-    
+
     /**
      * @var array, the grid rows containing form configuration elements
      */
     public $rows = [];
-        
+
     /**
      * @var boolean, the number of columns for each row.
      * This property can be overridden at the `rows` level.
      */
     public $columns = 1;
-        
+
     /**
-     * @var boolean, calculate the number of columns automatically based on count of attributes 
-     * configured in the Form widget. Columns will be created max upto the Form::GRID_WIDTH. 
+     * @var boolean, calculate the number of columns automatically based on count of attributes
+     * configured in the Form widget. Columns will be created max upto the Form::GRID_WIDTH.
      * This can be overridden at the rows level.
      */
     public $autoGenerateColumns = true;
-    
+
     /**
      * @var string, the bootstrap device size for rendering each grid column. Defaults to `SIZE_SMALL`.
      * This property can be overridden at the `rows` level.
@@ -112,41 +110,45 @@ class FormGrid extends \yii\bootstrap\Widget
     public $rowOptions = [];
 
     /**
-     * @var array the HTML attributes for the field/attributes container. The following options are additionally recognized:
+     * @var array the HTML attributes for the field/attributes container. The following options are additionally
+     *     recognized:
      * - `tag`: the HTML tag for the container. Defaults to `fieldset`.
      * This property can be overridden by `options` setting at the `rows` level.
      */
     public $fieldSetOptions = [];
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public function init()
     {
         parent::init();
-        if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) { 
-            throw new InvalidConfigException("The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'.");
+        if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) {
+            throw new InvalidConfigException(
+                "The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'."
+            );
         }
     }
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public function run()
     {
         parent::run();
         echo $this->getGridOutput();
     }
-    
+
     /**
      * Generates the form grid layout
      * return string
      */
-    protected function getGridOutput() {
+    protected function getGridOutput()
+    {
         $output = '';
         foreach ($this->rows as $row) {
             $defaults = [
-                'model' => $this->model, 
+                'model' => $this->model,
                 'form' => $this->form,
                 'formName' => $this->formName,
                 'columns' => $this->columns,

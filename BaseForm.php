@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-builder
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-builder
- * @version 1.5.0
+ * @version   1.6.0
  */
 
 namespace kartik\builder;
@@ -11,6 +12,7 @@ namespace kartik\builder;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use kartik\form\ActiveField;
 
 /**
  * Base form widget
@@ -23,7 +25,7 @@ use yii\helpers\ArrayHelper;
 class BaseForm extends \yii\bootstrap\Widget
 {
     use FormTrait;
-    
+
     // form inputs
     const INPUT_TEXT = 'textInput';
     const INPUT_TEXTAREA = 'textarea';
@@ -66,9 +68,9 @@ class BaseForm extends \yii\bootstrap\Widget
      * @var ActiveForm the form instance
      */
     public $form;
-    
+
     /**
-     * @var string the form name to be provided if not using with model 
+     * @var string the form name to be provided if not using with model
      * and ActiveForm
      */
     public $formName;
@@ -87,17 +89,17 @@ class BaseForm extends \yii\bootstrap\Widget
      *       is the current widget instance.`
      *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
      *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
-     *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using 
+     *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using
      *      with active form and only if label is set.
-     *    - 'prepend': string, (optional) any markup to prepend before the input. For ActiveForm fields, this content 
+     *    - 'prepend': string, (optional) any markup to prepend before the input. For ActiveForm fields, this content
      *      will be prepended before the field group (including label, input, error, hint blocks).
-     *    - 'append': string, (optional) any markup to append before the input. For ActiveForm fields, this content 
+     *    - 'append': string, (optional) any markup to append before the input. For ActiveForm fields, this content
      *      will be appended after the field group (including label, input, error, hint blocks).
-     *    - 'container': array, (optional) HTML attributes for the `div` container to wrap the input. For ActiveForm, 
-     *      this will envelop the field group (including label, input, error, hint blocks). If not set or empty, no 
+     *    - 'container': array, (optional) HTML attributes for the `div` container to wrap the input. For ActiveForm,
+     *      this will envelop the field group (including label, input, error, hint blocks). If not set or empty, no
      *      container will be wrapped.
-     *    - 'inputContainer': array, (optional) HTML attributes for the `div` container to wrap the 
-     *      input control only. If not set or empty, no container will be wrapped. Will be applied 
+     *    - 'inputContainer': array, (optional) HTML attributes for the `div` container to wrap the
+     *      input control only. If not set or empty, no container will be wrapped. Will be applied
      *      only when NOT using with ActiveForm.
      *    - 'fieldConfig': array, the configuration for the active field.
      *    - `hint`: string, the hint text to be shown below the active field.
@@ -112,14 +114,15 @@ class BaseForm extends \yii\bootstrap\Widget
      *      a `TabularForm` it will allow you to append additional column options for the grid data column.
      */
     public $attributes = [];
-    
+
     /**
-     * @var array the default settings that will be applied for all attributes. The array will be 
+     * @var array the default settings that will be applied for all attributes. The array will be
      * configured similar to a single attribute setting value in the `$attributes` array. One will typically
      * default markup and styling like `type`, `container`, `prepend`, `append` etc. The settings
      * at the `$attributes` level will override these default settings.
      */
     public $attributeDefaults = [];
+
 
     /**
      * Initializes the widget
@@ -137,10 +140,11 @@ class BaseForm extends \yii\bootstrap\Widget
      * This includes additional markup like rendering content before
      * and after input, and wrapping input in a container if set.
      *
-     * @param \kartik\form\ActiveForm $form the form instance
-     * @param \yii\db\ActiveRecord|\yii\base\Model $model 
-     * @param string $attribute the name of the attribute
-     * @param array $settings the attribute settings
+     * @param \kartik\form\ActiveForm              $form the form instance
+     * @param \yii\db\ActiveRecord|\yii\base\Model $model
+     * @param string                               $attribute the name of the attribute
+     * @param array                                $settings the attribute settings
+     *
      * @return \kartik\form\ActiveField
      * @throws \yii\base\InvalidConfigException
      *
@@ -148,8 +152,8 @@ class BaseForm extends \yii\bootstrap\Widget
     protected static function renderActiveInput($form, $model, $attribute, $settings)
     {
         $container = ArrayHelper::getValue($settings, 'container', []);
-        $prepend = ArrayHelper::getValue($settings, 'prepend', ''); 
-        $append = ArrayHelper::getValue($settings, 'append', ''); 
+        $prepend = ArrayHelper::getValue($settings, 'prepend', '');
+        $append = ArrayHelper::getValue($settings, 'append', '');
         $input = static::renderRawActiveInput($form, $model, $attribute, $settings);
         $out = $prepend . "\n" . $input . "\n" . $append;
         return empty($container) ? $out : Html::tag('div', $out, $container);
@@ -159,23 +163,25 @@ class BaseForm extends \yii\bootstrap\Widget
      * Renders normal form input based on the attribute settings.
      * This includes additional markup like rendering content before
      * and after input, and wrapping input in a container if set.
+     *
      * @param string $attribute the name of the attribute
-     * @param array $settings the attribute settings
-     * @return string the form input markup 
+     * @param array  $settings the attribute settings
+     *
+     * @return string the form input markup
      * @throws \yii\base\InvalidConfigException
      */
     protected static function renderInput($attribute, $settings = [])
-    { 
+    {
         $for = '';
         $input = static::renderRawInput($attribute, $settings, $for);
-        $label = ArrayHelper::getValue($settings, 'label', false); 
-        $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []); 
+        $label = ArrayHelper::getValue($settings, 'label', false);
+        $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
         Html::addCssClass($labelOptions, 'control-label');
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $options = ArrayHelper::getValue($settings, 'options', []);
         $label = $label !== false && !empty($for) ? Html::label($label, $for, $labelOptions) . "\n" : '';
         $container = ArrayHelper::getValue($settings, 'container', []);
-        $prepend = ArrayHelper::getValue($settings, 'prepend', ''); 
+        $prepend = ArrayHelper::getValue($settings, 'prepend', '');
         $append = ArrayHelper::getValue($settings, 'append', '');
         $inputContainer = ArrayHelper::getValue($settings, 'inputContainer', []);
         if (!empty($inputContainer)) {
@@ -188,10 +194,11 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Renders raw active input based on the attribute settings
      *
-     * @param \kartik\form\ActiveForm $form the form instance
-     * @param \yii\db\ActiveRecord|\yii\base\Model $model 
-     * @param string $attribute the name of the attribute
-     * @param array $settings the attribute settings
+     * @param \kartik\form\ActiveForm              $form the form instance
+     * @param \yii\db\ActiveRecord|\yii\base\Model $model
+     * @param string                               $attribute the name of the attribute
+     * @param array                                $settings the attribute settings
+     *
      * @return \kartik\form\ActiveField
      * @throws \yii\base\InvalidConfigException
      *
@@ -244,12 +251,14 @@ class BaseForm extends \yii\bootstrap\Widget
             return ArrayHelper::getValue($settings, 'value', '');
         }
     }
-    
+
     /**
      * Renders raw form input based on the attribute settings
+     *
      * @param string $attribute the name of the attribute
-     * @param array $settings the attribute settings
-     * @return string the form input markup 
+     * @param array  $settings the attribute settings
+     *
+     * @return string the form input markup
      * @throws \yii\base\InvalidConfigException
      */
     protected static function renderRawInput($attribute, $settings = [], &$id)
@@ -260,7 +269,7 @@ class BaseForm extends \yii\bootstrap\Widget
         if (!in_array($type, static::$_validInputs)) {
             throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attribName}'.'");
         }
-        $value = ArrayHelper::getValue($settings, 'value', null); 
+        $value = ArrayHelper::getValue($settings, 'value', null);
         $options = ArrayHelper::getValue($settings, 'options', []);
         $id = str_replace(['[]', '][', '[', ']', ' '], ['', '-', '-', '', '-'], $attribute);
         $id = strtolower($id);
@@ -311,12 +320,15 @@ class BaseForm extends \yii\bootstrap\Widget
             return ArrayHelper::getValue($settings, 'value', '');
         }
     }
-    
-    /*
+
+    /**
      * Generates the active field input by parsing the label and hint
-     * @param \kartik\form\ActiveField $field
-     * @param string $label the label for the field
-     * @param string $hint the hint for the field
+     *
+     * @param ActiveField $field
+     * @param string      $label the label for the field
+     * @param string      $hint the hint for the field
+     *
+     * @return ActiveField
      */
     protected static function getInput($field, $label = null, $hint = null)
     {

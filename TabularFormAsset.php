@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-builder
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-builder
- * @version 1.5.0
+ * @version   1.6.0
  */
 
 namespace kartik\builder;
@@ -16,12 +17,13 @@ namespace kartik\builder;
  */
 class TabularFormAsset extends \kartik\base\AssetBundle
 {
-
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->setSourcePath(__DIR__ . '/assets');
         $this->setupAssets('css', ['css/tabular-form']);
         parent::init();
     }
-
 }
