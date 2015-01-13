@@ -13,3 +13,6 @@
 .form-inline fieldset {
     display: inline-block;
 }
+.form-sub-attributes .form-group {
+    margin-bottom: 0;
+}

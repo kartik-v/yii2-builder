@@ -12,6 +12,10 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+<<<<<<< HEAD
+use kartik\form\ActiveForm;
+=======
+>>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
 
 /**
  * A form builder widget for rendering the form attributes using kartik\form\ActiveForm.
@@ -94,6 +98,11 @@ class Form extends BaseForm
     private $_tag;
 
     /**
+     * @var string the form orientation
+     */
+    private $_orientation = ActiveForm::TYPE_VERTICAL;
+
+    /**
      * Initializes the widget
      *
      * @throws \yii\base\InvalidConfigException
@@ -102,6 +111,9 @@ class Form extends BaseForm
     {
         parent::init();
         $this->checkFormConfig();
+        if (isset($this->form->type)) {
+            $this->_orientation = $this->form->type;
+        }
         $this->initOptions();
         $this->registerAssets();
         if ($this->autoGenerateColumns) {
@@ -109,6 +121,40 @@ class Form extends BaseForm
             $this->columns = $cols >= self::GRID_WIDTH ? self::GRID_WIDTH : $cols;
         }
         echo Html::beginTag($this->_tag, $this->options) . "\n";
+    }
+
+    /**
+<<<<<<< HEAD
+=======
+     * @inheritdoc
+     */
+    public function run()
+    {
+        echo $this->renderFieldSet();
+        echo Html::endTag($this->_tag);
+        parent::run();
+    }
+
+    /**
+>>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
+     * Initializes the widget options
+     */
+    protected function initOptions()
+    {
+        $this->_tag = ArrayHelper::remove($this->options, 'tag', 'fieldset');
+        if (empty($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
+    }
+
+    /**
+     * Registers widget assets
+     */
+    protected function registerAssets()
+    {
+        $view = $this->getView();
+        FormAsset::register($view);
+        $view->registerJs('jQuery("#' . $this->options['id'] . '").kvFormBuilder({});');
     }
 
     /**
@@ -122,17 +168,6 @@ class Form extends BaseForm
     }
 
     /**
-     * Initializes the widget options
-     */
-    protected function initOptions()
-    {
-        $this->_tag = ArrayHelper::remove($this->options, 'tag', 'fieldset');
-        if (empty($this->options['id'])) {
-            $this->options['id'] = $this->getId();
-        }
-    }
-
-    /**
      * Renders the field set
      *
      * @return string
@@ -141,15 +176,6 @@ class Form extends BaseForm
     {
         $content = '';
         $cols = (is_int($this->columns) && $this->columns >= 1) ? $this->columns : 1;
-        if ($cols == 1) {
-            $index = 0;
-            foreach ($this->attributes as $attribute => $settings) {
-                $content .= $this->parseInput($attribute, $settings, $index) . "\n";
-                $index++;
-            }
-            return $content;
-        }
-
         $index = 0;
         $attrCount = count($this->attributes);
         $rows = (float)($attrCount / $cols);
@@ -158,9 +184,9 @@ class Form extends BaseForm
         $values = array_values($this->attributes);
         $width = (int)(self::GRID_WIDTH / $cols);
         Html::addCssClass($this->rowOptions, 'row');
-
+        $skip = ($attrCount == 1);
         for ($row = 1; $row <= $rows; $row++) {
-            $content .= Html::beginTag('div', $this->rowOptions) . "\n";
+            $content .= $this->beginTag('div', $this->rowOptions, $skip);
             for ($col = 1; $col <= $cols; $col++) {
                 if ($index > ($attrCount - 1)) {
                     break;
@@ -176,13 +202,92 @@ class Form extends BaseForm
                 }
                 $colWidth = (int)$colWidth;
                 Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $colWidth);
-                $content .= "\t" . Html::beginTag('div', $colOptions) . "\n";
-                $content .= "\t\t" . $this->parseInput($attribute, $settings, $index) . "\n";
-                $content .= "\t" . Html::endTag('div') . "\n";
+                $content .= "\t" . $this->beginTag('div', $colOptions, $skip) . "\n";
+                if (!empty($settings['attributes'])) {
+                    $content .= $this->renderSubAttributes($attribute, $settings, $index);
+                } else {
+                    $content .= "\t\t" . $this->parseInput($attribute, $settings, $index) . "\n";
+                }
+                $content .= "\t" . $this->endTag('div', $skip) . "\n";
                 $index++;
             }
-            $content .= Html::endTag('div') . "\n";
+            $content .= $this->endTag('div', $skip) . "\n";
         }
+        return $content;
+    }
+
+    /**
+     * Render sub attributes
+     *
+     * @return string
+     */
+    protected function renderSubAttributes($attribute, $settings, $index)
+    {
+        $content = $this->getSubAttributesContent($attribute, $settings, $index);
+        $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
+        $label = ArrayHelper::getValue($settings, 'label', '');
+        if ($this->_orientation === ActiveForm::TYPE_INLINE) {
+            Html::addCssClass($labelOptions, ActiveForm::SCREEN_READER);
+        } elseif ($this->_orientation === ActiveForm::TYPE_VERTICAL) {
+            Html::addCssClass($labelOptions, "control-label");
+        }
+        if ($this->_orientation !== ActiveForm::TYPE_HORIZONTAL) {
+            return '<div class="kv-nested-attribute-block">' . "\n" .
+                Html::label($label, null, $labelOptions) . "\n" .
+                $content . "\n" .
+            '</div>';
+        }
+        if (isset($this->form->formConfig['labelSpan'])) {
+            $defaultLabelSpan = $this->form->formConfig['labelSpan'];
+        }
+        $labelSpan = ArrayHelper::getValue($settings, 'labelSpan', 3);
+        Html::addCssClass($labelOptions, "col-{$this->columnSize}-{$labelSpan} control-label");
+        $inputSpan = self::GRID_WIDTH - $labelSpan;
+        $rowOptions = ['class' => 'kv-nested-attribute-block form-sub-attributes form-group'];
+        $inputOptions = ['class' => "col-{$this->columnSize}-{$inputSpan}"];
+        return Html::beginTag('div', $rowOptions) . "\n" .
+        Html::beginTag('label', $labelOptions) . "\n" .
+        $label . "\n" .
+        Html::endTag('label') . "\n" .
+        Html::beginTag('div', $inputOptions) . "\n" .
+        $content . "\n" .
+        Html::endTag('div') . "\n" .
+        Html::endTag('div') . "\n";
+    }
+
+    /**
+     * Gets sub attribute markup content
+     *
+     * @return string
+     */
+    protected function getSubAttributesContent($attribute, $settings, $index)
+    {
+        $subIndex = 0;
+        $defaultSubColOptions = ArrayHelper::getValue($settings, 'subColumnOptions', $this->columnOptions);
+        $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
+        $content = '';
+        $content .= "\t" . $this->beginTag('div', $this->rowOptions) . "\n";
+        $attrCount = count($settings['attributes']);
+        $cols = ArrayHelper::getValue($settings, 'columns', $attrCount);
+        foreach ($settings['attributes'] as $subAttr => $subSettings) {
+            $subColWidth = (int)(self::GRID_WIDTH / $cols);
+            $subSettings = array_replace_recursive($this->attributeDefaults, $subSettings);
+            if (!isset($subSettings['label'])) {
+                $subSettings['label'] = false;
+            }
+            $subColOptions = ArrayHelper::getValue($subSettings, 'columnOptions', $defaultSubColOptions);
+            if (isset($subColOptions['colspan'])) {
+                $subColWidth = (int)$subColWidth * (int)($subColOptions['colspan']);
+                unset($subColOptions['colspan']);
+            }
+            Html::addCssClass($subColOptions, 'col-' . $this->columnSize . '-' . $subColWidth);
+            $subSettings['columnOptions'] = $subColOptions;
+            $content .= "\t\t" . $this->beginTag('div', $subColOptions) . "\n";
+            $content .= "\t\t\t" . $this->parseInput($subAttr, $subSettings, $index * 10 + $subIndex) . "\n";
+            $subIndex++;
+            $content .= "\t\t" . $this->endTag('div') . "\n";
+        }
+        $content .= "\t" . $this->endTag('div') . "\n";
         return $content;
     }
 
@@ -217,11 +322,28 @@ class Form extends BaseForm
     }
 
     /**
-     * Registers widget assets
+     * Begins a tag markup based on orientation
+     *
+     * @return string
      */
-    protected function registerAssets()
+    protected function beginTag($tag, $options, $skip = false)
     {
-        $view = $this->getView();
-        FormAsset::register($view);
+        if ($this->_orientation !== ActiveForm::TYPE_INLINE && !$skip) {
+            return Html::beginTag($tag, $options) . "\n";
+        }
+        return '';
+    }
+
+    /**
+     * Ends a tag markup based on orientation
+     *
+     * @return string
+     */
+    protected function endTag($tag, $skip = false)
+    {
+        if ($this->_orientation !== ActiveForm::TYPE_INLINE && !$skip) {
+            return Html::endTag($tag) . "\n";
+        }
+        return '';
     }
 }

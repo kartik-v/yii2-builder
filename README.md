@@ -12,7 +12,11 @@ A form builder extension that allows you to build both single view and multi-vie
 [composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
 
 ## Latest Release
+<<<<<<< HEAD
+The latest version of the module is v1.6.0 released on 14-Jan-2015. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
+=======
 The latest version of the module is v1.6.0 released on 10-Jan-2015. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
+>>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
 
 ## Form
 
@@ -28,6 +32,7 @@ The Form Builder widget allows you to build a form through a configuration array
 - Configure your own hints to display below each active field attribute.
 - Various Bootstrap 3.x styling features are available by default. However, one can easily customize and theme it to one's liking using any CSS framework.
 - Supports and renders HTML input types (uses [`kartik\widgets\ActiveField`](http://demos.krajee.com/widget-details/active-field)) including input widgets and more:
+    - `INPUT_HIDDEN` or `hiddenInput`
     - `INPUT_TEXT` or `textInput`
     - `INPUT_TEXTAREA` or `textarea`
     - `INPUT_PASSWORD` or `passwordInput`

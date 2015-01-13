@@ -24,6 +24,7 @@ class FormAsset extends \kartik\base\AssetBundle
     {
         $this->setSourcePath(__DIR__ . '/assets');
         $this->setupAssets('css', ['css/form']);
+        $this->setupAssets('js', ['js/form']);
         parent::init();
     }
 }
