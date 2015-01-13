@@ -9,21 +9,25 @@
 
 namespace kartik\builder;
 
+use yii\web\AssetBundle;
+
 /**
  * Asset bundle for \kartik\widgets\Form
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class FormAsset extends \kartik\base\AssetBundle
+class FormAsset extends AssetBundle
 {
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        $this->setSourcePath(__DIR__ . '/assets');
-        $this->setupAssets('css', ['css/form']);
-        parent::init();
-    }
+    public $sourcePath = '@vendor/kartik-v/yii2-builder/assets';
+
+    public $css = [
+        'css/form.css'
+    ];
+
+    public $depends = [
+        'yii\web\JqueryAsset',
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+    ];
 }
