@@ -1,6 +1,5 @@
 version 1.6.0
 =============
-<<<<<<< HEAD
 **Date:** 14-Jan-2015
 
 - (enh #38): Set dependencies to kartik\form\ActiveForm.
@@ -10,12 +9,6 @@ version 1.6.0
 - (enh #43): Enhance rendering of fields for horizontal, vertical, and inline forms.
 - (enh #45): Add support for hidden input
 - (enh #46): Add new labelSpan property as part of builder attributes configuration
-=======
-**Date:** 10-Jan-2015
-
-- (enh #38): Set dependencies to kartik\form\ActiveForm.
-- Code format updates as per Yii2 coding style.
->>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
 
 version 1.5.0
 =============

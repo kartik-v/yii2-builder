@@ -94,11 +94,8 @@ class BaseForm extends \yii\bootstrap\Widget
      *       is the current widget instance.`
      *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
      *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
-<<<<<<< HEAD
      *    - 'labelSpan': int, the grid span width of the label container, which is especially useful for horizontal forms.
      *      If not set this will be derived automatically from the `formConfig['labelSpan']` property of `$form` (ActiveForm).
-=======
->>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
      *    - 'labelOptions': array, (optional) the HTML attributes for the label. Will be applied only when NOT using
      *      with active form and only if label is set.
      *    - 'prepend': string, (optional) any markup to prepend before the input. For ActiveForm fields, this content

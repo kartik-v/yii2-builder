@@ -12,10 +12,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-<<<<<<< HEAD
 use kartik\form\ActiveForm;
-=======
->>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
 
 /**
  * A form builder widget for rendering the form attributes using kartik\form\ActiveForm.
@@ -124,19 +121,6 @@ class Form extends BaseForm
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * @inheritdoc
-     */
-    public function run()
-    {
-        echo $this->renderFieldSet();
-        echo Html::endTag($this->_tag);
-        parent::run();
-    }
-
-    /**
->>>>>>> 45f924db8e75d374b21d382f0e97b0d9d4b87791
      * Initializes the widget options
      */
     protected function initOptions()
