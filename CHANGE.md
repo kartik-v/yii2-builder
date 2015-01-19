@@ -7,8 +7,9 @@ version 1.6.0
 - (enh #39): Allow nested child attributes to be rendered together in one column.
 - (enh #42): Add client validation plugin for nested attribute block.
 - (enh #43): Enhance rendering of fields for horizontal, vertical, and inline forms.
-- (enh #45): Add support for hidden input
-- (enh #46): Add new labelSpan property as part of builder attributes configuration
+- (enh #45): Add support for hidden input.
+- (enh #46): Add new labelSpan property as part of builder attributes configuration.
+- (enh #47): Default column size based on device size set in ActiveForm formConfig.
 
 version 1.5.0
 =============

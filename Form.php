@@ -108,6 +108,11 @@ class Form extends BaseForm
     {
         parent::init();
         $this->checkFormConfig();
+        if (empty($this->columnSize)) {
+            $this->columnSize = empty($this->form->formConfig['deviceSize']) ? 
+                self::SIZE_SMALL : 
+                $this->form->formConfig['deviceSize'];
+        }        
         if (isset($this->form->type)) {
             $this->_orientation = $this->form->type;
         }
