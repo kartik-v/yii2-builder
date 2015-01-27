@@ -12,7 +12,7 @@ A form builder extension that allows you to build both single view and multi-vie
 [composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
 
 ## Latest Release
-The latest version of the module is v1.6.0 released on 14-Jan-2015. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
+The latest version of the module is v1.6.0. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
 
 ## Form
 
@@ -80,6 +80,17 @@ The tabular form allows you to update information from multiple models (typicall
         'class' => '\kartik\grid\Module'
     ]
 ];
+```
+
+> IMPORTANT: You must setup the primary key attribute as one of your columns with a form input type (and hide if needed) - so that the models are appropriately updated via `loadMultiple` method (even if you reorder or sort the columns). For example:
+
+```php
+'attributes'=>[
+    'id'=>[ // primary key attribute
+        'type'=>TabularForm::INPUT_TEXT, 
+        'columnOptions'=>['hidden'=>true]
+    ], 
+ ]
 ```
 
 ### Demo

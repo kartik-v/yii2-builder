@@ -151,6 +151,7 @@ class TabularForm extends BaseForm
      */
     protected function initDataColumns()
     {
+        $formatter = ArrayHelper::getValue($this->gridSettings, 'formatter', Yii::$app->formatter);
         foreach ($this->attributes as $attribute => $settings) {
             $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
@@ -158,7 +159,21 @@ class TabularForm extends BaseForm
             if (isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
-                $value = function ($model, $key, $index, $widget) use ($attribute, $settings) {
+                $value = function ($model, $key, $index, $widget) use ($attribute, $settings, $formatter) {
+                    $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
+                    if ($type === self::INPUT_STATIC) {
+                        $val = ArrayHelper::getValue($settings, 'value', null);
+                        $format = ArrayHelper::getValue($settings, 'format', 'raw');
+                        if ($val instanceof Closure) {
+                            $val = call_user_func($val, $model, $key, $index, $widget);
+                        } elseif ($model instanceof \yii\base\Model && !isset($settings['value'])) {
+                            $val = Html::getAttributeValue($model, $attribute);
+                        }
+                        $val = $formatter->format($val, $format);
+                        $opts = ArrayHelper::getValue($settings, 'options', []);
+                        Html::addCssClass($opts, 'form-control-static');
+                        return Html::tag('div', $val, $opts);
+                    }
                     if ($model instanceof \yii\base\Model) {
                         $input = static::renderActiveInput(
                             $this->form,

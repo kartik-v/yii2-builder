@@ -92,6 +92,10 @@ class BaseForm extends \yii\bootstrap\Widget
      *       be of the type: `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is
      *       the key associated with the data model $index is the zero based index of the dataProvider, and $widget
      *       is the current widget instance.`
+     *    - 'format': string|array, applicable only for INPUT_STATIC type (and only in tabular forms). This 
+     *      controls which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, 
+     *      `"html"`, `['date', 'php:Y-m-d']`). Supported formats are determined by [Yii::$app->formatter].
+     *      Default format is "raw".
      *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
      *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
      *    - 'labelSpan': int, the grid span width of the label container, which is especially useful for horizontal forms.
