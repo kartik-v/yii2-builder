@@ -10,11 +10,9 @@ version 1.6.0
 - (enh #45): Add support for hidden input.
 - (enh #46): Add new labelSpan property as part of builder attributes configuration.
 - (enh #47): Default column size based on device size set in ActiveForm formConfig.
-<<<<<<< HEAD
 - (enh #49): Enhance docs for key attribute in TabularForm to ensure loadMultiple works right.
 - (enh #50): Enable format ability for INPUT_STATIC types in TabularForm.
-=======
->>>>>>> 7d8659845a638d2c971e08ea30768194299634a6
+- (enh #51): Add support for rendering hidden inputs.
 
 version 1.5.0
 =============

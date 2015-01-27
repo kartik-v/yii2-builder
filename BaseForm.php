@@ -27,7 +27,7 @@ class BaseForm extends \yii\bootstrap\Widget
     use FormTrait;
 
     // form inputs
-    const INPUT_HIDDEN = 'hidden';
+    const INPUT_HIDDEN = 'hiddenInput';
     const INPUT_TEXT = 'textInput';
     const INPUT_TEXTAREA = 'textarea';
     const INPUT_PASSWORD = 'passwordInput';
@@ -227,8 +227,9 @@ class BaseForm extends \yii\bootstrap\Widget
         $label = ArrayHelper::getValue($settings, 'label', null);
         $hint = ArrayHelper::getValue($settings, 'hint', null);
         $field = $form->field($model, $attribute, $fieldConfig);
-        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA ||
-            $type === self::INPUT_FILE || $type === self::INPUT_STATIC
+        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || 
+            $type === self::INPUT_TEXTAREA || $type === self::INPUT_FILE || 
+            $type === self::INPUT_HIDDEN || $type === self::INPUT_STATIC
         ) {
             return static::getInput($field->$type($options), $label, $hint);
         }
@@ -296,7 +297,10 @@ class BaseForm extends \yii\bootstrap\Widget
             return Html::tag('p', $value, $options);
         }
         Html::addCssClass($options, 'form-control');
-        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA || $type === self::INPUT_FILE) {
+        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || 
+            $type === self::INPUT_TEXTAREA || $type === self::INPUT_FILE || 
+            $type === self::INPUT_HIDDEN
+        ) {
             return Html::$type($attribute, $value, $options);
         }
         if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||

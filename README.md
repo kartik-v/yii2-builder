@@ -87,7 +87,7 @@ The tabular form allows you to update information from multiple models (typicall
 ```php
 'attributes'=>[
     'id'=>[ // primary key attribute
-        'type'=>TabularForm::INPUT_TEXT, 
+        'type'=>TabularForm::INPUT_HIDDEN, 
         'columnOptions'=>['hidden'=>true]
     ], 
  ]
@@ -171,7 +171,6 @@ echo TabularForm::widget([
     'form' => $form,
     'dataProvider' => $dataProvider,
     'attributes' => [
-        'id' => ['type' => TabularForm::INPUT_STATIC, 'columnOptions'=>['hAlign'=>GridView::ALIGN_CENTER]],
         'name' => ['type' => TabularForm::INPUT_TEXT],
         'color' => [
             'type' => TabularForm::INPUT_WIDGET, 
