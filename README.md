@@ -82,7 +82,7 @@ The tabular form allows you to update information from multiple models (typicall
 ];
 ```
 
-> IMPORTANT: You must setup the primary key attribute as one of your columns with a form input type (and hide if needed) - so that the models are appropriately updated via `loadMultiple` method (even if you reorder or sort the columns). For example:
+> IMPORTANT: You must setup the primary key attribute as one of your columns with a form input type (and hide if needed) - so that the models are appropriately updated via `loadMultiple` method (even if you reorder or sort the columns). You must also set this attribute to be `safe` in your model validation rules. For example:
 
 ```php
 'attributes'=>[
