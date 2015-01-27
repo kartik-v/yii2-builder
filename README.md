@@ -82,8 +82,16 @@ The tabular form allows you to update information from multiple models (typicall
 ];
 ```
 
-> IMPORTANT: You must setup the primary key attribute as one of your columns with a form input type (and hide if needed) - so that the models are appropriately updated via `loadMultiple` method (even if you reorder or sort the columns). You must also set this attribute to be `safe` in your model validation rules. For example:
+> IMPORTANT: You must follow one of the two options to setup your DataProvider or your columns to ensure primary key for each record is properly identified. 
+- **Option 1 (preferred):** Setup your dataProvider query to use `indexBy` method to index your records by primary key. For example:
+```php
+$query = Model::find()->indexBy('id'); // where `id` is your primary key
 
+$dataProvider = new ActiveDataProvider([
+    'query' => $query,
+]);
+```
+- **Option 2 (alternate):** You can setup the primary key attribute as one of your columns with a form input type (and hide if needed) - so that the models are appropriately updated via <code>loadMultiple</code> method (even if you reorder or sort the columns). You must also set this attribute to be `safe` in your model validation rules. This is been depicted in the example below.
 ```php
 'attributes'=>[
     'id'=>[ // primary key attribute
