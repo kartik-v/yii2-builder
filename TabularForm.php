@@ -10,6 +10,7 @@ namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\form\ActiveForm;
@@ -174,17 +175,18 @@ class TabularForm extends BaseForm
                         Html::addCssClass($opts, 'form-control-static');
                         return Html::tag('div', $val, $opts);
                     }
+                    $i = empty($key) ? $index : $key;
                     if ($model instanceof \yii\base\Model) {
                         $input = static::renderActiveInput(
                             $this->form,
                             $model,
-                            '[' . $index . ']' . $attribute,
+                            "[{$i}]{$attribute}",
                             $settings
                         );
                     } else {
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
-                        $input = static::renderInput("{$this->formName}[{$index}][{$attribute}]", $settings);
+                        $input = static::renderInput("{$this->formName}[{$i}]{$attribute}", $settings);
                     }
                     return $input;
                 };
