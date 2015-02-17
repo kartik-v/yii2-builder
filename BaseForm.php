@@ -87,12 +87,18 @@ class BaseForm extends \yii\bootstrap\Widget
      *    - 'attributes': array, the nested group of sub attributes that will be grouped together, this 
      *      configuration will be similar to attributes. The label property will be auto set to `false`
      *      for each sub attribute.
-     *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW`. This will display
-     *       the raw text from value field if it is a string. If this is a Closure, your anonymous function call should
-     *       be of the type: `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is
-     *       the key associated with the data model $index is the zero based index of the dataProvider, and $widget
-     *       is the current widget instance.`
-     *    - 'format': string|array, applicable only for INPUT_STATIC type (and only in tabular forms). This 
+     *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW` or `INPUT_STATIC`.
+     *       This will display the raw text from value field if it is a string. If this is a Closure, your anonymous
+     *       function call should be of the type: `function ($model, $key, $index, $widget) { }, where $model is the
+     *       current model, $key is the key associated with the data model $index is the zero based index of the
+     *       dataProvider, and $widget is the current widget instance.`
+     *    - 'staticValue': string|Closure, the value to be displayed for INPUT_STATIC. If not set, the value will be
+     *      automatically generated from the `value` setting above OR from the value of the model attribute. If this
+     *      is a Closure, your anonymous function call should be of the type:
+     *      `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is the key
+     *       associated with the data model $index is the zero based index of the dataProvider, and
+ *          $widget is the current widget instance.`
+     *    - 'format': string|array, applicable only for INPUT_STATIC type (and only in tabular forms). This
      *      controls which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, 
      *      `"html"`, `['date', 'php:Y-m-d']`). Supported formats are determined by [Yii::$app->formatter].
      *      Default format is "raw".
@@ -134,6 +140,10 @@ class BaseForm extends \yii\bootstrap\Widget
      */
     public $attributeDefaults = [];
 
+    /**
+     * @var bool whether all inputs in the form are to be static only
+     */
+    public $staticOnly = false;
 
     /**
      * Initializes the widget
@@ -332,7 +342,7 @@ class BaseForm extends \yii\bootstrap\Widget
             return $widgetClass::widget($options);
         }
         if ($type === self::INPUT_RAW) {
-            return ArrayHelper::getValue($settings, 'value', '');
+            $value = ArrayHelper::getValue($settings, 'value', '');
         }
     }
 

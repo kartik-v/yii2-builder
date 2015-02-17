@@ -65,7 +65,6 @@
         }
     };
 
-    //Form Builder plugin definition
     $.fn.kvFormBuilder = function (option) {
         var args = Array.apply(null, arguments);
         args.shift();
@@ -75,7 +74,7 @@
                 options = typeof option === 'object' && option;
 
             if (!data) {
-                data = new KvFormBuilder(this, $.extend({}, $.fn.kvFormBuilder.defaults, options, $(this).data()));
+                data = new KvFormBuilder(this, $.extend({}, options, $(this).data()));
                 $this.data('kvFormBuilder', data);
             }
 
@@ -84,4 +83,7 @@
             }
         });
     };
+
+    $.fn.kvFormBuilder.Constructor = KvFormBuilder;
+
 }(window.jQuery));

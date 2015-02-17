@@ -281,7 +281,7 @@ class Form extends BaseForm
     }
 
     /**
-     * Parses input for `INPUT_RAW` type
+     * Parses the input markup based on type
      *
      * @param string $attribute the model attribute
      * @param string $settings the column settings
@@ -292,16 +292,25 @@ class Form extends BaseForm
      */
     protected function parseInput($attribute, $settings, $index)
     {
-        $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
+        $type = $this->staticOnly ? self::INPUT_STATIC : ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
+        if ($type === self::INPUT_STATIC && isset($settings['staticValue'])) {
+            $val = $settings['staticValue'];
+            if ($val instanceof Closure) {
+                $val = call_user_func($val, $model, $key, $index, $widget);
+            }
+            if ($this->hasModel()) {
+                $settings['fieldConfig']['staticValue'] = $val;
+            } else {
+                $settings['value'] = $val;
+            }
+        } else {
+            $val = ArrayHelper::getValue($settings, 'value', null);
+        }
         if ($type === self::INPUT_RAW) {
             if ($this->hasModel()) {
-                return ($settings['value'] instanceof \Closure) ?
-                    call_user_func($settings['value'], $this->model, $index, $this) :
-                    $settings['value'];
+                return $val instanceof \Closure ? call_user_func($val, $this->model, $index, $this) : $val;
             } else {
-                return ($settings['value'] instanceof \Closure) ?
-                    call_user_func($settings['value'], $this->formName, $index, $this) :
-                    $settings['value'];
+                return $val instanceof \Closure ? call_user_func($val, $this->formName, $index, $this) : $val;
             }
         } else {
             return $this->hasModel() ?

@@ -15,6 +15,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\form\ActiveForm;
 use kartik\grid\GridView;
+use \Closure;
 
 /**
  * A tabular form builder widget using kartik\form\ActiveForm.
@@ -57,8 +58,7 @@ class TabularForm extends BaseForm
     public $rowHighlight = true;
     
     /**
-     * @var string the separator for imploding the composite keys that
-     * are available as an array.
+     * @var string the separator for the composite keys available as an array
      */
     public $compositeKeySeparator = '_';
 
@@ -152,6 +152,43 @@ class TabularForm extends BaseForm
     }
 
     /**
+     * Generates the static input
+     *
+     * @param $model yii\base\Model
+     * @param $key mixed the key
+     * @param $index int the zero based index of the item in dataProvider
+     * @param $widget TabularForm the current widget instance
+     * @param $settings array the attribute settings
+     * @param $attribute string the attribute
+     * @param $formatter yii\i18n\Formatter the formatter instance
+     *
+     * @return string
+     */
+    protected function getStaticInput($model, $key, $index, $widget, $settings, $attribute, $formatter)
+    {
+        $format = ArrayHelper::getValue($settings, 'format', 'raw');
+        if (isset($settings['staticValue'])) {
+            $val = $settings['staticValue'];
+            if ($val instanceof Closure) {
+                $val = call_user_func($val, $model, $key, $index, $widget);
+            }
+        } else {
+            $val = ArrayHelper::getValue($settings, 'value', null);
+            if ($val instanceof Closure) {
+                $val = call_user_func($val, $model, $key, $index, $widget);
+            } elseif ($model instanceof \yii\base\Model && !isset($settings['value'])) {
+                $val = Html::getAttributeValue($model, $attribute);
+            } elseif (($models = $this->dataProvider->getModels()) && !empty($models[$index][$attribute])) {
+                $val = $models[$index][$attribute];
+            }
+        }
+        $val = $formatter->format($val, $format);
+        $opts = ArrayHelper::getValue($settings, 'options', []);
+        Html::addCssClass($opts, 'form-control-static');
+        return Html::tag('div', $val, $opts);        
+    }
+
+    /**
      * Initializes the data columns
      *
      * @return void
@@ -163,23 +200,13 @@ class TabularForm extends BaseForm
             $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = false;
-            if (isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
+            if (!$this->staticOnly && isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings, $formatter) {
                     $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
-                    if ($type === self::INPUT_STATIC) {
-                        $val = ArrayHelper::getValue($settings, 'value', null);
-                        $format = ArrayHelper::getValue($settings, 'format', 'raw');
-                        if ($val instanceof Closure) {
-                            $val = call_user_func($val, $model, $key, $index, $widget);
-                        } elseif ($model instanceof \yii\base\Model && !isset($settings['value'])) {
-                            $val = Html::getAttributeValue($model, $attribute);
-                        }
-                        $val = $formatter->format($val, $format);
-                        $opts = ArrayHelper::getValue($settings, 'options', []);
-                        Html::addCssClass($opts, 'form-control-static');
-                        return Html::tag('div', $val, $opts);
+                    if ($type === self::INPUT_STATIC || $this->staticOnly) {
+                        return $this->getStaticInput($model, $key, $index, $widget, $settings, $attribute, $formatter);
                     }
                     $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
                     if ($model instanceof \yii\base\Model) {
