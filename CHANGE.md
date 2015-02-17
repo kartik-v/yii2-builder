@@ -1,3 +1,10 @@
+version 1.6.1
+=============
+**Date:** 17-Feb-2015
+
+- (enh #52): Ability to render the entire form in static mode.
+- (enh #55): Composite keys handling for tabular forms.
+
 version 1.6.0
 =============
 **Date:** 28-Jan-2015

@@ -175,7 +175,7 @@ class TabularForm extends BaseForm
                         Html::addCssClass($opts, 'form-control-static');
                         return Html::tag('div', $val, $opts);
                     }
-                    $i = empty($key) ? $index : $key;
+                    $i = empty($key) ? $index : (is_array($key) ? serialize($key) : $key);
                     if ($model instanceof \yii\base\Model) {
                         $input = static::renderActiveInput(
                             $this->form,
