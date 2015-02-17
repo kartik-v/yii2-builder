@@ -293,6 +293,9 @@ class Form extends BaseForm
     protected function parseInput($attribute, $settings, $index)
     {
         $type = $this->staticOnly ? self::INPUT_STATIC : ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
+        if (isset($this->form) && $this->staticOnly === true) {
+            $this->form->staticOnly = true;
+        }
         if ($type === self::INPUT_STATIC && isset($settings['staticValue'])) {
             $val = $settings['staticValue'];
             if ($val instanceof Closure) {
