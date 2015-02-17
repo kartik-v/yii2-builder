@@ -55,6 +55,12 @@ class TabularForm extends BaseForm
      * @var boolean highlight current row if checkbox is checked
      */
     public $rowHighlight = true;
+    
+    /**
+     * @var string the separator for imploding the composite keys that
+     * are available as an array.
+     */
+    public $compositeKeySeparator = '_';
 
     /**
      * @var string the class when a row is selected
@@ -175,7 +181,7 @@ class TabularForm extends BaseForm
                         Html::addCssClass($opts, 'form-control-static');
                         return Html::tag('div', $val, $opts);
                     }
-                    $i = empty($key) ? $index : (is_array($key) ? serialize($key) : $key);
+                    $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
                     if ($model instanceof \yii\base\Model) {
                         $input = static::renderActiveInput(
                             $this->form,
