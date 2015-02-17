@@ -7,6 +7,7 @@ version 1.6.1
 - Code formatting fixes and JS Lint changes.
 - (bug #56): Fix INPUT_STATIC to work better with `TabularForm`.
 - (enh #57): New property `staticOnly` for `Form` and `TabularForm`.
+- (enh #58): New `staticValue` property as part of attributes configuration
 
 version 1.6.0
 =============
