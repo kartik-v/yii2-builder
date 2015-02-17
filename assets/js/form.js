@@ -1,18 +1,22 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.6.0
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @version 1.6.1
  *
  * Client validation extension for the yii2-builder extension
  * 
  * Author: Kartik Visweswaran
- * Copyright: 2014, Kartik Visweswaran, Krajee.com
+ * Copyright: 2014 - 2015, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
+    "use strict";
+
     var KvFormBuilder = function (element, options) {
-        this.$element = $(element);
-        this.init();
+        var self = this;
+        self.$element = $(element);
+        self.options = options;
+        self.init();
     };
 
     KvFormBuilder.prototype = {
@@ -31,7 +35,7 @@
         },
         validate: function (attribute, messages) {
             var self = this;
-            if (self.$target.length == 0) {
+            if (self.$target.length === 0) {
                 return;
             }
             self.$target.each(function () {
@@ -39,7 +43,7 @@
                 var $el = $(this);
                 $el.find('input').each(function () {
                     var id = $(this).attr('id');
-                    if (id == attribute.id) {
+                    if (id === attribute.id) {
                         if (messages.length > 0) {
                             hasError = true;
                             hasSuccess = false;
@@ -52,10 +56,10 @@
                 });
                 if (hasError) {
                     $el.removeClass('has-success has-error').addClass('has-error');
-                } else {
-                    if (hasSuccess) {
-                        $el.removeClass('has-success has-error').addClass('has-success');
-                    }
+                    return;
+                }
+                if (hasSuccess) {
+                    $el.removeClass('has-success has-error').addClass('has-success');
                 }
             });
         }
@@ -71,8 +75,8 @@
                 options = typeof option === 'object' && option;
 
             if (!data) {
-                $this.data('kvFormBuilder', (data = new KvFormBuilder(this,
-                    $.extend({}, $.fn.kvFormBuilder.defaults, options, $(this).data()))));
+                data = new KvFormBuilder(this, $.extend({}, $.fn.kvFormBuilder.defaults, options, $(this).data()));
+                $this.data('kvFormBuilder', data);
             }
 
             if (typeof option === 'string') {
@@ -80,4 +84,4 @@
             }
         });
     };
-}(jQuery));
+}(window.jQuery));

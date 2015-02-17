@@ -4,6 +4,7 @@ version 1.6.1
 
 - (enh #52): Ability to render the entire form in static mode.
 - (enh #55): Composite keys handling for tabular forms.
+- Code formatting fixes and JS Lint changes.
 
 version 1.6.0
 =============
