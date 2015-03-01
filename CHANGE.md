@@ -8,6 +8,7 @@ version 1.6.1
 - (bug #56): Fix INPUT_STATIC to work better with `TabularForm`.
 - (enh #57): New property `staticOnly` for `Form` and `TabularForm`.
 - (enh #58): New `staticValue` property as part of attributes configuration
+- (enh #61): Fix array format attribute naming for non ActiveDataProvider.
 
 version 1.6.0
 =============

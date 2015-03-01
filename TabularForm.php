@@ -219,7 +219,7 @@ class TabularForm extends BaseForm
                     } else {
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
-                        $input = static::renderInput("{$this->formName}[{$i}]{$attribute}", $settings);
+                        $input = static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
                     }
                     return $input;
                 };
