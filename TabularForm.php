@@ -213,13 +213,13 @@ class TabularForm extends BaseForm
                         $input = static::renderActiveInput(
                             $this->form,
                             $model,
-                            "[{$i}]{$attribute}",
+                            "[{$i}][{$attribute}]",
                             $settings
                         );
                     } else {
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
-                        $input = static::renderInput("{$this->formName}[{$i}]{$attribute}", $settings);
+                        $input = static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
                     }
                     return $input;
                 };
