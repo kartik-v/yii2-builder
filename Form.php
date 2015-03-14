@@ -200,14 +200,16 @@ class Form extends BaseForm
                 $content .= "\t" . $this->beginTag('div', $colOptions, $skip) . "\n";
                 if (!empty($settings['attributes'])) {
                     $this->trigger(self::EVENT_BEFORE_RENDER_SUB_ATTR,
-                        new ActiveFormEvent(['eventData'=>['attribute'=>$attribute,'settings'=>&$settings,'index'=>$index]]));
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['settings'=>&$settings]]));
                     $content .= $this->renderSubAttributes($attribute, $settings, $index);
-                    $this->trigger(self::EVENT_AFTER_RENDER_SUB_ATTR, new ActiveFormEvent(['eventData'=>['content'=>&$content]]));
+                    $this->trigger(self::EVENT_AFTER_RENDER_SUB_ATTR, 
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['content'=>&$content]]));
                 } else {
                     $this->trigger(self::EVENT_BEFORE_PARSE_INPUT,
-                        new ActiveFormEvent(['eventData'=>['attribute'=>$attribute,'settings'=>&$settings,'index'=>$index]]));
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['settings'=>&$settings]]));
                     $content .= "\t\t" . $this->parseInput($attribute, $settings, $index) . "\n";
-                    $this->trigger(self::EVENT_AFTER_PARSE_INPUT, new ActiveFormEvent(['eventData'=>['content'=>&$content]]));
+                    $this->trigger(self::EVENT_AFTER_PARSE_INPUT, 
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['content'=>&$content]]));
                 }
                 $content .= "\t" . $this->endTag('div', $skip) . "\n";
                 $index++;
@@ -367,5 +369,7 @@ class Form extends BaseForm
 
 class ActiveFormEvent extends \yii\base\Event
 {
+    public $attribute;
+    public $index;
     public $eventData;
 }
