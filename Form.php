@@ -51,6 +51,12 @@ class Form extends BaseForm
     // bootstrap maximum grid width
     const GRID_WIDTH = 12;
 
+    // Form events
+    const EVENT_BEFORE_PARSE_INPUT     = "eBeforeParseInput";
+    const EVENT_AFTER_PARSE_INPUT      = "eAfterParseInput";
+    const EVENT_BEFORE_RENDER_SUB_ATTR = "eBeforeRenderSubAttr";
+    const EVENT_AFTER_RENDER_SUB_ATTR  = "eAfterRenderSubAttr";
+
     /**
      * @var yii\db\ActiveRecord | yii\base\Model the model used for the form
      */
@@ -193,9 +199,17 @@ class Form extends BaseForm
                 Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $colWidth);
                 $content .= "\t" . $this->beginTag('div', $colOptions, $skip) . "\n";
                 if (!empty($settings['attributes'])) {
+                    $this->trigger(self::EVENT_BEFORE_RENDER_SUB_ATTR,
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['settings'=>&$settings]]));
                     $content .= $this->renderSubAttributes($attribute, $settings, $index);
+                    $this->trigger(self::EVENT_AFTER_RENDER_SUB_ATTR, 
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['content'=>&$content]]));
                 } else {
+                    $this->trigger(self::EVENT_BEFORE_PARSE_INPUT,
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['settings'=>&$settings]]));
                     $content .= "\t\t" . $this->parseInput($attribute, $settings, $index) . "\n";
+                    $this->trigger(self::EVENT_AFTER_PARSE_INPUT, 
+                        new ActiveFormEvent(['attribute'=>$attribute,'index'=>$index,'eventData'=>['content'=>&$content]]));
                 }
                 $content .= "\t" . $this->endTag('div', $skip) . "\n";
                 $index++;
@@ -351,4 +365,11 @@ class Form extends BaseForm
         }
         return '';
     }
+}
+
+class ActiveFormEvent extends \yii\base\Event
+{
+    public $attribute;
+    public $index;
+    public $eventData;
 }
