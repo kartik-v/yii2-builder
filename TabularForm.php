@@ -56,7 +56,7 @@ class TabularForm extends BaseForm
      * @var boolean highlight current row if checkbox is checked
      */
     public $rowHighlight = true;
-    
+
     /**
      * @var string the separator for the composite keys available as an array
      */
@@ -154,6 +154,7 @@ class TabularForm extends BaseForm
     /**
      * Generates the static input
      *
+     * @param $type string the static input type
      * @param $model yii\base\Model
      * @param $key mixed the key
      * @param $index int the zero based index of the item in dataProvider
@@ -164,9 +165,14 @@ class TabularForm extends BaseForm
      *
      * @return string
      */
-    protected function getStaticInput($model, $key, $index, $widget, $settings, $attribute, $formatter)
+    protected function getStaticInput($type, $model, $key, $index, $widget, $settings, $attribute, $formatter)
     {
         $format = ArrayHelper::getValue($settings, 'format', 'raw');
+        if ($type === self::INPUT_HIDDEN_STATIC) {
+            $options = ArrayHelper::getValue($settings, 'hiddenStaticOptions', []);
+        } else {
+            $options = ArrayHelper::getValue($settings, 'options', []);
+        }
         if (isset($settings['staticValue'])) {
             $val = $settings['staticValue'];
             if ($val instanceof Closure) {
@@ -183,9 +189,8 @@ class TabularForm extends BaseForm
             }
         }
         $val = $formatter->format($val, $format);
-        $opts = ArrayHelper::getValue($settings, 'options', []);
-        Html::addCssClass($opts, 'form-control-static');
-        return Html::tag('div', $val, $opts);        
+        Html::addCssClass($options, 'form-control-static');
+        return Html::tag('div', $val, $options);
     }
 
     /**
@@ -200,28 +205,35 @@ class TabularForm extends BaseForm
             $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = false;
+            $staticInput = '';
             if (!$this->staticOnly && isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings, $formatter) {
                     $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
-                    if ($type === self::INPUT_STATIC || $this->staticOnly) {
-                        return $this->getStaticInput($model, $key, $index, $widget, $settings, $attribute, $formatter);
+                    if ($type === self::INPUT_STATIC || $this->staticOnly || $type === self::INPUT_HIDDEN_STATIC) {
+                        $staticInput = $this->getStaticInput($type, $model, $key, $index, $widget, $settings,
+                            $attribute, $formatter);
+                        if ($type !== self::INPUT_HIDDEN_STATIC) {
+                            return $staticInput;
+                        }
                     }
                     $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
+                    $options = ArrayHelper::getValue($settings, 'options', []);
                     if ($model instanceof \yii\base\Model) {
-                        $input = static::renderActiveInput(
-                            $this->form,
-                            $model,
-                            "[{$i}]{$attribute}",
-                            $settings
-                        );
+                        if ($type === self::INPUT_HIDDEN_STATIC) {
+                            return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
+                        }
+                        return static::renderActiveInput($this->form, $model, "[{$i}]{$attribute}", $settings);
+
                     } else {
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
-                        $input = static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
+                        if ($type === self::INPUT_HIDDEN_STATIC) {
+                            return $staticInput . Html::hiddenInput("[{$i}]{$attribute}", $settings['value'], $options);
+                        }
+                        return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
                     }
-                    return $input;
                 };
             }
             $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||

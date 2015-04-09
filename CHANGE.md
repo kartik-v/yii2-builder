@@ -9,6 +9,7 @@ version 1.6.1
 - (enh #57): New property `staticOnly` for `Form` and `TabularForm`.
 - (enh #58): New `staticValue` property as part of attributes configuration
 - (enh #61): Fix array format attribute naming for non ActiveDataProvider.
+- (enh #65): New input type `INPUT_HIDDEN_STATIC`
 
 version 1.6.0
 =============
