@@ -34,7 +34,6 @@ The Form Builder widget allows you to build a form through a configuration array
 - Configure your own hints to display below each active field attribute.
 - Various Bootstrap 3.x styling features are available by default. However, one can easily customize and theme it to one's liking using any CSS framework.
 - Supports and renders HTML input types (uses [`kartik\widgets\ActiveField`](http://demos.krajee.com/widget-details/active-field)) including input widgets and more:
-    - `INPUT_HIDDEN` or `hiddenInput`
     - `INPUT_TEXT` or `textInput`
     - `INPUT_TEXTAREA` or `textarea`
     - `INPUT_PASSWORD` or `passwordInput`
@@ -45,10 +44,12 @@ The Form Builder widget allows you to build a form through a configuration array
     - `INPUT_CHECKBOX_LIST` or `checkboxList`
     - `INPUT_RADIO_LIST` or `radioList`
     - `INPUT_MULTISELECT` or `multiselect`
-    - `INPUT_STATIC` or `staticInput`
     - `INPUT_FILE` or `fileInput`
     - `INPUT_HTML5` or `input`
     - `INPUT_WIDGET` or `widget`
+    - `INPUT_HIDDEN` or `hiddenInput`
+    - `INPUT_STATIC` or `staticInput`
+    - `INPUT_HIDDEN_STATIC` or `hiddenStaticInput`
     - `INPUT_RAW` or `raw` (any free text or html markup)
 
 Refer the [documentation](http://demos.krajee.com/builder-details/form) for more details.
