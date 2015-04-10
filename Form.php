@@ -281,6 +281,7 @@ class Form extends BaseForm
             }
             Html::addCssClass($subColOptions, 'col-' . $this->columnSize . '-' . $subColWidth);
             $subSettings['columnOptions'] = $subColOptions;
+            $subSettings['fieldConfig']['skipFormLayout'] = true;
             $content .= "\t\t" . $this->beginTag('div', $subColOptions) . "\n";
             $content .= "\t\t\t" . $this->parseInput($subAttr, $subSettings, $index * 10 + $subIndex) . "\n";
             $subIndex++;
