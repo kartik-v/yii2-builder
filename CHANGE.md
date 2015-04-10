@@ -1,6 +1,6 @@
 version 1.6.1
 =============
-**Date:** 17-Feb-2015
+**Date:** 10-Apr-2015
 
 - (enh #52): Ability to render the entire form in static mode.
 - (enh #55): Composite keys handling for tabular forms.
@@ -9,7 +9,9 @@ version 1.6.1
 - (enh #57): New property `staticOnly` for `Form` and `TabularForm`.
 - (enh #58): New `staticValue` property as part of attributes configuration
 - (enh #61): Fix array format attribute naming for non ActiveDataProvider.
-- (enh #65): New input type `INPUT_HIDDEN_STATIC`
+- (enh #66): New input type `INPUT_HIDDEN_STATIC`
+- (enh #67): New `ActiveFormEvent` class.
+- (enh #68): Enhancements to Form sub attributes layout and styles.
 
 version 1.6.0
 =============
