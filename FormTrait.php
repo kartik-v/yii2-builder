@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
  * Trait for all form builder widgets in this extension
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 trait FormTrait
 {

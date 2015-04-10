@@ -135,19 +135,87 @@ class TabularForm extends BaseForm
             $this->form->type = ActiveForm::TYPE_VERTICAL;
         }
 
-        if ($this->serialColumn !== false) {
-            $this->initSerialColumn();
-            $this->_columns = array_merge([$this->serialColumn], $this->_columns);
-        }
+        $this->initColumn('serial');
+        $this->initColumn('action');
+        $this->initColumn('checkbox');
+    }
 
-        if ($this->actionColumn !== false) {
-            $this->initActionColumn();
-            $this->_columns = array_merge($this->_columns, [$this->actionColumn]);
+    /**
+     * Initializes special columns
+     *
+     * @param string $type the grid column type (one of 'serial', 'action', 'checkbox')
+     */
+    protected function initColumn($type)
+    {
+        $col = $type . 'Column';
+        if ($this->$col === false) {
+            return;
         }
+        $func = 'init' . ucfirst($type) . 'Column';
+        $this->$func();
+        $this->_columns = ArrayHelper::merge($this->_columns, [$this->$col]);
+    }
 
-        if ($this->checkboxColumn !== false) {
-            $this->initCheckboxColumn();
-            $this->_columns = array_merge($this->_columns, [$this->checkboxColumn]);
+    /**
+     * Checks if a grid column is set correctly
+     *
+     * @param string $type the grid column type (one of 'serial', 'action', 'checkbox')
+     *
+     * @return bool
+     */
+    protected function isColumnSet($type)
+    {
+        $target = "\\kartik\\grid\\" . ucfirst($type) . "Column";
+        $param = $type . 'Column';
+        $col = $this->$param;
+        if (empty($col)) {
+            $col = [];
+        }
+        $class = ArrayHelper::getValue($col, 'class', '');
+        $out = !empty($class) && is_subclass_of($class, $target);
+        if (!$out) {
+            $col['class'] = $target;
+            $this->$param = $col;
+        }
+        return $out;
+    }
+
+    /**
+     * Initializes the serial column
+     *
+     * @return void
+     */
+    protected function initSerialColumn()
+    {
+        $this->isColumnSet('serial');
+    }
+
+    /**
+     * Initializes the checkbox column
+     *
+     * @return void
+     */
+    protected function initCheckboxColumn()
+    {
+        if (!$this->isColumnSet('checkbox')) {
+            $this->checkboxColumn['rowHighlight'] = $this->rowHighlight;
+            $this->checkboxColumn['rowSelectedClass'] = $this->rowSelectedClass;
+        }
+    }
+
+    /**
+     * Initializes the action column
+     *
+     * @return void
+     */
+    protected function initActionColumn()
+    {
+        $this->isColumnSet('action');
+        $options = ArrayHelper::getValue($this->actionColumn, 'updateOptions', []);
+        Html::addCssStyle($options, 'display:none');
+        $this->actionColumn['updateOptions'] = $options;
+        if (!isset($this->actionColumn['width'])) {
+            $this->actionColumn['width'] = '60px';
         }
     }
 
@@ -205,15 +273,23 @@ class TabularForm extends BaseForm
             $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = false;
-            $staticInput = '';
             if (!$this->staticOnly && isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
                 $value = function ($model, $key, $index, $widget) use ($attribute, $settings, $formatter) {
+                    $staticInput = '';
                     $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
                     if ($type === self::INPUT_STATIC || $this->staticOnly || $type === self::INPUT_HIDDEN_STATIC) {
-                        $staticInput = $this->getStaticInput($type, $model, $key, $index, $widget, $settings,
-                            $attribute, $formatter);
+                        $staticInput = $this->getStaticInput(
+                            $type,
+                            $model,
+                            $key,
+                            $index,
+                            $widget,
+                            $settings,
+                            $attribute,
+                            $formatter
+                        );
                         if ($type !== self::INPUT_HIDDEN_STATIC) {
                             return $staticInput;
                         }
@@ -230,7 +306,8 @@ class TabularForm extends BaseForm
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
                         if ($type === self::INPUT_HIDDEN_STATIC) {
-                            return $staticInput . Html::hiddenInput("{$this->formName}[{$i}]{$attribute}", $settings['value'], $options);
+                            return $staticInput .
+                            Html::hiddenInput("{$this->formName}[{$i}]{$attribute}", $settings['value'], $options);
                         }
                         return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
                     }
@@ -245,52 +322,6 @@ class TabularForm extends BaseForm
                 ['attribute' => $attribute, 'value' => $value, 'format' => 'raw']
             );
         }
-    }
-
-    /**
-     * Initializes the serial column
-     *
-     * @return void
-     */
-    protected function initSerialColumn()
-    {
-        if (!isset($this->serialColumn['class']) ||
-            !is_subclass_of($this->serialColumn['class'], '\kartik\grid\SerialColumn')
-        ) {
-            $this->serialColumn['class'] = '\kartik\grid\SerialColumn';
-        }
-    }
-
-    /**
-     * Initializes the checkbox column
-     *
-     * @return void
-     */
-    protected function initCheckboxColumn()
-    {
-        if (!isset($this->checkboxColumn['class']) ||
-            !is_subclass_of($this->checkboxColumn['class'], '\kartik\grid\CheckboxColumn')
-        ) {
-            $this->checkboxColumn['class'] = '\kartik\grid\CheckboxColumn';
-            $this->checkboxColumn['rowHighlight'] = $this->rowHighlight;
-            $this->checkboxColumn['rowSelectedClass'] = $this->rowSelectedClass;
-        }
-    }
-
-    /**
-     * Initializes the action column
-     *
-     * @return void
-     */
-    protected function initActionColumn()
-    {
-        if (!isset($this->actionColumn['class']) ||
-            !is_subclass_of($this->actionColumn['class'], '\kartik\grid\ActionColumn')
-        ) {
-            $this->actionColumn['class'] = '\kartik\grid\ActionColumn';
-        }
-        $this->actionColumn['updateOptions'] = ['style' => 'display:none;'];
-        $this->actionColumn = ArrayHelper::merge(['width' => '60px'], $this->actionColumn);
     }
 
     /**

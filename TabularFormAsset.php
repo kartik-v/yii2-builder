@@ -13,7 +13,7 @@ namespace kartik\builder;
  * Asset bundle for \kartik\widgets\TabularForm
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 class TabularFormAsset extends \kartik\base\AssetBundle
 {

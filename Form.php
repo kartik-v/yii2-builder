@@ -290,7 +290,7 @@ class Form extends BaseForm
         $content .= "\t" . $this->endTag('div') . "\n";
         return $content;
     }
-    
+
     /**
      * Parses the input markup based on type
      *

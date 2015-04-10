@@ -13,9 +13,11 @@
 .form-inline fieldset {
     display: inline-block;
 }
+
 .form-sub-attributes .form-group {
     margin-bottom: 0;
 }
+
 .form-horizontal .form-sub-attributes .form-group {
     padding: 0 15px;
 }

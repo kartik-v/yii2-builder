@@ -12,6 +12,7 @@ version 1.6.1
 - (enh #66): New input type `INPUT_HIDDEN_STATIC`
 - (enh #67): New `ActiveFormEvent` class.
 - (enh #68): Enhancements to Form sub attributes layout and styles.
+- (enh #69): Enhance code methods and code format including PHP doc.
 
 version 1.6.0
 =============
