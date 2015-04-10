@@ -13,6 +13,7 @@ version 1.6.1
 - (enh #67): New `ActiveFormEvent` class.
 - (enh #68): Enhancements to Form sub attributes layout and styles.
 - (enh #69): Enhance code methods and code format including PHP doc.
+- (enh #70): Better default `actionColumn` settings.
 
 version 1.6.0
 =============

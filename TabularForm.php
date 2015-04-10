@@ -88,7 +88,10 @@ class TabularForm extends BaseForm
      * @var array the settings for the action column.
      * If set to false will not be displayed.
      */
-    public $actionColumn = [];
+    public $actionColumn = [
+        'updateOptions' => ['style'=>'display:none'],
+        'width' => '60px'
+    ];
 
     /**
      * @var the grid columns
@@ -211,12 +214,6 @@ class TabularForm extends BaseForm
     protected function initActionColumn()
     {
         $this->isColumnSet('action');
-        $options = ArrayHelper::getValue($this->actionColumn, 'updateOptions', []);
-        Html::addCssStyle($options, 'display:none');
-        $this->actionColumn['updateOptions'] = $options;
-        if (!isset($this->actionColumn['width'])) {
-            $this->actionColumn['width'] = '60px';
-        }
     }
 
     /**
