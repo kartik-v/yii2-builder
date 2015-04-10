@@ -42,7 +42,7 @@ use \Closure;
  * ```
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since  1.0
  */
 class TabularForm extends BaseForm
 {
@@ -154,12 +154,12 @@ class TabularForm extends BaseForm
     /**
      * Generates the static input
      *
-     * @param $type string the static input type
-     * @param $model yii\base\Model
-     * @param $key mixed the key
-     * @param $index int the zero based index of the item in dataProvider
-     * @param $widget TabularForm the current widget instance
-     * @param $settings array the attribute settings
+     * @param $type      string the static input type
+     * @param $model     yii\base\Model
+     * @param $key       mixed the key
+     * @param $index     int the zero based index of the item in dataProvider
+     * @param $widget    TabularForm the current widget instance
+     * @param $settings  array the attribute settings
      * @param $attribute string the attribute
      * @param $formatter yii\i18n\Formatter the formatter instance
      *
@@ -230,7 +230,7 @@ class TabularForm extends BaseForm
                         $models = $this->dataProvider->getModels();
                         $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
                         if ($type === self::INPUT_HIDDEN_STATIC) {
-                            return $staticInput . Html::hiddenInput("[{$i}]{$attribute}", $settings['value'], $options);
+                            return $staticInput . Html::hiddenInput("{$this->formName}[{$i}]{$attribute}", $settings['value'], $options);
                         }
                         return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
                     }
