@@ -156,7 +156,11 @@ class TabularForm extends BaseForm
         }
         $func = 'init' . ucfirst($type) . 'Column';
         $this->$func();
-        $this->_columns = ArrayHelper::merge($this->_columns, [$this->$col]);
+        if ($type === 'serial') {
+            $this->_columns = ArrayHelper::merge([$this->$col], $this->_columns);
+        } else {
+            $this->_columns = ArrayHelper::merge($this->_columns, [$this->$col]);
+        }
     }
 
     /**
