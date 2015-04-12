@@ -64,9 +64,10 @@ class TabularForm extends BaseForm
     public $compositeKeySeparator = '_';
 
     /**
-     * @var string the class when a row is selected
+     * @var string the class when a row is selected. Initializing this parameter
+     * to `null` has no effect while initalizing it to `false` removes the class.
      */
-    public $rowSelectedClass = GridView::TYPE_DANGER;
+    public $rowSelectedClass;
 
     /**
      * @var string the namespaced GridView class name. Defaults to '\kartik\grid\GridView'.
@@ -122,6 +123,10 @@ class TabularForm extends BaseForm
             $this->gridClass = $kvGrid;
         } elseif ($this->gridClass !== $kvGrid && !is_subclass_of($this->gridClass, $kvGrid)) {
             throw new InvalidConfigException("The 'gridClass' must be a class which extends from '{$kvGrid}'.");
+        }
+        if($this->rowSelectedClass === null) {
+            $gridClass = $this->gridClass;
+            $this->rowSelectedClass = $gridClass::TYPE_DANGER;
         }
         $this->initOptions();
         $this->registerAssets();
@@ -343,8 +348,9 @@ class TabularForm extends BaseForm
             }
             $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||
                 $settings['type'] == self::INPUT_CHECKBOX || $settings['type'] == self::INPUT_RADIO);
+            $gridClass = $this->gridClass;
             $this->_columns[] = ArrayHelper::merge(
-                ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP],
+                ['vAlign' => $alignMiddle ? $gridClass::ALIGN_MIDDLE : $gridClass::ALIGN_TOP],
                 ArrayHelper::getValue($settings, 'columnOptions', []),
                 $label,
                 ['attribute' => $attribute, 'value' => $value, 'format' => 'raw']
