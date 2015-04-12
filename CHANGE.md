@@ -1,6 +1,6 @@
 version 1.6.1
 =============
-**Date:** 10-Apr-2015
+**Date:** 13-Apr-2015
 
 - (enh #52): Ability to render the entire form in static mode.
 - (enh #55): Composite keys handling for tabular forms.
@@ -14,6 +14,7 @@ version 1.6.1
 - (enh #68): Enhancements to Form sub attributes layout and styles.
 - (enh #69): Enhance code methods and code format including PHP doc.
 - (enh #70): Better default `actionColumn` settings.
+- (enh #74): New `gridClass` property to allow using widget extending `kartik\grid\GridView`.
 
 version 1.6.0
 =============

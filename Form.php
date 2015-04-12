@@ -386,7 +386,9 @@ class Form extends BaseForm
      */
     protected function raise($event = '', $attribute = '', $index = '', $data = [])
     {
-        $this->trigger($event,
-            new ActiveFormEvent(['attribute' => $attribute, 'index' => $index, 'eventData' => $data]));
+        $this->trigger(
+            $event,
+            new ActiveFormEvent(['attribute' => $attribute, 'index' => $index, 'eventData' => $data])
+        );
     }
 }

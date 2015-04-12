@@ -10,6 +10,7 @@ namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\data\BaseDataProvider;
 use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -68,6 +69,12 @@ class TabularForm extends BaseForm
     public $rowSelectedClass = GridView::TYPE_DANGER;
 
     /**
+     * @var string the namespaced GridView class name. Defaults to '\kartik\grid\GridView'.
+     * Any other class set here must extend from '\kartik\grid\GridView'.
+     */
+    public $gridClass;
+
+    /**
      * @var array the settings for `\kartik\widgets\GridView` widget which will display the tabular form content.
      */
     public $gridSettings = [];
@@ -89,7 +96,7 @@ class TabularForm extends BaseForm
      * If set to false will not be displayed.
      */
     public $actionColumn = [
-        'updateOptions' => ['style'=>'display:none'],
+        'updateOptions' => ['style' => 'display:none'],
         'width' => '60px'
     ];
 
@@ -106,13 +113,33 @@ class TabularForm extends BaseForm
     public function init()
     {
         parent::init();
-        if (empty($this->dataProvider) || !$this->dataProvider instanceof \yii\data\BaseDataProvider) {
-            throw new InvalidConfigException(
-                "The 'dataProvider' property must be set and must be an instance of '\\yii\\data\\BaseDataProvider'."
-            );
+        $dp = static::slash(BaseDataProvider::className());
+        if (empty($this->dataProvider) || !$this->dataProvider instanceof BaseDataProvider) {
+            throw new InvalidConfigException("The 'dataProvider' property must be set and must be an instance of '{$dp}'.");
+        }
+        $kvGrid = static::slash(GridView::classname());
+        if (empty($this->gridClass)) {
+            $this->gridClass = $kvGrid;
+        } elseif ($this->gridClass !== $kvGrid && !is_subclass_of($this->gridClass, $kvGrid)) {
+            throw new InvalidConfigException("The 'gridClass' must be a class which extends from '{$kvGrid}'.");
         }
         $this->initOptions();
         $this->registerAssets();
+    }
+
+    /**
+     * Prepends with a back slash if necessary for full namespace validation.
+     *
+     * @param string $str the input string
+     *
+     * @return string
+     */
+    protected static function slash($str = '')
+    {
+        if (empty($str) || substr($str, 1) == "\\") {
+            return $str;
+        }
+        return "\\" . $str;
     }
 
     /**
@@ -333,6 +360,7 @@ class TabularForm extends BaseForm
     protected function renderGrid()
     {
         $rowOptions = [];
+        $gridClass = $this->gridClass;
         if (isset($this->gridSettings['rowOptions'])) {
             $rowOptions = $this->gridSettings['rowOptions'];
         }
@@ -355,7 +383,7 @@ class TabularForm extends BaseForm
             $this->gridSettings,
             $settings
         );
-        return GridView::widget($settings);
+        return $gridClass::widget($settings);
     }
 
     /**
