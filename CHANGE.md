@@ -15,6 +15,7 @@ version 1.6.1
 - (enh #69): Enhance code methods and code format including PHP doc.
 - (enh #70): Better default `actionColumn` settings.
 - (enh #74): New `gridClass` property to allow using widget extending `kartik\grid\GridView`.
+- (enh #77): Enhancements for horizontal form styles.
 
 version 1.6.0
 =============
