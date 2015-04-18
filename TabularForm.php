@@ -324,6 +324,10 @@ class TabularForm extends BaseForm
                     }
                     $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
                     $options = ArrayHelper::getValue($settings, 'options', []);
+                    $placeholder = ArrayHelper::getValue($options,'placeholder', null);
+                    if ($placeholder instanceof \Closure) {
+                      $options['placeholder'] = call_user_func($placeholder, $model, $key, $index, $widget);
+                    }
                     if ($model instanceof \yii\base\Model) {
                         if ($type === self::INPUT_HIDDEN_STATIC) {
                             return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
