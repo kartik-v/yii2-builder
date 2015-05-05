@@ -18,6 +18,7 @@ version 1.6.1
 - (enh #77): Enhancements for horizontal form styles.
 - (enh #81): Allow attribute settings properties to be setup as Closure in `TabularForm::attributes`.
 - (enh #82): Add content before and after in Form builder.
+- (enh #83): More correct Closure input parse for Form widget.
 
 version 1.6.0
 =============
