@@ -62,6 +62,18 @@ class Form extends BaseForm
      * @var yii\db\ActiveRecord | yii\base\Model the model used for the form
      */
     public $model;
+    
+    /**
+     * @var string, content to display before the generated form fields.
+     * This is not HTML encoded.
+     */
+    public $contentBefore = '';
+    
+    /**
+     * @var string, content to display after the generated form fields.
+     * This is not HTML encoded.
+     */
+    public $contentAfter = '';
 
     /**
      * @var integer, the number of columns in which to split the fields horizontally. If not set, defaults to 1 column.
@@ -158,7 +170,9 @@ class Form extends BaseForm
      */
     public function run()
     {
+        echo $this->contentBefore;
         echo $this->renderFieldSet();
+        echo $this->contentAfter;
         echo Html::endTag($this->_tag);
         parent::run();
     }

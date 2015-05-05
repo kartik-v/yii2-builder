@@ -1,11 +1,11 @@
 yii2-builder
 ============
 
-[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/stable.svg)](https://packagist.org/packages/kartik-v/yii2-builder) 
-[![License](https://poser.pugx.org/kartik-v/yii2-builder/license.svg)](https://packagist.org/packages/kartik-v/yii2-builder)
-[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-builder/downloads.svg)](https://packagist.org/packages/kartik-v/yii2-builder) 
-[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/monthly.png)](https://packagist.org/packages/kartik-v/yii2-builder)
-[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/daily.png)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/stable)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![License](https://poser.pugx.org/kartik-v/yii2-builder/license)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-builder/downloads)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/monthly)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/daily)](https://packagist.org/packages/kartik-v/yii2-builder)
 
 A form builder extension that allows you to build both single view and multi-view/tabular forms for Yii Framework 2.0. The extension contains these widgets:
 
