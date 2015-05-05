@@ -301,13 +301,6 @@ class TabularForm extends BaseForm
             $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = false;
-            $options = ArrayHelper::getValue($settings, 'options', []);
-            foreach ($options as $key => $value) {
-              if ($value instanceof \Closure) {
-                $options[$key] = call_user_func($value, $model, $key, $index, $widget);
-              }
-            }
-            $settings['options'] = $options;
             if (!$this->staticOnly && isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
@@ -330,6 +323,13 @@ class TabularForm extends BaseForm
                         }
                     }
                     $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
+                    $options = ArrayHelper::getValue($settings, 'options', []);
+                    foreach ($options as $key => $value) {
+                        if ($value instanceof \Closure) {
+                            $options[$key] = call_user_func($value, $model, $key, $index, $widget);
+                        }
+                    }
+                    $settings['options'] = $options;
                     if ($model instanceof \yii\base\Model) {
                         if ($type === self::INPUT_HIDDEN_STATIC) {
                             return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
