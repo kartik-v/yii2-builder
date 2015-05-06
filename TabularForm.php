@@ -42,6 +42,22 @@ use \Closure;
  *   ActiveForm::end();
  * ```
  *
+ * Most of each property in the attribute settings array (except `label` & `columnOptions`) can be
+ * also setup as a Closure callback i.e. `function ($model, $key, $index, $widget)`. For example:
+ * ```
+ * echo TabularForm::widget([
+ *       'model' => $model, // your model
+ *       'form' => $form,
+ *       'attributes' => [
+ *           'id' => [
+ *              'type' => function($model, $key, $index, $widget) {
+ *                  return (!$model->active) ? TabularForm::INPUT_HIDDEN : TabularForm::INPUT_STATIC]
+ *              }
+ *           ],
+ *       ]
+ * ]);
+ * ```
+ *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
  */
@@ -250,18 +266,17 @@ class TabularForm extends BaseForm
     /**
      * Generates the static input
      *
-     * @param $type      string the static input type
-     * @param $model     yii\base\Model
-     * @param $key       mixed the key
-     * @param $index     int the zero based index of the item in dataProvider
-     * @param $widget    TabularForm the current widget instance
-     * @param $settings  array the attribute settings
-     * @param $attribute string the attribute
-     * @param $formatter yii\i18n\Formatter the formatter instance
+     * @param string             $type the static input type
+     * @param yii\base\Model     $model
+     * @param mixed              $key the key
+     * @param int                $index the zero based index of the item in dataProvider
+     * @param array              $settings the attribute settings
+     * @param string             $attribute the attribute
+     * @param yii\i18n\Formatter $formatter the formatter instance
      *
      * @return string
      */
-    protected function getStaticInput($type, $model, $key, $index, $widget, $settings, $attribute, $formatter)
+    protected function getStaticInput($type, $model, $key, $index, $settings, $attribute, $formatter)
     {
         $format = ArrayHelper::getValue($settings, 'format', 'raw');
         if ($type === self::INPUT_HIDDEN_STATIC) {
@@ -269,16 +284,13 @@ class TabularForm extends BaseForm
         } else {
             $options = ArrayHelper::getValue($settings, 'options', []);
         }
+        $val = null;
         if (isset($settings['staticValue'])) {
             $val = $settings['staticValue'];
-            if ($val instanceof Closure) {
-                $val = call_user_func($val, $model, $key, $index, $widget);
-            }
         } else {
-            $val = ArrayHelper::getValue($settings, 'value', null);
-            if ($val instanceof Closure) {
-                $val = call_user_func($val, $model, $key, $index, $widget);
-            } elseif ($model instanceof \yii\base\Model && !isset($settings['value'])) {
+            if (isset($settings['value'])) {
+                $val = $settings['value'];
+            } elseif ($model instanceof \yii\base\Model) {
                 $val = Html::getAttributeValue($model, $attribute);
             } elseif (($models = $this->dataProvider->getModels()) && !empty($models[$index][$attribute])) {
                 $val = $models[$index][$attribute];
@@ -290,68 +302,101 @@ class TabularForm extends BaseForm
     }
 
     /**
+     * Checks if setting is of valid type and throws exception if not.
+     *
+     * @param string $attr
+     * @param array  $settings
+     * @param string $key
+     * @param string $type
+     *
+     * @throws InvalidConfigException
+     */
+    protected static function checkValidSetting($attr, $settings, $key, $type)
+    {
+        if (!isset($settings[$key])) {
+            return;
+        }
+        $validateFunc = "is_{$type}";
+        if (!$validateFunc($settings[$key])) {
+            throw new InvalidConfigException("You must set the 'settings[\"{$key}\"]' property for " .
+                "'{$attr}' attribute as a valid {$type} (no Closure method is supported).");
+        }
+    }
+
+    /**
+     * Generates a callable grid cell value
+     *
+     * @param string $attribute
+     * @param mixed  $settings
+     *
+     * @return callable
+     */
+    protected function getCellValue($attribute, $settings)
+    {
+        $formatter = ArrayHelper::getValue($this->gridSettings, 'formatter', Yii::$app->formatter);
+        return function ($model, $key, $index, $widget) use ($attribute, $settings, $formatter) {
+            $staticInput = '';
+            foreach ($settings as $k => $v) {
+                if ($v instanceof Closure) {
+                    $settings[$k] = call_user_func($v, $model, $key, $index, $widget);
+                }
+            }
+            $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
+            if ($type === self::INPUT_STATIC || $this->staticOnly || $type === self::INPUT_HIDDEN_STATIC) {
+                $staticInput = $this->getStaticInput($type, $model, $key, $index, $settings, $attribute, $formatter);
+                if ($type !== self::INPUT_HIDDEN_STATIC) {
+                    return $staticInput;
+                }
+            }
+            $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
+            $options = ArrayHelper::getValue($settings, 'options', []);
+            if ($model instanceof \yii\base\Model) {
+                if ($type === self::INPUT_HIDDEN_STATIC) {
+                    return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
+                }
+                return static::renderActiveInput($this->form, $model, "[{$i}]{$attribute}", $settings);
+
+            } else {
+                $models = $this->dataProvider->getModels();
+                $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
+                if ($type === self::INPUT_HIDDEN_STATIC) {
+                    return $staticInput .
+                    Html::hiddenInput("{$this->formName}[{$i}][{$attribute}]", $settings['value'], $options);
+                }
+                return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
+            }
+        };
+    }
+
+    /**
      * Initializes the data columns
+     *
+     * @throws \yii\base\InvalidConfigException
      *
      * @return void
      */
     protected function initDataColumns()
     {
-        $formatter = ArrayHelper::getValue($this->gridSettings, 'formatter', Yii::$app->formatter);
         foreach ($this->attributes as $attribute => $settings) {
+            static::checkValidSetting($attribute, $settings, 'label', 'string');
+            static::checkValidSetting($attribute, $settings, 'columnOptions', 'array');
             $settings = array_replace_recursive($this->attributeDefaults, $settings);
             $label = isset($settings['label']) ? ['label' => $settings['label']] : [];
             $settings['label'] = false;
+            $columnOptions = ArrayHelper::getValue($settings, 'columnOptions', []);
             if (!$this->staticOnly && isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
                 $value = $settings['value'];
             } else {
-                $value = function ($model, $key, $index, $widget) use ($attribute, $settings, $formatter) {
-                    $staticInput = '';
-                    $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
-                    if ($type === self::INPUT_STATIC || $this->staticOnly || $type === self::INPUT_HIDDEN_STATIC) {
-                        $staticInput = $this->getStaticInput(
-                            $type,
-                            $model,
-                            $key,
-                            $index,
-                            $widget,
-                            $settings,
-                            $attribute,
-                            $formatter
-                        );
-                        if ($type !== self::INPUT_HIDDEN_STATIC) {
-                            return $staticInput;
-                        }
-                    }
-                    $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
-                    $options = ArrayHelper::getValue($settings, 'options', []);
-                    foreach ($options as $key => $value) {
-                        if ($value instanceof \Closure) {
-                            $options[$key] = call_user_func($value, $model, $key, $index, $widget);
-                        }
-                    }
-                    $settings['options'] = $options;
-                    if ($model instanceof \yii\base\Model) {
-                        if ($type === self::INPUT_HIDDEN_STATIC) {
-                            return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
-                        }
-                        return static::renderActiveInput($this->form, $model, "[{$i}]{$attribute}", $settings);
-
-                    } else {
-                        $models = $this->dataProvider->getModels();
-                        $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
-                        if ($type === self::INPUT_HIDDEN_STATIC) {
-                            return $staticInput .
-                            Html::hiddenInput("{$this->formName}[{$i}][{$attribute}]", $settings['value'], $options);
-                        }
-                        return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
-                    }
-                };
+                $value = $this->getCellValue($attribute, $settings);
             }
-            $alignMiddle = ($settings['type'] == self::INPUT_RAW || $settings['type'] == self::INPUT_STATIC ||
-                $settings['type'] == self::INPUT_CHECKBOX || $settings['type'] == self::INPUT_RADIO);
+            // auto alignment for certain input types - if the `type` is setup as a Closure, then the
+            // following condition will not work, and one would need to set the alignment manually.
+            $alignMiddle = isset($settings['type']) && ($settings['type'] == self::INPUT_RAW ||
+                    $settings['type'] == self::INPUT_STATIC || $settings['type'] == self::INPUT_CHECKBOX ||
+                    $settings['type'] == self::INPUT_RADIO);
             $this->_columns[] = ArrayHelper::merge(
                 ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP],
-                ArrayHelper::getValue($settings, 'columnOptions', []),
+                $columnOptions,
                 $label,
                 ['attribute' => $attribute, 'value' => $value, 'format' => 'raw']
             );

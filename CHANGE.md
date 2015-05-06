@@ -1,6 +1,6 @@
 version 1.6.1
 =============
-**Date:** 02-May-2015
+**Date:** 05-May-2015
 
 - (enh #52): Ability to render the entire form in static mode.
 - (enh #55): Composite keys handling for tabular forms.
@@ -16,7 +16,9 @@ version 1.6.1
 - (enh #70): Better default `actionColumn` settings.
 - (enh #74): New `gridClass` property to allow using widget extending `kartik\grid\GridView`.
 - (enh #77): Enhancements for horizontal form styles.
+- (enh #81): Allow attribute settings properties to be setup as Closure in `TabularForm::attributes`.
 - (enh #82): Add content before and after in Form builder.
+- (enh #83): More correct Closure input parse for Form widget.
 
 version 1.6.0
 =============

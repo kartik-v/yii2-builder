@@ -331,7 +331,7 @@ class Form extends BaseForm
         if (($type === self::INPUT_STATIC || $type === self::INPUT_HIDDEN_STATIC) && isset($settings['staticValue'])) {
             $val = $settings['staticValue'];
             if ($val instanceof Closure) {
-                $val = call_user_func($val, $model, $key, $index, $widget);
+                $val = call_user_func($val, $this->hasModel() ? $this->model : $this->formName, $index, $this);
             }
             if ($this->hasModel()) {
                 $settings['fieldConfig']['staticValue'] = $val;
