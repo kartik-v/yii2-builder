@@ -340,6 +340,13 @@ class TabularForm extends BaseForm
                 if ($v instanceof Closure) {
                     $settings[$k] = call_user_func($v, $model, $key, $index, $widget);
                 }
+                if ($k == 'options') {
+                    foreach ($settings['options'] as $k => $v) {
+                        if ($v instanceof Closure) {
+                          $settings['options'][$k] = call_user_func($v, $model, $key, $index, $widget);
+                        }
+                    }
+                }
             }
             $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
             if ($type === self::INPUT_STATIC || $this->staticOnly || $type === self::INPUT_HIDDEN_STATIC) {
