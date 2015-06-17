@@ -1,6 +1,6 @@
 version 1.6.1
 =============
-**Date:** 05-May-2015
+**Date:** 17-Jun-2015
 
 - (enh #52): Ability to render the entire form in static mode.
 - (enh #55): Composite keys handling for tabular forms.
@@ -19,6 +19,7 @@ version 1.6.1
 - (enh #81): Allow attribute settings properties to be setup as Closure in `TabularForm::attributes`.
 - (enh #82): Add content before and after in Form builder.
 - (enh #83): More correct Closure input parse for Form widget.
+- (enh #87): Set composer version dependencies.
 
 version 1.6.0
 =============
