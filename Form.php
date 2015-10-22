@@ -3,13 +3,14 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.6.1
+ * @version   1.6.2
  */
 
 namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use \Closure;
@@ -59,16 +60,16 @@ class Form extends BaseForm
     const EVENT_AFTER_RENDER_SUB_ATTR = "eAfterRenderSubAttr";
 
     /**
-     * @var yii\db\ActiveRecord | yii\base\Model the model used for the form
+     * @var Model the model used for the form
      */
     public $model;
-    
+
     /**
      * @var string, content to display before the generated form fields.
      * This is not HTML encoded.
      */
     public $contentBefore = '';
-    
+
     /**
      * @var string, content to display after the generated form fields.
      * This is not HTML encoded.
@@ -215,7 +216,7 @@ class Form extends BaseForm
                 $content .= "\t" . $this->beginTag('div', $colOptions, $skip) . "\n";
                 if (!empty($settings['attributes'])) {
                     $this->raise(self::EVENT_BEFORE_RENDER_SUB_ATTR, $attribute, $index, ['settings' => &$settings]);
-                    $content .= $this->renderSubAttributes($attribute, $settings, $index);
+                    $content .= $this->renderSubAttributes($settings, $index);
                     $this->raise(self::EVENT_AFTER_RENDER_SUB_ATTR, $attribute, $index, ['content' => &$content]);
                 } else {
                     $this->raise(self::EVENT_BEFORE_PARSE_INPUT, $attribute, $index, ['settings' => &$settings]);
@@ -233,11 +234,14 @@ class Form extends BaseForm
     /**
      * Render sub attributes
      *
+     * @param array  $settings the attribute settings
+     * @param string $index the zero-based index of the attribute
+     *
      * @return string
      */
-    protected function renderSubAttributes($attribute, $settings, $index)
+    protected function renderSubAttributes($settings, $index)
     {
-        $content = $this->getSubAttributesContent($attribute, $settings, $index);
+        $content = $this->getSubAttributesContent($settings, $index);
         $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
         $label = ArrayHelper::getValue($settings, 'label', '');
         if ($this->_orientation === ActiveForm::TYPE_INLINE) {
@@ -251,10 +255,8 @@ class Form extends BaseForm
             $content . "\n" .
             '</div>';
         }
-        if (isset($this->form->formConfig['labelSpan'])) {
-            $defaultLabelSpan = $this->form->formConfig['labelSpan'];
-        }
-        $labelSpan = ArrayHelper::getValue($settings, 'labelSpan', 3);
+        $defaultLabelSpan = ArrayHelper::getValue($this->form->formConfig, 'labelSpan', 3);
+        $labelSpan = ArrayHelper::getValue($settings, 'labelSpan', $defaultLabelSpan);
         Html::addCssClass($labelOptions, "col-{$this->columnSize}-{$labelSpan} control-label");
         $inputSpan = self::GRID_WIDTH - $labelSpan;
         $rowOptions = ['class' => 'kv-nested-attribute-block form-sub-attributes form-group'];
@@ -272,9 +274,12 @@ class Form extends BaseForm
     /**
      * Gets sub attribute markup content
      *
+     * @param array  $settings the attribute settings
+     * @param string $index the zero-based index of the attribute
+     *
      * @return string
      */
-    protected function getSubAttributesContent($attribute, $settings, $index)
+    protected function getSubAttributesContent($settings, $index)
     {
         $subIndex = 0;
         $defaultSubColOptions = ArrayHelper::getValue($settings, 'subColumnOptions', $this->columnOptions);
@@ -297,6 +302,7 @@ class Form extends BaseForm
             $subSettings['columnOptions'] = $subColOptions;
             $subSettings['fieldConfig']['skipFormLayout'] = true;
             $content .= "\t\t" . $this->beginTag('div', $subColOptions) . "\n";
+            /** @var int $index */
             $content .= "\t\t\t" . $this->parseInput($subAttr, $subSettings, $index * 10 + $subIndex) . "\n";
             $subIndex++;
             $content .= "\t\t" . $this->endTag('div') . "\n";
@@ -309,8 +315,8 @@ class Form extends BaseForm
      * Parses the input markup based on type
      *
      * @param string $attribute the model attribute
-     * @param string $settings  the column settings
-     * @param int    $index     the row index
+     * @param string $settings the column settings
+     * @param int    $index the row index
      *
      * @return \kartik\form\ActiveField|mixed
      * @throws InvalidConfigException
@@ -338,8 +344,6 @@ class Form extends BaseForm
             } else {
                 $settings['value'] = $val;
             }
-        } else {
-            $val = ArrayHelper::getValue($settings, 'value', null);
         }
         $val = ArrayHelper::getValue($settings, 'value', null);
         if ($type === self::INPUT_RAW) {
@@ -367,9 +371,13 @@ class Form extends BaseForm
     /**
      * Begins a tag markup based on orientation
      *
+     * @param string $tag the HTML tag
+     * @param array  $options the HTML attributes for the tag
+     * @param bool   $skip whether to skip the tag generation
+     *
      * @return string
      */
-    protected function beginTag($tag, $options, $skip = false)
+    protected function beginTag($tag, $options = [], $skip = false)
     {
         if ($this->_orientation !== ActiveForm::TYPE_INLINE && !$skip) {
             return Html::beginTag($tag, $options) . "\n";
@@ -379,6 +387,9 @@ class Form extends BaseForm
 
     /**
      * Ends a tag markup based on orientation
+     *
+     * @param string $tag the HTML tag
+     * @param bool   $skip whether to skip the tag generation
      *
      * @return string
      */

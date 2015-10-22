@@ -4,14 +4,13 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.6.1
+ * @version   1.6.2
  */
 namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
+use yii\bootstrap\Widget;
 
 /**
  * Use an easy configuration option to render your form grid rows and columns
@@ -48,7 +47,7 @@ use yii\helpers\Html;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
  */
-class FormGrid extends \yii\bootstrap\Widget
+class FormGrid extends Widget
 {
     /**
      * @var \yii\db\ActiveRecord|\yii\base\Model the model used for the form
@@ -125,7 +124,8 @@ class FormGrid extends \yii\bootstrap\Widget
         parent::init();
         if (empty($this->rows) || !is_array($this->rows) || !is_array(current($this->rows))) {
             throw new InvalidConfigException(
-                "The 'rows' property must be setup as an array of grid rows. Each row element must again be an array, where you must set the configuration properties as required by 'kartik\builder\Form'."
+                "The 'rows' property must be setup as an array of grid rows. Each row element must again be an array," .
+                " where you must set the configuration properties as required by 'kartik\builder\Form'."
             );
         }
     }

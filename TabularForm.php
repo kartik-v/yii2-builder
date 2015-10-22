@@ -4,16 +4,17 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.6.1
+ * @version   1.6.2
  */
 namespace kartik\builder;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\data\BaseDataProvider;
-use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\i18n\Formatter;
 use kartik\form\ActiveForm;
 use kartik\grid\GridView;
 use \Closure;
@@ -85,8 +86,8 @@ class TabularForm extends BaseForm
     public $rowSelectedClass = GridView::TYPE_DANGER;
 
     /**
-     * @var string the namespaced GridView class name. Defaults to '\kartik\grid\GridView'.
-     * Any other class set here must extend from '\kartik\grid\GridView'.
+     * @var string the namespaced GridView class name. Defaults to '\kartik\grid\GridView'. Any other class set here
+     * must extend from '\kartik\grid\GridView'.
      */
     public $gridClass;
 
@@ -117,9 +118,9 @@ class TabularForm extends BaseForm
     ];
 
     /**
-     * @var the grid columns
+     * @var array the grid columns
      */
-    private $_columns = [];
+    protected $_columns = [];
 
     /**
      * Initializes the widget
@@ -176,11 +177,9 @@ class TabularForm extends BaseForm
     protected function initOptions()
     {
         $this->initDataColumns();
-
         if (!empty($this->form)) {
             $this->form->type = ActiveForm::TYPE_VERTICAL;
         }
-
         $this->initColumn('serial');
         $this->initColumn('action');
         $this->initColumn('checkbox');
@@ -266,17 +265,16 @@ class TabularForm extends BaseForm
     /**
      * Generates the static input
      *
-     * @param string             $type the static input type
-     * @param yii\base\Model     $model
-     * @param mixed              $key the key
-     * @param int                $index the zero based index of the item in dataProvider
-     * @param array              $settings the attribute settings
-     * @param string             $attribute the attribute
-     * @param yii\i18n\Formatter $formatter the formatter instance
+     * @param string    $type the static input type
+     * @param Model     $model
+     * @param int       $index the zero based index of the item in dataProvider
+     * @param array     $settings the attribute settings
+     * @param string    $attribute the attribute
+     * @param Formatter $formatter the formatter instance
      *
      * @return string
      */
-    protected function getStaticInput($type, $model, $key, $index, $settings, $attribute, $formatter)
+    protected function getStaticInput($type, $model, $index, $settings, $attribute, $formatter)
     {
         $format = ArrayHelper::getValue($settings, 'format', 'raw');
         if ($type === self::INPUT_HIDDEN_STATIC) {
@@ -290,7 +288,7 @@ class TabularForm extends BaseForm
         } else {
             if (isset($settings['value'])) {
                 $val = $settings['value'];
-            } elseif ($model instanceof \yii\base\Model) {
+            } elseif ($model instanceof Model) {
                 $val = Html::getAttributeValue($model, $attribute);
             } elseif (($models = $this->dataProvider->getModels()) && !empty($models[$index][$attribute])) {
                 $val = $models[$index][$attribute];
@@ -304,10 +302,10 @@ class TabularForm extends BaseForm
     /**
      * Checks if setting is of valid type and throws exception if not.
      *
-     * @param string $attr
-     * @param array  $settings
-     * @param string $key
-     * @param string $type
+     * @param string $attr the attribute to check
+     * @param array  $settings the attribute settings
+     * @param string $key the model key
+     * @param string $type the attribute input type
      *
      * @throws InvalidConfigException
      */
@@ -318,8 +316,10 @@ class TabularForm extends BaseForm
         }
         $validateFunc = "is_{$type}";
         if (!$validateFunc($settings[$key])) {
-            throw new InvalidConfigException("You must set the 'settings[\"{$key}\"]' property for " .
-                "'{$attr}' attribute as a valid {$type} (no Closure method is supported).");
+            throw new InvalidConfigException(
+                "You must set the 'settings[\"{$key}\"]' property for  '{$attr}' attribute as a valid {$type} ".
+                "(no Closure method is supported)."
+            );
         }
     }
 
@@ -343,14 +343,14 @@ class TabularForm extends BaseForm
             }
             $type = ArrayHelper::getValue($settings, 'type', self::INPUT_RAW);
             if ($type === self::INPUT_STATIC || $this->staticOnly || $type === self::INPUT_HIDDEN_STATIC) {
-                $staticInput = $this->getStaticInput($type, $model, $key, $index, $settings, $attribute, $formatter);
+                $staticInput = $this->getStaticInput($type, $model, $index, $settings, $attribute, $formatter);
                 if ($type !== self::INPUT_HIDDEN_STATIC) {
                     return $staticInput;
                 }
             }
             $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
             $options = ArrayHelper::getValue($settings, 'options', []);
-            if ($model instanceof \yii\base\Model) {
+            if ($model instanceof Model) {
                 if ($type === self::INPUT_HIDDEN_STATIC) {
                     return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
                 }
@@ -434,6 +434,7 @@ class TabularForm extends BaseForm
             $this->gridSettings,
             $settings
         );
+        /** @var GridView $gridClass */
         return $gridClass::widget($settings);
     }
 

@@ -1,5 +1,14 @@
-version 1.6.1
-=============
+Change Log: `yii2-builder`
+==========================
+
+## Version 1.6.2
+
+**Date:** 22-Oct-2015
+
+- (enh #95): Add functionality for Bootstrap Checkbox Button Group and Radio Button Group.
+
+## Version 1.6.1
+
 **Date:** 17-Jun-2015
 
 - (enh #52): Ability to render the entire form in static mode.
@@ -19,10 +28,10 @@ version 1.6.1
 - (enh #81): Allow attribute settings properties to be setup as Closure in `TabularForm::attributes`.
 - (enh #82): Add content before and after in Form builder.
 - (enh #83): More correct Closure input parse for Form widget.
-- (enh #87): Set composer version dependencies.
+- (enh #87): Set composer ## Version dependencies.
 
-version 1.6.0
-=============
+## Version 1.6.0
+
 **Date:** 28-Jan-2015
 
 - (enh #38): Set dependencies to kartik\form\ActiveForm.
@@ -37,8 +46,8 @@ version 1.6.0
 - (enh #50): Enable format ability for INPUT_STATIC types in TabularForm.
 - (enh #51): Add support for rendering hidden inputs.
 
-version 1.5.0
-=============
+## Version 1.5.0
+
 **Date:** 03-Dec-2014
 
 - (enh #33): Support all data providers extending from `yii\data\BaseDataProvider` for TabularForm widget.
@@ -56,14 +65,14 @@ version 1.5.0
     - `labelOptions`: array, (optional) the HTML attributes for the label. Will be applied only when NOT using with active form and only if label is set.
 - New `FormTrait` added for better code reuse.
 
-version 1.4.0
-=============
+## Version 1.4.0
+
 **Date:** 01-Dec-2014
 
 - (enh #30): Enhance Form Builder for horizontal forms and ability to customize labels.
 
-version 1.3.0
-=============
+## Version 1.3.0
+
 **Date:** 27-Nov-2014
 
 - (enh #20): Fix code style and PHP documentation.
@@ -72,8 +81,8 @@ version 1.3.0
 - Set copyright year to 2014.
 
 
-version 1.2.0
-=============
+## Version 1.2.0
+
 **Date:** 11-Nov-2014
 
 - enh #23: Create `autoGenerateColumns` property for Form Builder
@@ -83,8 +92,8 @@ version 1.2.0
 - bug #25: Correct package dependencies.
 - bug #26: Correct instance of ActiveForm validation for FormGrid.
 
-version 1.1.0
-=============
+## Version 1.1.0
+
 **Date:** 07-Jul-2014
 
 - enh #13: Added ability to configure and display hints below each active field attribute.
@@ -93,8 +102,8 @@ version 1.1.0
 - PSR 4 alias change
 
 
-version 1.0.0
-=============
+## Version 1.0.0
+
 **Date:** 01-May-2014
 
 Initial release

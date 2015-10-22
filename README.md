@@ -1,7 +1,7 @@
 yii2-builder
 ============
 
-[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/stable)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Latest Stable Version](https://img.shields.io/packagist/v/kartik-v/yii2-builder.svg)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![License](https://poser.pugx.org/kartik-v/yii2-builder/license)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-builder/downloads)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/monthly)](https://packagist.org/packages/kartik-v/yii2-builder)
@@ -18,7 +18,7 @@ A form builder extension that allows you to build both single view and multi-vie
 [composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
 
 ## Latest Release
-The latest version of the module is v1.6.1. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
+The latest version of the module is v1.6.2. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
 
 ## Form
 
@@ -42,6 +42,7 @@ The Form Builder widget allows you to build a form through a configuration array
     - `INPUT_CHECKBOX` or `checkbox`
     - `INPUT_RADIO` or `radio`
     - `INPUT_CHECKBOX_LIST` or `checkboxList`
+    - `INPUT_CHECKBOX_BUTTON_GROUP` or `checkboxList`
     - `INPUT_RADIO_LIST` or `radioList`
     - `INPUT_MULTISELECT` or `multiselect`
     - `INPUT_FILE` or `fileInput`

@@ -4,25 +4,27 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.6.1
+ * @version   1.6.2
  */
 
 namespace kartik\builder;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
+use yii\widgets\InputWidget;
+use yii\bootstrap\Widget;
+use kartik\helpers\Html;
+use kartik\form\ActiveForm;
 use kartik\form\ActiveField;
 
 /**
  * Base form widget
  *
- * @property $form kartik\form\ActiveForm
- *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class BaseForm extends \yii\bootstrap\Widget
+class BaseForm extends Widget
 {
     use FormTrait;
 
@@ -39,6 +41,8 @@ class BaseForm extends \yii\bootstrap\Widget
     const INPUT_RADIO = 'radio';
     const INPUT_CHECKBOX_LIST = 'checkboxList';
     const INPUT_RADIO_LIST = 'radioList';
+    const INPUT_CHECKBOX_BUTTON_GROUP = 'checkboxButtonGroup';
+    const INPUT_RADIO_BUTTON_GROUP = 'radioButtonGroup';
     const INPUT_MULTISELECT = 'multiselect';
     const INPUT_FILE = 'fileInput';
     const INPUT_HTML5 = 'input';
@@ -58,6 +62,8 @@ class BaseForm extends \yii\bootstrap\Widget
         self::INPUT_RADIO,
         self::INPUT_CHECKBOX_LIST,
         self::INPUT_RADIO_LIST,
+        self::INPUT_CHECKBOX_BUTTON_GROUP,
+        self::INPUT_RADIO_BUTTON_GROUP,
         self::INPUT_MULTISELECT,
         self::INPUT_STATIC,
         self::INPUT_HIDDEN,
@@ -66,6 +72,31 @@ class BaseForm extends \yii\bootstrap\Widget
         self::INPUT_HTML5,
         self::INPUT_WIDGET,
         self::INPUT_RAW
+    ];
+
+    /**
+     * @var array the basic inputs
+     */
+    protected static $_basicInputs = [
+        self::INPUT_TEXT => true,
+        self::INPUT_PASSWORD => true,
+        self::INPUT_TEXTAREA => true,
+        self::INPUT_FILE => true,
+        self::INPUT_HIDDEN => true,
+        self::INPUT_STATIC => true
+    ];
+
+    /**
+     * @var array the dropdown inputs
+     */
+    protected static $_dropdownInputs = [
+        self::INPUT_DROPDOWN_LIST => true,
+        self::INPUT_LIST_BOX => true,
+        self::INPUT_CHECKBOX_LIST => true,
+        self::INPUT_RADIO_LIST => true,
+        self::INPUT_CHECKBOX_BUTTON_GROUP => true,
+        self::INPUT_RADIO_BUTTON_GROUP => true,
+        self::INPUT_MULTISELECT => true
     ];
 
     /**
@@ -127,6 +158,7 @@ class BaseForm extends \yii\bootstrap\Widget
      *    - `hint`: string, the hint text to be shown below the active field.
      *    - 'items': array, the list of items if input type is one of the following:
      *      `INPUT_DROPDOWN_LIST`, `INPUT_LIST_BOX`, `INPUT_CHECKBOX_LIST`, `INPUT_RADIO_LIST`, `INPUT_MULTISELECT`
+     *      `INPUT_CHECKBOX_BUTTON_GROUP`, `INPUT_RADIO_BUTTON_GROUP`
      *    - `enclosedByLabel`: bool, if the `INPUT_CHECKBOX` or `INPUT_RADIO` is to be enclosed by label. Defaults
      *      to `true`.
      *    - html5type: string, the type of HTML5 input, if input type is set to `INPUT_HTML5`.
@@ -153,7 +185,7 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Initializes the widget
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function init()
     {
@@ -166,13 +198,13 @@ class BaseForm extends \yii\bootstrap\Widget
      * This includes additional markup like rendering content before
      * and after input, and wrapping input in a container if set.
      *
-     * @param \kartik\form\ActiveForm              $form the form instance
-     * @param \yii\db\ActiveRecord|\yii\base\Model $model
-     * @param string                               $attribute the name of the attribute
-     * @param array                                $settings the attribute settings
+     * @param ActiveForm $form the form instance
+     * @param Model      $model
+     * @param string     $attribute the name of the attribute
+     * @param array      $settings the attribute settings
      *
-     * @return \kartik\form\ActiveField
-     * @throws \yii\base\InvalidConfigException
+     * @return ActiveField
+     * @throws InvalidConfigException
      *
      */
     protected static function renderActiveInput($form, $model, $attribute, $settings)
@@ -194,17 +226,15 @@ class BaseForm extends \yii\bootstrap\Widget
      * @param array  $settings the attribute settings
      *
      * @return string the form input markup
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected static function renderInput($attribute, $settings = [])
     {
         $for = '';
-        $input = static::renderRawInput($attribute, $settings, $for);
+        $input = static::renderRawInput($attribute, $for, $settings);
         $label = ArrayHelper::getValue($settings, 'label', false);
         $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
         Html::addCssClass($labelOptions, 'control-label');
-        $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
-        $options = ArrayHelper::getValue($settings, 'options', []);
         $label = $label !== false && !empty($for) ? Html::label($label, $for, $labelOptions) . "\n" : '';
         $container = ArrayHelper::getValue($settings, 'container', []);
         $prepend = ArrayHelper::getValue($settings, 'prepend', '');
@@ -220,13 +250,13 @@ class BaseForm extends \yii\bootstrap\Widget
     /**
      * Renders raw active input based on the attribute settings
      *
-     * @param \kartik\form\ActiveForm              $form the form instance
-     * @param \yii\db\ActiveRecord|\yii\base\Model $model
-     * @param string                               $attribute the name of the attribute
-     * @param array                                $settings the attribute settings
+     * @param ActiveForm $form the form instance
+     * @param Model      $model
+     * @param string     $attribute the name of the attribute
+     * @param array      $settings the attribute settings
      *
-     * @return \kartik\form\ActiveField
-     * @throws \yii\base\InvalidConfigException
+     * @return ActiveField
+     * @throws InvalidConfigException
      *
      */
     protected static function renderRawActiveInput($form, $model, $attribute, $settings)
@@ -241,20 +271,19 @@ class BaseForm extends \yii\bootstrap\Widget
         $options = ArrayHelper::getValue($settings, 'options', []);
         $label = ArrayHelper::getValue($settings, 'label', null);
         $hint = ArrayHelper::getValue($settings, 'hint', null);
+        /**
+         * @var ActiveField $field
+         */
         $field = $form->field($model, $attribute, $fieldConfig);
-        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD ||
-            $type === self::INPUT_TEXTAREA || $type === self::INPUT_FILE ||
-            $type === self::INPUT_HIDDEN || $type === self::INPUT_STATIC
-        ) {
+        if (isset(static::$_basicInputs[$type])) {
             return static::getInput($field->$type($options), $label, $hint);
-        } elseif ($type === self::INPUT_HIDDEN_STATIC) {
+        }
+        if ($type === self::INPUT_HIDDEN_STATIC) {
             $staticOptions = ArrayHelper::getValue($settings, 'hiddenStaticOptions', []);
             return static::getInput($field->staticInput($staticOptions), $label, $hint) .
             static::getInput($field->hiddenInput($options));
         }
-        if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||
-            $type === self::INPUT_RADIO_LIST || $type === self::INPUT_MULTISELECT
-        ) {
+        if (isset(static::$_dropdownInputs[$type])) {
             if (!isset($settings['items'])) {
                 throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
             }
@@ -273,7 +302,7 @@ class BaseForm extends \yii\bootstrap\Widget
         }
         if ($type === self::INPUT_WIDGET) {
             $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
-            if (empty($widgetClass) && !$widgetClass instanceof yii\widgets\InputWidget) {
+            if (empty($widgetClass) && !$widgetClass instanceof InputWidget) {
                 throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
             }
             return static::getInput($field->$type($widgetClass, $options), $label, $hint);
@@ -281,18 +310,20 @@ class BaseForm extends \yii\bootstrap\Widget
         if ($type === self::INPUT_RAW) {
             return ArrayHelper::getValue($settings, 'value', '');
         }
+        return null;
     }
 
     /**
      * Renders raw form input based on the attribute settings
      *
      * @param string $attribute the name of the attribute
+     * @param string $id the input identifier
      * @param array  $settings the attribute settings
      *
      * @return string the form input markup
      * @throws \yii\base\InvalidConfigException
      */
-    protected static function renderRawInput($attribute, $settings = [], &$id)
+    protected static function renderRawInput($attribute, &$id, $settings = [])
     {
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $i = strpos($attribute, ']');
@@ -323,16 +354,13 @@ class BaseForm extends \yii\bootstrap\Widget
             }
             return $out;
         }
-        Html::addCssClass($options, 'form-control');
-        if ($type === self::INPUT_TEXT || $type === self::INPUT_PASSWORD || $type === self::INPUT_TEXTAREA ||
-            $type === self::INPUT_FILE || $type === self::INPUT_HIDDEN
-        ) {
+        if (!isset($options['class']) && $type !== self::INPUT_CHECKBOX_BUTTON_GROUP && $type !== self::INPUT_RADIO_BUTTON_GROUP) {
+            $options['class'] = 'form-control';
+        }
+        if (isset(static::$_basicInputs[$type])) {
             return Html::$type($attribute, $value, $options);
         }
-
-        if ($type === self::INPUT_DROPDOWN_LIST || $type === self::INPUT_LIST_BOX || $type === self::INPUT_CHECKBOX_LIST ||
-            $type === self::INPUT_RADIO_LIST || $type === self::INPUT_MULTISELECT
-        ) {
+        if (isset(static::$_dropdownInputs[$type])) {
             if (!isset($settings['items'])) {
                 throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
             }
@@ -347,11 +375,11 @@ class BaseForm extends \yii\bootstrap\Widget
         }
         if ($type === self::INPUT_HTML5) {
             $html5type = ArrayHelper::getValue($settings, 'html5type', 'text');
-            return Html::input($type, $attribute, $value, $options);
+            return Html::input($html5type, $attribute, $value, $options);
         }
         if ($type === self::INPUT_WIDGET) {
             $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
-            if (empty($widgetClass) && !$widgetClass instanceof yii\widgets\InputWidget) {
+            if (empty($widgetClass) && !$widgetClass instanceof InputWidget) {
                 throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
             }
             $options['name'] = $attribute;
@@ -359,8 +387,9 @@ class BaseForm extends \yii\bootstrap\Widget
             return $widgetClass::widget($options);
         }
         if ($type === self::INPUT_RAW) {
-            $value = ArrayHelper::getValue($settings, 'value', '');
+            return ArrayHelper::getValue($settings, 'value', '');
         }
+        return null;
     }
 
     /**
