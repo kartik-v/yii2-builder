@@ -9,14 +9,14 @@
 
 namespace kartik\builder;
 
+use kartik\form\ActiveField;
+use kartik\form\ActiveForm;
+use kartik\helpers\Html;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\bootstrap\Widget;
 use yii\helpers\ArrayHelper;
 use yii\widgets\InputWidget;
-use yii\bootstrap\Widget;
-use kartik\helpers\Html;
-use kartik\form\ActiveForm;
-use kartik\form\ActiveField;
 
 /**
  * Base form widget
@@ -115,28 +115,30 @@ class BaseForm extends Widget
      * `$attribute_name => $attribute_settings`, where:
      * - `attribute_name`: string, the name of the attribute
      * - `attribute_settings`: array, the settings for the attribute, where you can set the following:
-     *    - 'type': string, the input type for the attribute. Should be one of the INPUT_ constants.
-     *       Defaults to `INPUT_TEXT`.
-     *    - 'attributes': array, the nested group of sub attributes that will be grouped together, this
-     *      configuration will be similar to attributes. The label property will be auto set to `false`
-     *      for each sub attribute.
+     *    - 'type': string, the input type for the attribute. Should be one of the INPUT_ constants. Defaults to
+     *     `INPUT_TEXT`.
+     *    - 'visible': boolean, whether the attribute is visible. One can use this property to control visibility of
+     *     attributes conditionally.
+     *    - 'attributes': array, the nested group of sub attributes that will be grouped together, this configuration
+     *     will be similar to the parent attributes. The label property will be auto set to `false` for each sub
+     *     attribute.
      *    - 'value': string|Closure, the value to be displayed if the `type` is set to `INPUT_RAW` or `INPUT_STATIC`.
-     *       This will display the raw text from value field if it is a string. If this is a Closure, your anonymous
-     *       function call should be of the type: `function ($model, $key, $index, $widget) { }, where $model is the
-     *       current model, $key is the key associated with the data model $index is the zero based index of the
-     *       dataProvider, and $widget is the current widget instance.`
+     *     This will display the raw text from value field if it is a string. If this is a Closure, your anonymous
+     *     function call should be of the type: `function ($model, $key, $index, $widget) { }, where $model is the
+     *     current model, $key is the key associated with the data model $index is the zero based index of the
+     *     dataProvider, and $widget is the current widget instance.`
      *    - 'staticValue': string|Closure, the value to be displayed for INPUT_STATIC. If not set, the value will be
-     *      automatically generated from the `value` setting above OR from the value of the model attribute. If this
-     *      is a Closure, your anonymous function call should be of the type:
+     *     automatically generated from the `value` setting above OR from the value of the model attribute. If this is
+     *     a Closure, your anonymous function call should be of the type:
      *      `function ($model, $key, $index, $widget) { }, where $model is the current model, $key is the key
-     *       associated with the data model $index is the zero based index of the dataProvider, and
-     *       $widget is the current widget instance.`
-     *    - 'format': string|array, applicable only for `INPUT_STATIC` type (and only in tabular forms). This
-     *      controls which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`,
-     *      `"html"`, `['date', 'php:Y-m-d']`). Supported formats are determined by [Yii::$app->formatter].
-     *      Default format is "raw".
-     *    - 'hiddenStaticOptions': array, HTML attributes for the static control container and applicable only
-     *      for `INPUT_HIDDEN_STATIC` type.
+     *     associated with the data model $index is the zero based index of the dataProvider, and $widget is the
+     *     current widget instance.`
+     *    - 'format': string|array, applicable only for `INPUT_STATIC` type (and only in tabular forms). This controls
+     *     which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     *     `['date', 'php:Y-m-d']`). Supported formats are determined by [Yii::$app->formatter]. Default format is
+     *     "raw".
+     *    - 'hiddenStaticOptions': array, HTML attributes for the static control container and applicable only for
+     *     `INPUT_HIDDEN_STATIC` type.
      *    - 'label': string, (optional) the custom attribute label. If this is not set, the model attribute label
      *      will be automatically used. If you set it to false, the `label` will be entirely hidden.
      *    - 'labelSpan': int, the grid span width of the label container, which is especially useful for horizontal
@@ -190,13 +192,29 @@ class BaseForm extends Widget
     public function init()
     {
         parent::init();
+        static::prepareAttributes($this->attributes);
         $this->checkBaseConfig();
     }
 
     /**
-     * Renders active input based on the attribute settings.
-     * This includes additional markup like rendering content before
-     * and after input, and wrapping input in a container if set.
+     * Prepares attributes based on visibility setting
+     *
+     * @param array $attributes the attributes to be prepared
+     */
+    protected static function prepareAttributes(&$attributes = [])
+    {
+        foreach ($attributes as $key => $setting) {
+            if (!is_array($setting) || ArrayHelper::getValue($setting, 'visible', true) !== true) {
+                unset($attributes[$key]);
+            } elseif (isset($setting['attributes'])) {
+                static::prepareAttributes($setting['attributes']);
+            }
+        }
+    }
+
+    /**
+     * Renders active input based on the attribute settings. This includes additional markup like rendering content
+     * before and after input, and wrapping input in a container if set.
      *
      * @param ActiveForm $form the form instance
      * @param Model      $model
