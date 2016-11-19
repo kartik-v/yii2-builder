@@ -3,10 +3,12 @@ Change Log: `yii2-builder`
 
 ## Version 1.6.2
 
-**Date:** 12-May-2016
+**Date:** 19-Nov-2016
 
 - (enh #95): Add functionality for Bootstrap Checkbox Button Group and Radio Button Group.
 - (enh #108, #110): Add support for configuring attribute visibility.
+- (enh #112): Correct prepend and append for INPUT_STATIC.
+- Enhance and complete PHP documentation for all classes in the extension
 
 ## Version 1.6.1
 
