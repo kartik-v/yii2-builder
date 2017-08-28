@@ -290,7 +290,7 @@ class TabularForm extends BaseForm
                 $val = $settings['value'];
             } elseif ($model instanceof Model) {
                 $val = Html::getAttributeValue($model, $attribute);
-            } elseif (($models = $this->dataProvider->getModels()) && !empty($models[$index][$attribute])) {
+            } elseif (($models = $this->dataProvider->getModels()) && !$this->isEmptyAttribute($models, $index, $attribute)) {
                 $val = $models[$index][$attribute];
             }
         }
@@ -361,7 +361,7 @@ class TabularForm extends BaseForm
 
             } else {
                 $models = $this->dataProvider->getModels();
-                $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
+                $settings['value'] = $this->isEmptyAttribute($models, $index, $attribute) ? null : $models[$index][$attribute];
                 if ($type === self::INPUT_HIDDEN_STATIC) {
                     return $staticInput .
                     Html::hiddenInput("{$this->formName}[{$i}][{$attribute}]", $settings['value'], $options);
@@ -451,4 +451,9 @@ class TabularForm extends BaseForm
         $view = $this->getView();
         TabularFormAsset::register($view);
     }
+	
+	protected function isEmptyAttribute($models, $index, $attribute)
+	{
+		return !isset($models[$index][$attribute]) || is_null($models[$index][$attribute]) || $models[$index][$attribute] === '';
+	}
 }
