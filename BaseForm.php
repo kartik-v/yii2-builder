@@ -3,8 +3,8 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
- * @version   1.6.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
+ * @version   1.6.3
  */
 
 namespace kartik\builder;
@@ -127,7 +127,7 @@ class BaseForm extends Widget
         self::INPUT_FILE,
         self::INPUT_HTML5,
         self::INPUT_WIDGET,
-        self::INPUT_RAW
+        self::INPUT_RAW,
     ];
 
     /**
@@ -139,7 +139,7 @@ class BaseForm extends Widget
         self::INPUT_TEXTAREA => true,
         self::INPUT_FILE => true,
         self::INPUT_HIDDEN => true,
-        self::INPUT_STATIC => true
+        self::INPUT_STATIC => true,
     ];
 
     /**
@@ -152,7 +152,7 @@ class BaseForm extends Widget
         self::INPUT_RADIO_LIST => true,
         self::INPUT_CHECKBOX_BUTTON_GROUP => true,
         self::INPUT_RADIO_BUTTON_GROUP => true,
-        self::INPUT_MULTISELECT => true
+        self::INPUT_MULTISELECT => true,
     ];
 
     /**
@@ -240,17 +240,6 @@ class BaseForm extends Widget
     public $staticOnly = false;
 
     /**
-     * @inheritdoc
-     * @throws InvalidConfigException
-     */
-    public function init()
-    {
-        parent::init();
-        static::prepareAttributes($this->attributes);
-        $this->checkBaseConfig();
-    }
-
-    /**
      * Prepares attributes based on visibility setting
      *
      * @param array $attributes the attributes to be prepared
@@ -275,7 +264,7 @@ class BaseForm extends Widget
      * @param string     $attribute the name of the attribute.
      * @param array      $settings the attribute settings.
      *
-     * @return ActiveField
+     * @return string
      * @throws InvalidConfigException
      *
      */
@@ -336,7 +325,9 @@ class BaseForm extends Widget
         $i = strpos($attribute, ']');
         $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
         if (!in_array($type, static::$_validInputs)) {
-            throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attribName}'.'");
+            throw new InvalidConfigException(
+                "Invalid input type '{$type}' configured for the attribute '{$attribName}'.'"
+            );
         }
         $fieldConfig = ArrayHelper::getValue($settings, 'fieldConfig', []);
         $options = ArrayHelper::getValue($settings, 'options', []);
@@ -352,11 +343,13 @@ class BaseForm extends Widget
         if ($type === self::INPUT_HIDDEN_STATIC) {
             $staticOptions = ArrayHelper::getValue($settings, 'hiddenStaticOptions', []);
             return static::getInput($field->staticInput($staticOptions), $label, $hint) .
-            static::getInput($field->hiddenInput($options));
+                static::getInput($field->hiddenInput($options));
         }
         if (isset(static::$_dropdownInputs[$type])) {
             if (!isset($settings['items'])) {
-                throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
+                throw new InvalidConfigException(
+                    "You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'."
+                );
             }
             return static::getInput($field->$type($settings['items'], $options), $label, $hint);
         }
@@ -374,7 +367,9 @@ class BaseForm extends Widget
         if ($type === self::INPUT_WIDGET) {
             $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
             if (empty($widgetClass) && !$widgetClass instanceof InputWidget) {
-                throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
+                throw new InvalidConfigException(
+                    "A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'."
+                );
             }
             return static::getInput($field->$type($widgetClass, $options), $label, $hint);
         }
@@ -400,7 +395,9 @@ class BaseForm extends Widget
         $i = strpos($attribute, ']');
         $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
         if (!in_array($type, static::$_validInputs)) {
-            throw new InvalidConfigException("Invalid input type '{$type}' configured for the attribute '{$attribName}'.'");
+            throw new InvalidConfigException(
+                "Invalid input type '{$type}' configured for the attribute '{$attribName}'.'"
+            );
         }
         $value = ArrayHelper::getValue($settings, 'value', null);
         $options = ArrayHelper::getValue($settings, 'options', []);
@@ -433,7 +430,9 @@ class BaseForm extends Widget
         }
         if (isset(static::$_dropdownInputs[$type])) {
             if (!isset($settings['items'])) {
-                throw new InvalidConfigException("You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'.");
+                throw new InvalidConfigException(
+                    "You must setup the 'items' array for attribute '{$attribName}' since it is a '{$type}'."
+                );
             }
             $items = ArrayHelper::getValue($settings, 'items', []);
             return Html::$type($attribute, $value, $items, $options);
@@ -451,7 +450,9 @@ class BaseForm extends Widget
         if ($type === self::INPUT_WIDGET) {
             $widgetClass = ArrayHelper::getValue($settings, 'widgetClass', []);
             if (empty($widgetClass) && !$widgetClass instanceof InputWidget) {
-                throw new InvalidConfigException("A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'.");
+                throw new InvalidConfigException(
+                    "A valid 'widgetClass' for '{$attribute}' must be setup and extend from 'yii\\widgets\\InputWidget'."
+                );
             }
             $options['name'] = $attribute;
             $options['value'] = $value;
@@ -481,5 +482,16 @@ class BaseForm extends Widget
             $field = $field->hint($hint);
         }
         return $field;
+    }
+
+    /**
+     * @inheritdoc
+     * @throws InvalidConfigException
+     */
+    public function init()
+    {
+        parent::init();
+        static::prepareAttributes($this->attributes);
+        $this->checkBaseConfig();
     }
 }

@@ -3,8 +3,8 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
- * @version   1.6.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
+ * @version   1.6.3
  */
 namespace kartik\builder;
 
@@ -13,7 +13,7 @@ use yii\base\Model;
 use kartik\form\ActiveForm;
 
 /**
- * Trait for all methods used in all the form builder widgets in `yii2-builder` and initialized within [[BaseForm]].
+ * Trait for methods used in all the form builder widgets in `yii2-builder` and initialized within [[BaseForm]].
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0

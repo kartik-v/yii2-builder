@@ -2,18 +2,17 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
- * @version   1.6.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
+ * @version   1.6.3
  */
 
 namespace kartik\builder;
 
-use Yii;
+use Closure;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use \Closure;
 use kartik\form\ActiveForm;
 
 /**
@@ -67,19 +66,19 @@ class Form extends BaseForm
     /**
      * [[ActiveFormEvent]] triggered before parsing input.
      */
-    const EVENT_BEFORE_PARSE_INPUT = "eBeforeParseInput";
+    const EVENT_BEFORE_PARSE_INPUT = 'eBeforeParseInput';
     /**
      * [[ActiveFormEvent]] triggered after parsing input.
      */
-    const EVENT_AFTER_PARSE_INPUT = "eAfterParseInput";
+    const EVENT_AFTER_PARSE_INPUT = 'eAfterParseInput';
     /**
      * [[ActiveFormEvent]] triggered before rendering sub attribute.
      */
-    const EVENT_BEFORE_RENDER_SUB_ATTR = "eBeforeRenderSubAttr";
+    const EVENT_BEFORE_RENDER_SUB_ATTR = 'eBeforeRenderSubAttr';
     /**
      * [[ActiveFormEvent]] triggered after rendering sub attribute.
      */
-    const EVENT_AFTER_RENDER_SUB_ATTR = "eAfterRenderSubAttr";
+    const EVENT_AFTER_RENDER_SUB_ATTR = 'eAfterRenderSubAttr';
 
     /**
      * @var Model the data model used for the form.
@@ -266,7 +265,7 @@ class Form extends BaseForm
         if ($this->_orientation === ActiveForm::TYPE_INLINE) {
             Html::addCssClass($labelOptions, ActiveForm::SCREEN_READER);
         } elseif ($this->_orientation === ActiveForm::TYPE_VERTICAL) {
-            Html::addCssClass($labelOptions, "control-label");
+            Html::addCssClass($labelOptions, 'control-label');
         }
         if ($this->_orientation !== ActiveForm::TYPE_HORIZONTAL) {
             return '<div class="kv-nested-attribute-block">' . "\n" .
@@ -334,7 +333,7 @@ class Form extends BaseForm
      * Parses the input markup based on type.
      *
      * @param string $attribute the model attribute.
-     * @param string $settings the column settings.
+     * @param array $settings the column settings.
      * @param integer $index the row index.
      *
      * @return string the generated input.
@@ -366,18 +365,18 @@ class Form extends BaseForm
         }
         $val = ArrayHelper::getValue($settings, 'value', null);
         if ($type === self::INPUT_RAW) {
-            if ($this->hasModel()) {
-                return $val instanceof Closure ? call_user_func($val, $this->model, $index, $this) : $val;
-            } else {
-                return $val instanceof Closure ? call_user_func($val, $this->formName, $index, $this) : $val;
-            }
+            $source = $this->hasModel() ? $this->model : $this->formName;
+            return $val instanceof Closure ? call_user_func($val, $source, $index, $this) : $val;
         } else {
             $hidden = '';
-            if ($type === self::INPUT_HIDDEN_STATIC) {
-                $settings['type'] = self::INPUT_STATIC;
+            if ($type === self::INPUT_HIDDEN || $type === self::INPUT_HIDDEN_STATIC) {
                 $options = ArrayHelper::getValue($settings, 'options', []);
                 $hidden = $this->hasModel() ? Html::activeHiddenInput($this->model, $attribute, $options) :
                     Html::hiddenInput("{$this->formName}[{$attribute}]", $val, $options);
+                if ($type === self::INPUT_HIDDEN) {
+                    return $hidden;
+                }
+                $settings['type'] = self::INPUT_STATIC;
                 $settings['options'] = ArrayHelper::getValue($settings, 'hiddenStaticOptions', []);
             }
             $out = $this->hasModel() ?

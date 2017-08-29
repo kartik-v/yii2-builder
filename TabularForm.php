@@ -3,9 +3,10 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
- * @version   1.6.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
+ * @version   1.6.3
  */
+
 namespace kartik\builder;
 
 use Closure;
@@ -134,17 +135,17 @@ class TabularForm extends BaseForm
      */
     protected static function slash($str = '')
     {
-        if (empty($str) || substr($str, 1) == "\\") {
+        if (empty($str) || substr($str, 1) == '\\') {
             return $str;
         }
-        return "\\" . $str;
+        return '\\' . $str;
     }
 
     /**
      * Checks if a setting is of valid type and throws exception if not.
      *
      * @param string $attr the attribute to check
-     * @param array $settings the attribute settings
+     * @param array  $settings the attribute settings
      * @param string $key the model key
      * @param string $type the attribute input type
      *
@@ -159,9 +160,23 @@ class TabularForm extends BaseForm
         if (!$validateFunc($settings[$key])) {
             throw new InvalidConfigException(
                 "You must set the 'settings[\"{$key}\"]' property for  '{$attr}' attribute as a valid {$type} " .
-                "(no Closure method is supported)."
+                '(no Closure method is supported).'
             );
         }
+    }
+
+    /**
+     * Checks if model attribute configuration is empty or invalid
+     *
+     * @param array   $models the list of models in the tabular layout
+     * @param integer $index the index for each tabular row
+     * @param string  $attribute the attribute name
+     *
+     * @return boolean
+     */
+    protected static function isEmpty($models, $index, $attribute)
+    {
+        return !isset($models[$index][$attribute]) || $models[$index][$attribute] === '';
     }
 
     /**
@@ -238,7 +253,7 @@ class TabularForm extends BaseForm
      */
     protected function isColumnSet($type)
     {
-        $target = "\\kartik\\grid\\" . ucfirst($type) . "Column";
+        $target = '\\kartik\\grid\\' . ucfirst($type) . 'Column';
         $param = $type . 'Column';
         $col = $this->$param;
         if (empty($col)) {
@@ -283,11 +298,11 @@ class TabularForm extends BaseForm
     /**
      * Generates the static input
      *
-     * @param string $type the static input type.
-     * @param Model $model the data model.
-     * @param integer $index the zero based index of the item in dataProvider.
-     * @param array $settings the attribute settings.
-     * @param string $attribute the attribute.
+     * @param string    $type the static input type.
+     * @param Model     $model the data model.
+     * @param integer   $index the zero based index of the item in dataProvider.
+     * @param array     $settings the attribute settings.
+     * @param string    $attribute the attribute.
      * @param Formatter $formatter the formatter instance.
      *
      * @return string the generated static input.
@@ -308,7 +323,7 @@ class TabularForm extends BaseForm
                 $val = $settings['value'];
             } elseif ($model instanceof Model) {
                 $val = Html::getAttributeValue($model, $attribute);
-            } elseif (($models = $this->dataProvider->getModels()) && !empty($models[$index][$attribute])) {
+            } elseif (($models = $this->dataProvider->getModels()) && !static::isEmpty($models, $index, $attribute)) {
                 $val = $models[$index][$attribute];
             }
         }
@@ -324,7 +339,7 @@ class TabularForm extends BaseForm
      * Generates a cell value.
      *
      * @param string $attribute the model attribute.
-     * @param mixed $settings the configuration for the attribute.
+     * @param mixed  $settings the configuration for the attribute.
      *
      * @return string the parsed cell value.
      */
@@ -348,17 +363,17 @@ class TabularForm extends BaseForm
             $i = empty($key) ? $index : (is_array($key) ? implode($this->compositeKeySeparator, $key) : $key);
             $options = ArrayHelper::getValue($settings, 'options', []);
             if ($model instanceof Model) {
-                if ($type === self::INPUT_HIDDEN_STATIC) {
-                    return $staticInput . Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
+                if ($type === self::INPUT_HIDDEN || $type === self::INPUT_HIDDEN_STATIC) {
+                    return ($type === self::INPUT_HIDDEN ? '' : $staticInput) .
+                        Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
                 }
                 return static::renderActiveInput($this->form, $model, "[{$i}]{$attribute}", $settings);
-
             } else {
                 $models = $this->dataProvider->getModels();
-                $settings['value'] = empty($models[$index][$attribute]) ? null : $models[$index][$attribute];
-                if ($type === self::INPUT_HIDDEN_STATIC) {
-                    return $staticInput .
-                    Html::hiddenInput("{$this->formName}[{$i}][{$attribute}]", $settings['value'], $options);
+                $settings['value'] = static::isEmpty($models, $index, $attribute) ? null : $models[$index][$attribute];
+                if ($type === self::INPUT_HIDDEN || $type === self::INPUT_HIDDEN_STATIC) {
+                    return ($type === self::INPUT_HIDDEN ? '' : $staticInput) .
+                        Html::hiddenInput("{$this->formName}[{$i}][{$attribute}]", $settings['value'], $options);
                 }
                 return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
             }
@@ -367,6 +382,7 @@ class TabularForm extends BaseForm
 
     /**
      * Initializes the data columns.
+     *
      * @throws InvalidConfigException
      */
     protected function initDataColumns()
@@ -399,6 +415,7 @@ class TabularForm extends BaseForm
 
     /**
      * Render the grid content.
+     *
      * @return string the rendered gridview
      */
     protected function renderGrid()
