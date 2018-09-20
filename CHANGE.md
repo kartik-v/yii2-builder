@@ -1,6 +1,13 @@
 Change Log: `yii2-builder`
 ==========================
 
+## Version 1.6.4
+
+**Date:** 20-Sep-2018
+
+- Enhancements to support Bootstrap v4.x.
+- Move all source code to `src` directory.
+
 ## Version 1.6.3
 
 **Date:** 29-Aug-2017

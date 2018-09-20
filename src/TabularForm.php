@@ -3,8 +3,8 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
- * @version   1.6.3
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
+ * @version   1.6.4
  */
 
 namespace kartik\builder;
@@ -19,7 +19,7 @@ use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\data\BaseDataProvider;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
+use kartik\helpers\Html;
 use yii\i18n\Formatter;
 
 /**
@@ -186,13 +186,13 @@ class TabularForm extends BaseForm
     public function init()
     {
         parent::init();
-        $dp = static::slash(BaseDataProvider::className());
+        $dp = static::slash(BaseDataProvider::class);
         if (empty($this->dataProvider) || !$this->dataProvider instanceof BaseDataProvider) {
             throw new InvalidConfigException(
                 "The 'dataProvider' property must be set and must be an instance of '{$dp}'."
             );
         }
-        $kvGrid = static::slash(GridView::classname());
+        $kvGrid = static::slash(GridView::class);
         if (empty($this->gridClass)) {
             $this->gridClass = $kvGrid;
         } elseif ($this->gridClass !== $kvGrid && !is_subclass_of($this->gridClass, $kvGrid)) {
@@ -417,6 +417,7 @@ class TabularForm extends BaseForm
      * Render the grid content.
      *
      * @return string the rendered gridview
+     * @throws \Exception
      */
     protected function renderGrid()
     {
@@ -439,6 +440,9 @@ class TabularForm extends BaseForm
             'toggleData' => false,
             'rowOptions' => $rowOptions,
         ];
+        if (isset($this->bsVersion)) {
+            $settings['bsVersion'] = $this->bsVersion;
+        }
         $settings = ArrayHelper::merge(
             ['striped' => false, 'bordered' => false, 'hover' => true],
             $this->gridSettings,

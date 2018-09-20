@@ -2,8 +2,8 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
- * @version   1.6.3
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
+ * @version   1.6.4
  */
 
 namespace kartik\builder;
@@ -12,7 +12,7 @@ use Closure;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
+use kartik\helpers\Html;
 use kartik\form\ActiveForm;
 
 /**
@@ -101,6 +101,13 @@ class Form extends BaseForm
     public $columns = 1;
 
     /**
+     * @var bool whether to use a compact row/column grid layout as supported by Bootstrap 4.x via `form-row` class.
+     * Supported only when [[bsVersion]] = '4.x'
+     * @see https://getbootstrap.com/docs/4.0/components/forms/#form-row
+     */
+    public $compactGrid = false;
+
+    /**
      * @var boolean calculate the number of columns automatically based on count of attributes configured in the
      * [[Form]] widget. Columns will be created maximum upto the [[GRID_WIDTH]].
      */
@@ -129,14 +136,29 @@ class Form extends BaseForm
     public $options = [];
 
     /**
+     * @var bool whether to enclose and render the fieldset container
+     */
+    public $encloseFieldSet = false;
+
+    /**
      * @var string the tag for the fieldset.
      */
-    private $_tag;
+    private $_fieldsetTag;
 
     /**
      * @var string the form orientation.
      */
     private $_orientation = ActiveForm::TYPE_VERTICAL;
+
+    /**
+     * @var string the Bootstrap grid row CSS
+     */
+    private $_rowCss;
+
+    /**
+     * @var string the Bootstrap Label CSS
+     */
+    private $_labelCss;
 
     /**
      * @inheritdoc
@@ -145,6 +167,22 @@ class Form extends BaseForm
     public function init()
     {
         parent::init();
+        $this->initOptions();
+        $this->registerAssets();
+        if ($this->autoGenerateColumns) {
+            $cols = count($this->attributes);
+            $this->columns = $cols >= self::GRID_WIDTH ? self::GRID_WIDTH : $cols;
+        }
+        if ($this->encloseFieldSet) {
+            echo Html::beginTag($this->_fieldsetTag, $this->options) . "\n";
+        }
+    }
+
+    /**
+     * Initializes the widget options
+     */
+    protected function initOptions()
+    {
         $this->checkFormConfig();
         if (empty($this->columnSize)) {
             $this->columnSize = empty($this->form->formConfig['deviceSize']) ?
@@ -154,24 +192,13 @@ class Form extends BaseForm
         if (isset($this->form->type)) {
             $this->_orientation = $this->form->type;
         }
-        $this->initOptions();
-        $this->registerAssets();
-        if ($this->autoGenerateColumns) {
-            $cols = count($this->attributes);
-            $this->columns = $cols >= self::GRID_WIDTH ? self::GRID_WIDTH : $cols;
+        if (!isset($this->form->bsVersion) && isset($this->bsVersion)) {
+            $this->form->bsVersion = $this->bsVersion;
         }
-        echo Html::beginTag($this->_tag, $this->options) . "\n";
-    }
-
-    /**
-     * Initializes the widget options
-     */
-    protected function initOptions()
-    {
-        $this->_tag = ArrayHelper::remove($this->options, 'tag', 'fieldset');
-        if (empty($this->options['id'])) {
-            $this->options['id'] = $this->getId();
-        }
+        $this->_fieldsetTag = ArrayHelper::remove($this->options, 'tag', 'fieldset');
+        $isBs4 = $this->isBs4();
+        $this->_labelCss = $isBs4 ? 'col-form-label' : 'control-label';
+        $this->_rowCss = $isBs4 && $this->compactGrid ? 'form-row' : 'row';
     }
 
     /**
@@ -192,7 +219,9 @@ class Form extends BaseForm
         echo $this->contentBefore;
         echo $this->renderFieldSet();
         echo $this->contentAfter;
-        echo Html::endTag($this->_tag);
+        if ($this->encloseFieldSet) {
+            echo Html::endTag($this->_fieldsetTag);
+        }
         parent::run();
     }
 
@@ -200,6 +229,7 @@ class Form extends BaseForm
      * Renders the field set.
      *
      * @return string
+     * @throws InvalidConfigException
      */
     protected function renderFieldSet()
     {
@@ -212,7 +242,7 @@ class Form extends BaseForm
         $names = array_keys($this->attributes);
         $values = array_values($this->attributes);
         $width = (int)(self::GRID_WIDTH / $cols);
-        Html::addCssClass($this->rowOptions, 'row');
+        Html::addCssClass($this->rowOptions, $this->_rowCss);
         $skip = ($attrCount == 1);
         for ($row = 1; $row <= $rows; $row++) {
             $content .= $this->beginTag('div', $this->rowOptions, $skip);
@@ -256,6 +286,7 @@ class Form extends BaseForm
      * @param string $index the zero-based index of the attribute
      *
      * @return string
+     * @throws InvalidConfigException
      */
     protected function renderSubAttributes($settings, $index)
     {
@@ -265,7 +296,7 @@ class Form extends BaseForm
         if ($this->_orientation === ActiveForm::TYPE_INLINE) {
             Html::addCssClass($labelOptions, ActiveForm::SCREEN_READER);
         } elseif ($this->_orientation === ActiveForm::TYPE_VERTICAL) {
-            Html::addCssClass($labelOptions, 'control-label');
+            Html::addCssClass($labelOptions, $this->_labelCss);
         }
         if ($this->_orientation !== ActiveForm::TYPE_HORIZONTAL) {
             return '<div class="kv-nested-attribute-block">' . "\n" .
@@ -275,9 +306,10 @@ class Form extends BaseForm
         }
         $defaultLabelSpan = ArrayHelper::getValue($this->form->formConfig, 'labelSpan', 3);
         $labelSpan = ArrayHelper::getValue($settings, 'labelSpan', $defaultLabelSpan);
-        Html::addCssClass($labelOptions, "col-{$this->columnSize}-{$labelSpan} control-label");
+        Html::addCssClass($labelOptions, ["col-{$this->columnSize}-{$labelSpan}", $this->_labelCss]);
         $inputSpan = self::GRID_WIDTH - $labelSpan;
-        $rowOptions = ['class' => 'kv-nested-attribute-block form-sub-attributes form-group'];
+        $rowCss = $this->isBs4() ? ' ' . $this->_rowCss : '';
+        $rowOptions = ['class' => 'kv-nested-attribute-block form-sub-attributes form-group' . $rowCss];
         $inputOptions = ['class' => "col-{$this->columnSize}-{$inputSpan}"];
         return Html::beginTag('div', $rowOptions) . "\n" .
         Html::beginTag('label', $labelOptions) . "\n" .
@@ -296,6 +328,7 @@ class Form extends BaseForm
      * @param string $index the zero-based index of the attribute
      *
      * @return string
+     * @throws InvalidConfigException
      */
     protected function getSubAttributesContent($settings, $index)
     {

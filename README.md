@@ -1,7 +1,8 @@
 yii2-builder
 ============
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/kartik-v/yii2-builder.svg)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/stable)](https://packagist.org/packages/kartik-v/yii2-builder)
+[![Latest Unstable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/unstable)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![License](https://poser.pugx.org/kartik-v/yii2-builder/license)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-builder/downloads)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/monthly)](https://packagist.org/packages/kartik-v/yii2-builder)
@@ -13,12 +14,10 @@ A form builder extension that allows you to build both single view and multi-vie
 - FormGrid
 - TabularForm
 
-> NOTE: This extension depends on the [kartik-v/yii2-widgets](https://github.com/kartik-v/yii2-widgets) extension, which in turn depends on the
-[yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2/tree/master/extensions/bootstrap) extension. Check the 
-[composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
+> NOTE: Check the [composer.json](https://github.com/kartik-v/yii2-builder/blob/master/composer.json) for this extension's requirements and dependencies. 
 
 ## Latest Release
-The latest version of the module is v1.6.3. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details.
+Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details on changes to various releases.
 
 ## Form
 
@@ -184,6 +183,7 @@ ActiveForm::end();
 use kartik\builder\TabularForm;
 $form = ActiveForm::begin();
 echo TabularForm::widget([
+    'bsVersion' => '4.x',
     'form' => $form,
     'dataProvider' => $dataProvider,
     'attributes' => [
@@ -209,21 +209,21 @@ echo TabularForm::widget([
     'gridSettings' => [
         'floatHeader' => true,
         'panel' => [
-            'heading' => '<h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> Manage Books</h3>',
+            'heading' => '<i class="fas fa-book"></i> Manage Books',
             'type' => GridView::TYPE_PRIMARY,
             'after'=> 
                 Html::a(
-                    '<i class="glyphicon glyphicon-plus"></i> Add New', 
+                    '<i class="fas fa-plus"></i> Add New', 
                     $createUrl, 
                     ['class'=>'btn btn-success']
                 ) . '&nbsp;' . 
                 Html::a(
-                    '<i class="glyphicon glyphicon-remove"></i> Delete', 
+                    '<i class="fas fa-times"></i> Delete', 
                     $deleteUrl, 
                     ['class'=>'btn btn-danger']
                 ) . '&nbsp;' .
                 Html::submitButton(
-                    '<i class="glyphicon glyphicon-floppy-disk"></i> Save', 
+                    '<i class="fas fa-save"></i> Save', 
                     ['class'=>'btn btn-primary']
                 )
         ]
@@ -234,4 +234,4 @@ ActiveForm::end();
 
 ## License
 
-**yii2-builder** is released under the BSD 3-Clause License. See the bundled `LICENSE.md` for details.
+**yii2-builder** is released under the BSD-3-Clause License. See the bundled `LICENSE.md` for details.
