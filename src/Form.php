@@ -3,7 +3,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.4
+ * @version   1.6.5
  */
 
 namespace kartik\builder;
@@ -282,7 +282,7 @@ class Form extends BaseForm
     /**
      * Render sub attributes.
      *
-     * @param array  $settings the attribute settings
+     * @param array $settings the attribute settings
      * @param string $index the zero-based index of the attribute
      *
      * @return string
@@ -300,9 +300,9 @@ class Form extends BaseForm
         }
         if ($this->_orientation !== ActiveForm::TYPE_HORIZONTAL) {
             return '<div class="kv-nested-attribute-block">' . "\n" .
-            Html::label($label, null, $labelOptions) . "\n" .
-            $content . "\n" .
-            '</div>';
+                Html::label($label, null, $labelOptions) . "\n" .
+                $content . "\n" .
+                '</div>';
         }
         $defaultLabelSpan = ArrayHelper::getValue($this->form->formConfig, 'labelSpan', 3);
         $labelSpan = ArrayHelper::getValue($settings, 'labelSpan', $defaultLabelSpan);
@@ -312,19 +312,19 @@ class Form extends BaseForm
         $rowOptions = ['class' => 'kv-nested-attribute-block form-sub-attributes form-group' . $rowCss];
         $inputOptions = ['class' => "col-{$this->columnSize}-{$inputSpan}"];
         return Html::beginTag('div', $rowOptions) . "\n" .
-        Html::beginTag('label', $labelOptions) . "\n" .
-        $label . "\n" .
-        Html::endTag('label') . "\n" .
-        Html::beginTag('div', $inputOptions) . "\n" .
-        $content . "\n" .
-        Html::endTag('div') . "\n" .
-        Html::endTag('div') . "\n";
+            Html::beginTag('label', $labelOptions) . "\n" .
+            $label . "\n" .
+            Html::endTag('label') . "\n" .
+            Html::beginTag('div', $inputOptions) . "\n" .
+            $content . "\n" .
+            Html::endTag('div') . "\n" .
+            Html::endTag('div') . "\n";
     }
 
     /**
      * Gets sub attribute markup content.
      *
-     * @param array  $settings the attribute settings
+     * @param array $settings the attribute settings
      * @param string $index the zero-based index of the attribute
      *
      * @return string
@@ -412,14 +412,14 @@ class Form extends BaseForm
                 $settings['type'] = self::INPUT_STATIC;
                 $settings['options'] = ArrayHelper::getValue($settings, 'hiddenStaticOptions', []);
             }
-            if($this->hasModel()){
-                $out=static::renderActiveInput($this->form, $this->model, $attribute, $settings);
+            if ($this->hasModel()) {
+                $out = $this->renderActiveInput($this->form, $this->model, $attribute, $settings);
             } else {
                 //Check whether atrtribute defined in array way ([])
-                if(substr($attribute,0,1)=='[' && substr($attribute,-1)==']') {
-                    $out=static::renderInput("{$this->formName}{$attribute}", $settings);
+                if (substr($attribute, 0, 1) == '[' && substr($attribute, -1) == ']') {
+                    $out = $this->renderInput("{$this->formName}{$attribute}", $settings);
                 } else {
-                    $out=static::renderInput("{$this->formName}[{$attribute}]", $settings);
+                    $out = $this->renderInput("{$this->formName}[{$attribute}]", $settings);
                 }
             }
             return $out . $hidden;

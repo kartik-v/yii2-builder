@@ -4,7 +4,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.4
+ * @version   1.6.5
  */
 namespace kartik\builder;
 
@@ -140,6 +140,7 @@ class FormGrid extends Widget
      * Generates the form grid layout.
      *
      * @return string the generated form grid layout.
+     * @throws \Exception
      */
     protected function getGridOutput()
     {

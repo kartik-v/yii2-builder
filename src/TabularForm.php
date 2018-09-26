@@ -4,7 +4,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.4
+ * @version   1.6.5
  */
 
 namespace kartik\builder;
@@ -306,6 +306,7 @@ class TabularForm extends BaseForm
      * @param Formatter $formatter the formatter instance.
      *
      * @return string the generated static input.
+     * @throws InvalidConfigException
      */
     protected function getStaticInput($type, $model, $index, $settings, $attribute, $formatter)
     {
@@ -331,7 +332,7 @@ class TabularForm extends BaseForm
         $prepend = ArrayHelper::getValue($settings, 'prepend', '');
         $append = ArrayHelper::getValue($settings, 'append', '');
         $val = $prepend . "\n" . $val . "\n" . $append;
-        Html::addCssClass($options, 'form-control-static');
+        $this->addCssClass($options, self::BS_FORM_CONTROL_STATIC);
         return Html::tag('div', $val, $options);
     }
 
@@ -367,7 +368,7 @@ class TabularForm extends BaseForm
                     return ($type === self::INPUT_HIDDEN ? '' : $staticInput) .
                         Html::activeHiddenInput($model, "[{$i}]{$attribute}", $options);
                 }
-                return static::renderActiveInput($this->form, $model, "[{$i}]{$attribute}", $settings);
+                return $this->renderActiveInput($this->form, $model, "[{$i}]{$attribute}", $settings);
             } else {
                 $models = $this->dataProvider->getModels();
                 $settings['value'] = static::isEmpty($models, $index, $attribute) ? null : $models[$index][$attribute];
@@ -375,7 +376,7 @@ class TabularForm extends BaseForm
                     return ($type === self::INPUT_HIDDEN ? '' : $staticInput) .
                         Html::hiddenInput("{$this->formName}[{$i}][{$attribute}]", $settings['value'], $options);
                 }
-                return static::renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
+                return $this->renderInput("{$this->formName}[{$i}][{$attribute}]", $settings);
             }
         };
     }

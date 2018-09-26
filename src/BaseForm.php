@@ -4,7 +4,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.4
+ * @version   1.6.5
  */
 
 namespace kartik\builder;
@@ -260,20 +260,20 @@ class BaseForm extends Widget
      * before and after input, and wrapping input in a container if set.
      *
      * @param ActiveForm $form the form instance.
-     * @param Model      $model the data model.
-     * @param string     $attribute the name of the attribute.
-     * @param array      $settings the attribute settings.
+     * @param Model $model the data model.
+     * @param string $attribute the name of the attribute.
+     * @param array $settings the attribute settings.
      *
      * @return string
      * @throws InvalidConfigException
      *
      */
-    protected static function renderActiveInput($form, $model, $attribute, $settings)
+    protected function renderActiveInput($form, $model, $attribute, $settings)
     {
         $container = ArrayHelper::getValue($settings, 'container', []);
         $prepend = ArrayHelper::getValue($settings, 'prepend', '');
         $append = ArrayHelper::getValue($settings, 'append', '');
-        $input = static::renderRawActiveInput($form, $model, $attribute, $settings);
+        $input = $this->renderRawActiveInput($form, $model, $attribute, $settings);
         $out = $prepend . "\n" . $input . "\n" . $append;
         return empty($container) ? $out : Html::tag('div', $out, $container);
     }
@@ -283,18 +283,23 @@ class BaseForm extends Widget
      * before and after input, and wrapping input in a container if set.
      *
      * @param string $attribute the name of the attribute.
-     * @param array  $settings the attribute settings.
+     * @param array $settings the attribute settings.
      *
      * @return string the form input markup.
      * @throws InvalidConfigException
      */
-    protected static function renderInput($attribute, $settings = [])
+    protected function renderInput($attribute, $settings = [])
     {
         $for = '';
-        $input = static::renderRawInput($attribute, $for, $settings);
+        $input = $this->renderRawInput($attribute, $for, $settings);
+        $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $label = ArrayHelper::getValue($settings, 'label', false);
         $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
-        Html::addCssClass($labelOptions, 'control-label');
+        $frm = $this->form;
+        $tog = $type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO;
+        if (!$tog && !isset($labelOptions['class']) && ($frm->isHorizontal() || !$this->isBs4() && !$frm->isInline())) {
+            $labelOptions['class'] = $this->getCssClass(self::BS_CONTROL_LABEL);
+        }
         $label = $label !== false && !empty($for) ? Html::label($label, $for, $labelOptions) . "\n" : '';
         $container = ArrayHelper::getValue($settings, 'container', []);
         $prepend = ArrayHelper::getValue($settings, 'prepend', '');
@@ -311,9 +316,9 @@ class BaseForm extends Widget
      * Renders raw active input based on the attribute settings.
      *
      * @param ActiveForm $form the form instance.
-     * @param Model      $model the data model.
-     * @param string     $attribute the name of the attribute.
-     * @param array      $settings the attribute settings.
+     * @param Model $model the data model.
+     * @param string $attribute the name of the attribute.
+     * @param array $settings the attribute settings.
      *
      * @return string the generated active input.
      * @throws InvalidConfigException
@@ -384,13 +389,14 @@ class BaseForm extends Widget
      *
      * @param string $attribute the name of the attribute.
      * @param string $id the input identifier.
-     * @param array  $settings the attribute settings.
+     * @param array $settings the attribute settings.
      *
      * @return string the form input markup.
      * @throws InvalidConfigException
      */
-    protected static function renderRawInput($attribute, &$id, $settings = [])
+    protected function renderRawInput($attribute, &$id, $settings = [])
     {
+        $isBs4 = $this->isBs4();
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $i = strpos($attribute, ']');
         $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
@@ -415,14 +421,15 @@ class BaseForm extends Widget
             if ($type === self::INPUT_HIDDEN_STATIC) {
                 $opts = ArrayHelper::getValue($settings, 'hiddenStaticOptions', []);
             }
-            Html::addCssClass($opts, 'form-control-static');
+            $this->addCssClass($options, self::BS_FORM_CONTROL_STATIC);
             $out = Html::tag('p', $value, $opts);
             if ($type === self::INPUT_HIDDEN_STATIC) {
                 return $out . Html::hiddenInput($attribute, $value, $opts);
             }
             return $out;
         }
-        if (!isset($options['class']) && $type !== self::INPUT_CHECKBOX_BUTTON_GROUP && $type !== self::INPUT_RADIO_BUTTON_GROUP) {
+        if (!isset($options['class']) && $type !== self::INPUT_CHECKBOX && $type !== self::INPUT_RADIO &&
+            $type !== self::INPUT_CHECKBOX_BUTTON_GROUP && $type !== self::INPUT_RADIO_BUTTON_GROUP) {
             $options['class'] = 'form-control';
         }
         if (isset(static::$_basicInputs[$type])) {
@@ -440,8 +447,18 @@ class BaseForm extends Widget
         if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
             $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
             $checked = !empty($value) && ($value !== false) ? true : false;
+            if ($isBs4) {
+                $custom = ArrayHelper::remove($options, 'custom', false);
+                $prefix = $custom ? 'custom-control' : 'form-check';
+                $labelOptions = ArrayHelper::remove($options, 'labelOptions', []);
+                Html::addCssClass($labelOptions, "{$prefix}-label");
+                $options['labelOptions'] = $labelOptions;
+                Html::addCssClass($options, "{$prefix}-input");
+            } else {
+                $prefix = $type;
+            }
             $out = Html::$type($attribute, $checked, $options);
-            return $enclosedByLabel ? "<div class='{$type}'>{$out}</div>" : $out;
+            return $enclosedByLabel ? Html::tag('div', $out, ['class' => $prefix]) : $out;
         }
         if ($type === self::INPUT_HTML5) {
             $html5type = ArrayHelper::getValue($settings, 'html5type', 'text');
@@ -468,8 +485,8 @@ class BaseForm extends Widget
      * Generates the active field input by parsing the label and hint.
      *
      * @param ActiveField $field the active field instance.
-     * @param string      $label the label for the field
-     * @param string      $hint the hint for the field
+     * @param string $label the label for the field
+     * @param string $hint the hint for the field
      *
      * @return ActiveField
      */

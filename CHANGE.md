@@ -1,6 +1,12 @@
 Change Log: `yii2-builder`
 ==========================
 
+## Version 1.6.5
+
+**Date:** 26-Sep-2018
+
+- Enhancements in parsing Bootstrap CSS classes (ref: kartik-v/yii2-krajee-base#100).
+
 ## Version 1.6.4
 
 **Date:** 20-Sep-2018
