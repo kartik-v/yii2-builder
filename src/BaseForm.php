@@ -4,7 +4,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.5
+ * @version   1.6.6
  */
 
 namespace kartik\builder;
@@ -295,9 +295,10 @@ class BaseForm extends Widget
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $label = ArrayHelper::getValue($settings, 'label', false);
         $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
-        $frm = $this->form;
-        $tog = $type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO;
-        if (!$tog && !isset($labelOptions['class']) && ($frm->isHorizontal() || !$this->isBs4() && !$frm->isInline())) {
+        $isToggle = $type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO;
+        $f = $this->form;
+        $styleLabel = $f && $f instanceof ActiveForm && ($f->isHorizontal() || (!$this->isBs4() && !$f->isInline()));
+        if (!$isToggle && !isset($labelOptions['class']) && $styleLabel) {
             $labelOptions['class'] = $this->getCssClass(self::BS_CONTROL_LABEL);
         }
         $label = $label !== false && !empty($for) ? Html::label($label, $for, $labelOptions) . "\n" : '';
@@ -338,9 +339,8 @@ class BaseForm extends Widget
         $options = ArrayHelper::getValue($settings, 'options', []);
         $label = ArrayHelper::getValue($settings, 'label', null);
         $hint = ArrayHelper::getValue($settings, 'hint', null);
-        /**
-         * @var ActiveField $field
-         */
+        /** @var ActiveField $field */
+        /** @noinspection PhpParamsInspection */
         $field = $form->field($model, $attribute, $fieldConfig);
         if (isset(static::$_basicInputs[$type])) {
             return static::getInput($field->$type($options), $label, $hint);
@@ -393,6 +393,7 @@ class BaseForm extends Widget
      *
      * @return string the form input markup.
      * @throws InvalidConfigException
+     * @throws \Exception
      */
     protected function renderRawInput($attribute, &$id, $settings = [])
     {

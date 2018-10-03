@@ -1,6 +1,13 @@
 Change Log: `yii2-builder`
 ==========================
 
+## Version 1.6.6
+
+**Date:** 27-Sep-2018
+
+- (enh #137): Correct form validation for TabularForm.
+- Better version dependencies.
+
 ## Version 1.6.5
 
 **Date:** 26-Sep-2018

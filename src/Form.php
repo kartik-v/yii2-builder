@@ -3,7 +3,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.5
+ * @version   1.6.6
  */
 
 namespace kartik\builder;
@@ -43,22 +43,6 @@ use kartik\form\ActiveForm;
  */
 class Form extends BaseForm
 {
-    /**
-     * Large size for the grid column (bootstrap styled).
-     */
-    const SIZE_LARGE = 'lg';
-    /**
-     * Medium size for the grid column (bootstrap styled).
-     */
-    const SIZE_MEDIUM = 'md';
-    /**
-     * Small size for the grid column (bootstrap styled).
-     */
-    const SIZE_SMALL = 'sm';
-    /**
-     * Extra small (tiny) size for the grid column (bootstrap styled).
-     */
-    const SIZE_TINY = 'xs';
     /**
      * Maximum bootstrap grid width (layout columns count).
      */
