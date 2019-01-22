@@ -1,6 +1,13 @@
 Change Log: `yii2-builder`
 ==========================
 
+## Version 1.6.7
+
+**Date:** 22-Jan-2019
+
+- (enh #138): Correct TabularForm rowSelectedClass parsing for Bootstrap 4.x.
+- (enh #118): Add `visible` setting within `columnOptions` settings for attributes.
+
 ## Version 1.6.6
 
 **Date:** 26-Nov-2018

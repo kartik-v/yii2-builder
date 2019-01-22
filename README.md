@@ -86,7 +86,7 @@ The tabular form allows you to update information from multiple models (typicall
 - Allows you to add and configure action buttons for each row.
 - Configure your own hints to display below each active field attribute.
 - Various Bootstrap 3.x styling features are available by default. However, one can easily customize and theme it to one's liking using any CSS framework.
-- Advanced table styling, columns, and layout configuration by using the features available in the [`kartik\builder\GridView`]([`kartik\widgets\ActiveForm`](http://demos.krajee.com/builder) widget.
+- Advanced table styling, columns, and layout configuration by using the features available in the [`kartik\builder\GridView`](http://demos.krajee.com/grid) and the [`kartik\widgets\ActiveForm`](http://demos.krajee.com/builder) widget.
 - One can easily read and manage the tabular input data using the `loadMultiple` and `validateMultiple` functions in `yii\base\Model`.
 
 > NOTE: The TabularForm widget depends on and uses the [yii2-grid](http://demos.krajee.com/grid) module. Hence, the `gridview` module needs to be setup in your Yii configuration file.

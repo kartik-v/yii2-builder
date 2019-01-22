@@ -4,7 +4,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.6
+ * @version   1.6.7
  */
 
 namespace kartik\builder;
@@ -89,7 +89,7 @@ class TabularForm extends BaseForm
     /**
      * @var string the CSS class to apply to a row when the row is selected.
      */
-    public $rowSelectedClass = GridView::TYPE_DANGER;
+    public $rowSelectedClass;
 
     /**
      * @var string the namespaced GridView class name. Defaults to '\kartik\grid\GridView'. Any other class set here
@@ -186,6 +186,9 @@ class TabularForm extends BaseForm
     public function init()
     {
         parent::init();
+        if (!isset($this->rowSelectedClass)) {
+            $this->rowSelectedClass = $this->getCssClass(GridView::BS_TABLE_DANGER);
+        }
         $dp = static::slash(BaseDataProvider::class);
         if (empty($this->dataProvider) || !$this->dataProvider instanceof BaseDataProvider) {
             throw new InvalidConfigException(

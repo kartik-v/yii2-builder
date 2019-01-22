@@ -3,7 +3,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.6
+ * @version   1.6.7
  */
 
 namespace kartik\builder;
@@ -245,6 +245,9 @@ class Form extends BaseForm
                 }
                 $colWidth = (int)$colWidth;
                 Html::addCssClass($colOptions, 'col-' . $this->columnSize . '-' . $colWidth);
+                if (ArrayHelper::getValue($colOptions, 'visible', true) === false) {
+                    Html::addCssStyle($colOptions, 'display:none');
+                }
                 $content .= "\t" . $this->beginTag('div', $colOptions, $skip) . "\n";
                 if (!empty($settings['attributes'])) {
                     $this->raise(self::EVENT_BEFORE_RENDER_SUB_ATTR, $attribute, $index, ['settings' => &$settings]);
