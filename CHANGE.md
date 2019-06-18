@@ -3,10 +3,12 @@ Change Log: `yii2-builder`
 
 ## Version 1.6.7
 
-**Date:** 22-Jan-2019
+**Date:** 18-Jun-2019
 
+- (enh #139): Allow page summary calculations for TabularForm.
 - (enh #138): Correct TabularForm rowSelectedClass parsing for Bootstrap 4.x.
 - (enh #118): Add `visible` setting within `columnOptions` settings for attributes.
+- Add sponsorship capability.
 
 ## Version 1.6.6
 

@@ -399,9 +399,9 @@ class TabularForm extends BaseForm
             $settings['label'] = false;
             $columnOptions = ArrayHelper::getValue($settings, 'columnOptions', []);
             if (!$this->staticOnly && isset($settings['type']) && $settings['type'] === self::INPUT_RAW) {
-                $value = $settings['value'];
+                $content = $settings['value'];
             } else {
-                $value = $this->getCellValue($attribute, $settings);
+                $content = $this->getCellValue($attribute, $settings);
             }
             // auto alignment for certain input types - if the `type` is setup as a Closure, then the
             // following condition will not work, and one would need to set the alignment manually.
@@ -412,7 +412,7 @@ class TabularForm extends BaseForm
                 ['vAlign' => $alignMiddle ? GridView::ALIGN_MIDDLE : GridView::ALIGN_TOP],
                 $columnOptions,
                 $label,
-                ['attribute' => $attribute, 'value' => $value, 'format' => 'raw']
+                ['attribute' => $attribute, 'content' => $content, 'format' => 'raw']
             );
         }
     }
