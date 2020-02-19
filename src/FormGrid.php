@@ -9,7 +9,7 @@
 namespace kartik\builder;
 
 use yii\base\InvalidConfigException;
-use yii\bootstrap\Widget;
+use kartik\base\Widget;
 
 /**
  * FormGrid allows you to build and generate multi columnar bootstrap form layouts using a single simple array
