@@ -3,13 +3,14 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.7
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * @version   1.6.8
  */
 
 namespace kartik\builder;
 
 use Closure;
+use Exception;
 use kartik\form\ActiveForm;
 use kartik\grid\GridView;
 use Yii;
@@ -342,10 +343,11 @@ class TabularForm extends BaseForm
     /**
      * Generates a cell value.
      *
-     * @param string $attribute the model attribute.
-     * @param mixed  $settings the configuration for the attribute.
+     * @param  string  $attribute  the model attribute.
+     * @param  mixed  $settings  the configuration for the attribute.
      *
-     * @return string the parsed cell value.
+     * @return Closure the parsed cell value.
+     * @throws Exception
      */
     protected function getCellValue($attribute, $settings)
     {
@@ -421,7 +423,7 @@ class TabularForm extends BaseForm
      * Render the grid content.
      *
      * @return string the rendered gridview
-     * @throws \Exception
+     * @throws Exception
      */
     protected function renderGrid()
     {

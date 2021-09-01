@@ -3,12 +3,13 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.7
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * @version   1.6.8
  */
 
 namespace kartik\builder;
 
+use Exception;
 use kartik\base\Widget;
 use kartik\form\ActiveField;
 use kartik\form\ActiveForm;
@@ -242,7 +243,8 @@ class BaseForm extends Widget
     /**
      * Prepares attributes based on visibility setting
      *
-     * @param array $attributes the attributes to be prepared
+     * @param  array  $attributes  the attributes to be prepared
+     * @throws Exception
      */
     protected static function prepareAttributes(&$attributes = [])
     {
@@ -297,7 +299,7 @@ class BaseForm extends Widget
         $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
         $isToggle = $type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO;
         $f = $this->form;
-        $styleLabel = $f && $f instanceof ActiveForm && ($f->isHorizontal() || (!$this->isBs4() && !$f->isInline()));
+        $styleLabel = $f && $f instanceof ActiveForm && ($f->isHorizontal() || (!!$this->isBs(3)() && !$f->isInline()));
         if (!$isToggle && !isset($labelOptions['class']) && $styleLabel) {
             $labelOptions['class'] = $this->getCssClass(self::BS_CONTROL_LABEL);
         }
@@ -337,10 +339,8 @@ class BaseForm extends Widget
         }
         $fieldConfig = ArrayHelper::getValue($settings, 'fieldConfig', []);
         $options = ArrayHelper::getValue($settings, 'options', []);
-        $label = ArrayHelper::getValue($settings, 'label', null);
-        $hint = ArrayHelper::getValue($settings, 'hint', null);
-        /** @var ActiveField $field */
-        /** @noinspection PhpParamsInspection */
+        $label = ArrayHelper::getValue($settings, 'label');
+        $hint = ArrayHelper::getValue($settings, 'hint');
         $field = $form->field($model, $attribute, $fieldConfig);
         if (isset(static::$_basicInputs[$type])) {
             return static::getInput($field->$type($options), $label, $hint);
@@ -393,11 +393,11 @@ class BaseForm extends Widget
      *
      * @return string the form input markup.
      * @throws InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function renderRawInput($attribute, &$id, $settings = [])
     {
-        $isBs4 = $this->isBs4();
+        $notBs3 = !$this->isBs(3)();
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $i = strpos($attribute, ']');
         $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
@@ -406,7 +406,7 @@ class BaseForm extends Widget
                 "Invalid input type '{$type}' configured for the attribute '{$attribName}'.'"
             );
         }
-        $value = ArrayHelper::getValue($settings, 'value', null);
+        $value = ArrayHelper::getValue($settings, 'value');
         $options = ArrayHelper::getValue($settings, 'options', []);
         $id = str_replace(['[]', '][', '[', ']', ' '], ['', '-', '-', '', '-'], $attribute);
         $id = strtolower($id);
@@ -447,8 +447,8 @@ class BaseForm extends Widget
         }
         if ($type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO) {
             $enclosedByLabel = ArrayHelper::getValue($settings, 'enclosedByLabel', true);
-            $checked = !empty($value) && ($value !== false) ? true : false;
-            if ($isBs4) {
+            $checked = !empty($value) && ($value !== false);
+            if ($notBs3) {
                 $custom = ArrayHelper::remove($options, 'custom', false);
                 $prefix = $custom ? 'custom-control' : 'form-check';
                 $labelOptions = ArrayHelper::remove($options, 'labelOptions', []);

@@ -1,6 +1,13 @@
 Change Log: `yii2-builder`
 ==========================
 
+## Version 1.6.8
+
+**Date:** 01-Sep-2021
+
+- (enh #147): Enhancements to support Bootstrap v5.x.
+- (enh #141, #140): Fix for https://github.com/kartik-v/yii2-builder/issues/140.
+
 ## Version 1.6.7
 
 **Date:** 18-Jun-2019

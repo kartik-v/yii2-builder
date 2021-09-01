@@ -2,8 +2,8 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.6.7
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * @version   1.6.8
  */
 
 namespace kartik\builder;
@@ -180,9 +180,9 @@ class Form extends BaseForm
             $this->form->bsVersion = $this->bsVersion;
         }
         $this->_fieldsetTag = ArrayHelper::remove($this->options, 'tag', 'fieldset');
-        $isBs4 = $this->isBs4();
-        $this->_labelCss = $isBs4 ? 'col-form-label' : 'control-label';
-        $this->_rowCss = $isBs4 && $this->compactGrid ? 'form-row' : 'row';
+        $notBs3 = !$this->isBs(3);
+        $this->_labelCss = $notBs3 ? 'col-form-label' : 'control-label';
+        $this->_rowCss = $notBs3 && $this->compactGrid ? 'form-row' : 'row';
     }
 
     /**
@@ -295,7 +295,7 @@ class Form extends BaseForm
         $labelSpan = ArrayHelper::getValue($settings, 'labelSpan', $defaultLabelSpan);
         Html::addCssClass($labelOptions, ["col-{$this->columnSize}-{$labelSpan}", $this->_labelCss]);
         $inputSpan = self::GRID_WIDTH - $labelSpan;
-        $rowCss = $this->isBs4() ? ' ' . $this->_rowCss : '';
+        $rowCss = !$this->isBs(3) ? ' ' . $this->_rowCss : '';
         $rowOptions = ['class' => 'kv-nested-attribute-block form-sub-attributes form-group' . $rowCss];
         $inputOptions = ['class' => "col-{$this->columnSize}-{$inputSpan}"];
         return Html::beginTag('div', $rowOptions) . "\n" .
