@@ -3,7 +3,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
- * @version   1.6.8
+ * @version   1.6.9
  */
 
 namespace kartik\builder;

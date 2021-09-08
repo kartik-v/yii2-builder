@@ -1,6 +1,12 @@
 Change Log: `yii2-builder`
 ==========================
 
+## Version 1.6.9
+
+**Date:** _under development_
+
+- (bug #148): Correct Bootstrap version check method.
+
 ## Version 1.6.8
 
 **Date:** 01-Sep-2021

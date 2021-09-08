@@ -4,7 +4,7 @@
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
- * @version   1.6.8
+ * @version   1.6.9
  */
 
 namespace kartik\builder;
@@ -299,7 +299,7 @@ class BaseForm extends Widget
         $labelOptions = ArrayHelper::getValue($settings, 'labelOptions', []);
         $isToggle = $type === self::INPUT_CHECKBOX || $type === self::INPUT_RADIO;
         $f = $this->form;
-        $styleLabel = $f && $f instanceof ActiveForm && ($f->isHorizontal() || (!!$this->isBs(3)() && !$f->isInline()));
+        $styleLabel = $f && $f instanceof ActiveForm && ($f->isHorizontal() || (!!$this->isBs(3) && !$f->isInline()));
         if (!$isToggle && !isset($labelOptions['class']) && $styleLabel) {
             $labelOptions['class'] = $this->getCssClass(self::BS_CONTROL_LABEL);
         }
@@ -397,7 +397,7 @@ class BaseForm extends Widget
      */
     protected function renderRawInput($attribute, &$id, $settings = [])
     {
-        $notBs3 = !$this->isBs(3)();
+        $notBs3 = !$this->isBs(3);
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $i = strpos($attribute, ']');
         $attribName = $i > 0 ? substr($attribute, $i + 1) : $attribute;
