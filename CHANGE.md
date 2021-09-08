@@ -5,6 +5,7 @@ Change Log: `yii2-builder`
 
 **Date:** _under development_
 
+- (enh #147): Enhancements to Form grid sub attributes layout for Bootstrap v5.x.
 - (bug #148): Correct Bootstrap version check method.
 
 ## Version 1.6.8

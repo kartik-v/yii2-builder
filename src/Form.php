@@ -182,7 +182,7 @@ class Form extends BaseForm
         $this->_fieldsetTag = ArrayHelper::remove($this->options, 'tag', 'fieldset');
         $notBs3 = !$this->isBs(3);
         $this->_labelCss = $notBs3 ? 'col-form-label' : 'control-label';
-        $this->_rowCss = $notBs3 && $this->compactGrid ? 'form-row' : 'row';
+        $this->_rowCss = $this->isBs(4) && $this->compactGrid ? 'form-row' : 'row';
     }
 
     /**
@@ -339,6 +339,11 @@ class Form extends BaseForm
             Html::addCssClass($subColOptions, 'col-' . $this->columnSize . '-' . $subColWidth);
             $subSettings['columnOptions'] = $subColOptions;
             $subSettings['fieldConfig']['skipFormLayout'] = true;
+            if ($this->isBs(5)) {
+                $opts = ArrayHelper::getValue($subSettings['fieldConfig'], 'options', []);
+                Html::addCssClass($opts, ['mb-3', 'g-0']);
+                $subSettings['fieldConfig']['options'] = $opts;
+            }
             $content .= "\t\t" . $this->beginTag('div', $subColOptions) . "\n";
             /** @var integer $index */
             $content .= "\t\t\t" . $this->parseInput($subAttr, $subSettings, $index * 10 + $subIndex) . "\n";

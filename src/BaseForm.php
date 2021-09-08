@@ -327,7 +327,7 @@ class BaseForm extends Widget
      * @throws InvalidConfigException
      *
      */
-    protected static function renderRawActiveInput($form, $model, $attribute, $settings)
+    protected function renderRawActiveInput($form, $model, $attribute, $settings)
     {
         $type = ArrayHelper::getValue($settings, 'type', self::INPUT_TEXT);
         $i = strpos($attribute, ']');

@@ -387,6 +387,25 @@ class TabularForm extends BaseForm
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function renderRawActiveInput($form, $model, $attribute, $settings)
+    {
+        if ($this->isBs(5)) {
+            $fieldConfig = ArrayHelper::getValue($settings, 'fieldConfig', []);
+            $opts = ArrayHelper::getValue($fieldConfig, 'options', []);
+            if (empty($opts) || empty($opts['class'])) {
+                $opts['class'] = 'mb-0';
+            } else {
+                Html::removeCssClass($opts, 'mb-3');
+            }
+            $fieldConfig['options'] = $opts;
+            $settings['fieldConfig'] = $fieldConfig;
+        }
+        return parent::renderRawActiveInput($form, $model, $attribute, $settings);
+    }
+
+    /**
      * Initializes the data columns.
      *
      * @throws InvalidConfigException
@@ -417,6 +436,7 @@ class TabularForm extends BaseForm
                 ['attribute' => $attribute, 'content' => $content, 'format' => 'raw']
             );
         }
+        //die('KV SAYS <hr><pre>' . var_export($this->_columns, true) . '</pre>');
     }
 
     /**
