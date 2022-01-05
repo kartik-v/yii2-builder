@@ -6,10 +6,12 @@
     yii2-builder
     <hr>
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DTP3NZQ6G2AYU"
-       title="Donate via Paypal" target="_blank">
-        <img src="http://kartik-v.github.io/bootstrap-fileinput-samples/samples/donate.png" alt="Donate"/>
-    </a>
+       title="Donate via Paypal" target="_blank"><img height="60" src="https://kartik-v.github.io/bootstrap-fileinput-samples/samples/donate.png" alt="Donate"/></a>
+    &nbsp; &nbsp; &nbsp;
+    <a href="https://www.buymeacoffee.com/kartikv" title="Buy me a coffee" ><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="60" alt="kartikv" /></a>
 </h1>
+
+<div align="center">
 
 [![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/stable)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Latest Unstable Version](https://poser.pugx.org/kartik-v/yii2-builder/v/unstable)](https://packagist.org/packages/kartik-v/yii2-builder)
@@ -17,6 +19,8 @@
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-builder/downloads)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/monthly)](https://packagist.org/packages/kartik-v/yii2-builder)
 [![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-builder/d/daily)](https://packagist.org/packages/kartik-v/yii2-builder)
+
+</div>
 
 A form builder extension that allows you to build both single view and multi-view/tabular forms for Yii Framework 2.0. The extension contains these widgets:
 
@@ -28,6 +32,9 @@ A form builder extension that allows you to build both single view and multi-vie
 
 ## Latest Release
 Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-builder/blob/master/CHANGE.md) for details on changes to various releases.
+
+## Docs & Demo
+You can see detailed [docs & demos](http://demos.krajee.com/builder-details/form) and the API [code documentation](https://docs.krajee.com/kartik-builder-form) on usage of the extension.
 
 ## Form
 
@@ -61,8 +68,6 @@ The Form Builder widget allows you to build a form through a configuration array
     - `INPUT_STATIC` or `staticInput`
     - `INPUT_HIDDEN_STATIC` or `hiddenStaticInput`
     - `INPUT_RAW` or `raw` (any free text or html markup)
-
-Refer the [documentation](http://demos.krajee.com/builder-details/form) for more details.
 
 ## FormGrid
 

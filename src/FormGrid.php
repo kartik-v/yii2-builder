@@ -3,24 +3,29 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
  * @version   1.6.9
  */
 namespace kartik\builder;
 
 use yii\base\InvalidConfigException;
 use kartik\base\Widget;
+use kartik\form\ActiveForm;
+use yii\base\Model;
+use yii\db\ActiveRecord;
 
 /**
  * FormGrid allows you to build and generate multi columnar bootstrap form layouts using a single simple array
  * configuration. It utilizes multiple instances of the [[Form]] widget to generate the layout.
  *
- * Usage example:
+ * For example,
  *
  * ```php
  * use kartik\form\ActiveForm;
  * use kartik\builder\FormGrid;
- * $form = ActiveForm::begin($options); // $options is array for your form config
+ *
+ * $options = []; // $options is your ActiveForm configuration
+ * $form = ActiveForm::begin($options);
  * echo FormGrid::widget([
  *     'model' => $model, // your model
  *     'form' => $form,
@@ -44,17 +49,16 @@ use kartik\base\Widget;
  * ```
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since  1.0
  */
 class FormGrid extends Widget
 {
     /**
-     * @var \yii\db\ActiveRecord|\yii\base\Model the model used for the form.
+     * @var ActiveRecord|Model the model used for the form.
      */
     public $model;
 
     /**
-     * @var \yii\widgets\ActiveForm the form instance.
+     * @var ActiveForm the active form object instance used.
      */
     public $form;
 
@@ -107,6 +111,7 @@ class FormGrid extends Widget
     /**
      * @var array the HTML attributes for the field/attributes container. The following options are additionally
      * recognized:
+     *
      * - `tag`: _string_, the HTML tag for the container. Defaults to `fieldset`.
      *
      * This property can be overridden by `options` setting at the [[rows]] level.

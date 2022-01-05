@@ -3,7 +3,7 @@
 /**
  * @package   yii2-builder
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
  * @version   1.6.9
  */
 
@@ -14,7 +14,8 @@ use yii\base\Model;
 use kartik\form\ActiveForm;
 
 /**
- * Trait for methods used in all the form builder widgets in `yii2-builder` and initialized within [[BaseForm]].
+ * FormTrait contains common methods for use in [[BaseForm]] builder widget in `yii2-builder`. These methods are also used by
+ * the [[Form]] and [[TabularForm]] widgets.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0

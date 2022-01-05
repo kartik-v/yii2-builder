@@ -1,5 +1,5 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
  * @version 1.6.5
  *
  * Client validation extension for the yii2-builder extension

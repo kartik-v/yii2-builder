@@ -3,10 +3,12 @@ Change Log: `yii2-builder`
 
 ## Version 1.6.9
 
-**Date:** _under development_
+**Date:** 05-Jan-2022
 
+- Enhance & standardize php docs for new website https://docs.krajee.com.
 - (enh #147): Enhancements to Form grid sub attributes layout for Bootstrap v5.x.
 - (bug #148): Correct Bootstrap version check method.
+- (bug #140,#141): Correct base widget class use.
 
 ## Version 1.6.8
 
